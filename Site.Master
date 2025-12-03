@@ -1,0 +1,165 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="SO_Appraisal.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - SYNAPSE</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+    <style>
+        /* ===== Sidebar ===== */
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            left: -250px;
+            width: 250px;
+            height: calc(100vh - 56px);
+            /*background-color: #212529;*/
+            color: white;
+            overflow-y: auto;
+            transition: left 0.3s ease-in-out;
+            z-index: 1100;
+            padding: 15px;
+        }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar .nav-link {
+                color: white;
+                padding: 10px;
+                display: block;
+            }
+
+                .sidebar .nav-link:hover {
+                    background: rgba(255,255,255,0.2);
+                }
+
+        /* ===== Overlay ===== */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 56px);
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+        }
+
+        /* ===== Page Content ===== */
+        .page-wrapper {
+            padding-top: 70px;
+        }
+
+        .footer-divider {
+            border: none;
+            height: 2px;
+            background-color: #6c757d; /* Medium dark gray */
+            margin: 30px 0 20px 0;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            $(".sidebar").toggleClass("open");
+            $(".overlay").toggle();
+        }
+
+        $(document).ready(function () {
+            $(".overlay").click(function () {
+                $(".sidebar").removeClass("open");
+                $(this).hide();
+            });
+        });
+    </script>
+</head>
+<body>
+    <form runat="server">
+        <div class="overlay"></div>
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <%--<asp:ScriptReference Name="MsAjaxBundle" />--%>
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+            </Scripts>
+        </asp:ScriptManager>
+
+        <nav class="navbar navbar-white bg-white shadow-sm">
+            <button class="navbar-toggler" type="button" onclick="toggleSidebar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <%--<%: Page.Title %>--%>
+
+            <a class="navbar-brand ml-auto" runat="server" href="~/">SYNAPSE</a>
+
+            <%-- <div class="container">
+                <a class="navbar-brand" runat="server" href="~/">SYNAPSE</a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Transfer">Transfer</a></li>
+                    </ul>
+                </div>
+                
+            </div>--%>
+        </nav>
+
+        <aside class="sidebar">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" runat="server" href="~/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" runat="server" href="~/Transfer">Transfer</a>
+                </li>
+            </ul>
+        </aside>
+
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+
+            <hr class="footer-divider" />
+
+            <footer>
+                <p>&copy; <%: DateTime.Now.Year %> - SYNAPSE</p>
+            </footer>
+        </div>
+    </form>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+    </asp:PlaceHolder>
+</body>
+</html>
