@@ -105,6 +105,15 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Button ApproveRowBtn;
 
         /// <summary>
+        /// DistModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView DistModal;
+
+        /// <summary>
         /// SelectBtn control.
         /// </summary>
         /// <remarks>

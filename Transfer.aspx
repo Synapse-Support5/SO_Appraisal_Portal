@@ -382,7 +382,7 @@
                 <div class="col-6 col-md-4 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="AreaDrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="AreaDrp_SelectedIndexChanged">
-                            <asp:ListItem Text="Area" Value=""></asp:ListItem>
+                            <%--<asp:ListItem Text="Area" Value=""></asp:ListItem>--%>
                         </asp:DropDownList>
                         <%--<label for="ToSODrp">To SO</label>--%>
                         <asp:Label runat="server" Text="Area" AssociatedControlID="AreaDrp" />
@@ -392,11 +392,11 @@
                 </div>
                 <div class="col-6 col-md-4 mb-2 mb-md-0">
                     <div class="floating-label">
-                        <asp:DropDownList ID="FromSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" ClientIDMode="Static">
-                            <asp:ListItem Text="From SO" Value=""></asp:ListItem>
+                        <asp:DropDownList ID="FromSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="FromSODrp_SelectedIndexChanged">
+                            <%--<asp:ListItem Text="From SO" Value=""></asp:ListItem>--%>
                         </asp:DropDownList>
-                        <label for="FromSODrp">From SO</label>
-                        <%--<asp:Label runat="server" Text="From SO" AssociatedControlID="FromSODrp" />--%>
+                        <%--<label for="FromSODrp">From SO</label>--%>
+                        <asp:Label runat="server" Text="From SO" AssociatedControlID="FromSODrp" />
 
                         <input type="text" id="FromSOSearch" runat="server" class="form-control" placeholder="Enter From SO" />
                     </div>
@@ -479,24 +479,22 @@
                                 <input type="text" id="txtSearch" class="form-control" placeholder="Search..." />
                             </div>
                             <div class="form-group">
-                                <%--<asp:GridView ID="RouteSplitTransModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
+                                <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
                                     AutoGenerateColumns="false" DataKeyNames="" Style="margin-bottom: -18px; text-align: center">
                                     <Columns>
-                                        <asp:BoundField DataField="RouteCode" HeaderText="RouteCode" />
-                                        <asp:BoundField DataField="RouteName" HeaderText="RouteName" />
-
                                         <asp:TemplateField>
                                             <ItemTemplate>
                                                 <div style="margin-right: 10px;">
-                                                    <input type="checkbox" id="CheckBox1" runat="server" class="form-check-input rowCheckbox" style="margin-left: -3px;"
-                                                        onclick="handleCheckboxClick(this)" />
+                                                    <input type="checkbox" id="CheckBox1" runat="server" class="form-check-input rowCheckbox" style="margin-left: -3px;" />
                                                 </div>
                                             </ItemTemplate>
                                         </asp:TemplateField>
+
+                                        <asp:BoundField DataField="DistName" HeaderText="Distibutor" />
                                     </Columns>
                                     <HeaderStyle CssClass="header-hidden" />
                                     <RowStyle CssClass="fixed-height-row" BackColor="#FFFFFF" />
-                                </asp:GridView>--%>
+                                </asp:GridView>
                             </div>
                         </div>
 
@@ -597,15 +595,15 @@
                     source: options,
                     minLength: 1,
                     select: function (event, ui) {
+                        // set visible text
                         searchBox.val(ui.item.label);
+                        // set hidden dropdown selected value
                         ddl.val(ui.item.value);
-
-                        // Trigger SelectedIndexChanged of FromSODrp
+                        // 🔴 this is what fires FromSODrp_SelectedIndexChanged
                         __doPostBack('<%= FromSODrp.UniqueID %>', '');
-
-                        return false;
-                    }
-                });
+                    return false;
+                }
+            });
             })();
 
         });
