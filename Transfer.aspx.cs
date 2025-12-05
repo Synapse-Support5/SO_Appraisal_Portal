@@ -115,6 +115,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", "");
                 cmd1.Parameters.AddWithValue("@Area", "");
+                cmd1.Parameters.AddWithValue("@ZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -152,6 +153,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", "");
+                cmd1.Parameters.AddWithValue("@ZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -162,9 +164,47 @@ namespace SO_Appraisal
                 da.Fill(resdt);
                 AreaDrp.DataSource = resdt;
                 AreaDrp.DataTextField = resdt.Columns["AreaName"].ToString();
-                AreaDrp.DataValueField = resdt.Columns["AreaId"].ToString();
+                AreaDrp.DataValueField = resdt.Columns["AreaCode"].ToString();
                 AreaDrp.DataBind();
                 AreaDrp.Items.Insert(0, new ListItem("Area", ""));
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                showToast("An error occurred: " + ex.Message, "toast-danger");
+            }
+        }
+        #endregion
+
+        #region ZoneLoad
+        public void ZoneLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Dropdowns", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "ZoneLoad");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@ZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromSOCode", "");
+                cmd1.ExecuteNonQuery();
+
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resdt.Rows.Clear();
+                da.Fill(resdt);
+                ZoneDrp.DataSource = resdt;
+                ZoneDrp.DataTextField = resdt.Columns["ZoneName"].ToString();
+                ZoneDrp.DataValueField = resdt.Columns["ZoneCode"].ToString();
+                ZoneDrp.DataBind();
+                ZoneDrp.Items.Insert(0, new ListItem("Zone", ""));
                 con.Close();
             }
             catch (Exception ex)
@@ -189,6 +229,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -226,6 +267,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
@@ -237,6 +279,11 @@ namespace SO_Appraisal
                 DistModal.DataSource = resdt;
                 DistModal.DataBind();
                 con.Close();
+
+                if(resdt.Rows.Count == 1)
+                {
+                    showToast("At least one Distributor will remain in Transfer case", "toast-danger");
+                }
             }
             catch (Exception ex)
             {
@@ -245,10 +292,12 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region SelectBtn_Click
         protected void SelectBtn_Click(object sender, EventArgs e)
         {
             ToSOLoad();
         }
+        #endregion
 
         #region ToSOLoad
         public void ToSOLoad()
@@ -265,6 +314,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@ZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
@@ -303,6 +353,11 @@ namespace SO_Appraisal
 
         protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ZoneLoad();
+        }
+
+        protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
             FromSOLoad();
         }
 
@@ -315,5 +370,6 @@ namespace SO_Appraisal
 
         #endregion
 
+        
     }
 }

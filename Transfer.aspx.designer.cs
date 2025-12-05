@@ -60,6 +60,24 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlInputText AreaSearch;
 
         /// <summary>
+        /// ZoneDrp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ZoneDrp;
+
+        /// <summary>
+        /// ZoneDrpSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText ZoneDrpSearch;
+
+        /// <summary>
         /// FromSODrp control.
         /// </summary>
         /// <remarks>

@@ -369,7 +369,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="StateDrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="StateDrp_SelectedIndexChanged" ClientIDMode="Static">
                         </asp:DropDownList>
@@ -379,7 +379,7 @@
                         <%--<asp:Label runat="server" Text="From SO" AssociatedControlID="FromSODrp" />--%>
                     </div>
                 </div>
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="AreaDrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="AreaDrp_SelectedIndexChanged">
                             <%--<asp:ListItem Text="Area" Value=""></asp:ListItem>--%>
@@ -390,7 +390,18 @@
                         <input type="text" id="AreaSearch" runat="server" class="form-control" placeholder="Enter Area" />
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
+                        <asp:DropDownList ID="ZoneDrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="ZoneDrp_SelectedIndexChanged">
+                            <%--<asp:ListItem Text="Area" Value=""></asp:ListItem>--%>
+                        </asp:DropDownList>
+                        <%--<label for="ToSODrp">To SO</label>--%>
+                        <asp:Label runat="server" Text="Zone" AssociatedControlID="ZoneDrp" />
+
+                        <input type="text" id="ZoneDrpSearch" runat="server" class="form-control" placeholder="Enter Zone" />
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="FromSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="FromSODrp_SelectedIndexChanged">
                             <%--<asp:ListItem Text="From SO" Value=""></asp:ListItem>--%>
@@ -580,6 +591,35 @@
                 });
             })();
 
+            // --- Zone autocomplete ---
+            (function () {
+                var ddl = $('#<%= ZoneDrp.ClientID %>');
+                var searchBox = $('#<%= ZoneDrpSearch.ClientID %>');
+
+                var options = [];
+                ddl.find("option").each(function () {
+                    var text = $(this).text();
+                    var value = $(this).val();
+                    if (value) {
+                        options.push({ label: text, value: value });
+                    }
+                });
+
+                searchBox.autocomplete({
+                    source: options,
+                    minLength: 1,
+                    select: function (event, ui) {
+                        searchBox.val(ui.item.label);
+                        ddl.val(ui.item.value);
+
+                        // Trigger SelectedIndexChanged of ZoneDrp
+                        __doPostBack('<%= ZoneDrp.UniqueID %>', '');
+
+            return false;
+        }
+    });
+            })();
+
             // --- FromSO autocomplete ---
             (function () {
                 var ddl = $('#<%= FromSODrp.ClientID %>');
@@ -633,9 +673,9 @@
                         ddl.val(ui.item.value);
                         // 🔴 this is what fires ToSODrp_SelectedIndexChanged
                         __doPostBack('<%= ToSODrp.UniqueID %>', '');
-            return false;
-        }
-    });
+                        return false;
+                    }
+                });
             })();
 
 
