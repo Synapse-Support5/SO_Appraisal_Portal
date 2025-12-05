@@ -390,7 +390,7 @@
                         <input type="text" id="AreaSearch" runat="server" class="form-control" placeholder="Enter Area" />
                     </div>
                 </div>
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-12 col-md-4 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="FromSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="FromSODrp_SelectedIndexChanged">
                             <%--<asp:ListItem Text="From SO" Value=""></asp:ListItem>--%>
@@ -415,14 +415,16 @@
                 </div>
                 <div class="col-6 col-md-4 mb-2 mb-md-0">
                     <div class="floating-label">
-                        <asp:DropDownList ID="ToSODrp" runat="server" AutoPostBack="true" class="form-control">
+                        <asp:DropDownList ID="ToSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control">
                             <asp:ListItem Text="To SO" Value=""></asp:ListItem>
                         </asp:DropDownList>
                         <%--<label for="ToSODrp">To SO</label>--%>
+
                         <asp:Label runat="server" Text="To SO" AssociatedControlID="ToSODrp" />
+                        <input type="text" id="ToSODrpSearch" runat="server" class="form-control" placeholder="Enter To SO" />
                     </div>
                 </div>
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-12 col-md-4 mb-2 mb-md-0">
                     <asp:Button ID="ApproveRowBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />
                 </div>
             </div>
@@ -485,7 +487,8 @@
                                         <asp:TemplateField>
                                             <ItemTemplate>
                                                 <div style="margin-right: 10px;">
-                                                    <input type="checkbox" id="CheckBox1" runat="server" class="form-check-input rowCheckbox" style="margin-left: -3px;" />
+                                                    <input type="checkbox" id="CheckBox1" runat="server" class="form-check-input rowCheckbox" style="margin-left: -3px;"
+                                                        onclick="handleCheckboxClick(this)" />
                                                 </div>
                                             </ItemTemplate>
                                         </asp:TemplateField>
@@ -601,12 +604,98 @@
                         ddl.val(ui.item.value);
                         // 🔴 this is what fires FromSODrp_SelectedIndexChanged
                         __doPostBack('<%= FromSODrp.UniqueID %>', '');
-                    return false;
-                }
-            });
+                        return false;
+                    }
+                });
             })();
 
+            // --- ToSODrp autocomplete ---
+            (function () {
+                var ddl = $('#<%= ToSODrp.ClientID %>');
+                var searchBox = $('#<%= ToSODrpSearch.ClientID %>');
+
+                var options = [];
+                ddl.find("option").each(function () {
+                    var text = $(this).text();
+                    var value = $(this).val();
+                    if (value) {
+                        options.push({ label: text, value: value });
+                    }
+                });
+
+                searchBox.autocomplete({
+                    source: options,
+                    minLength: 1,
+                    select: function (event, ui) {
+                        // set visible text
+                        searchBox.val(ui.item.label);
+                        // set hidden dropdown selected value
+                        ddl.val(ui.item.value);
+                        // 🔴 this is what fires ToSODrp_SelectedIndexChanged
+                        __doPostBack('<%= ToSODrp.UniqueID %>', '');
+            return false;
+        }
+    });
+            })();
+
+
         });
+    </script>
+
+    <%-- Script for search button in Modal --%>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#txtSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#<%= DistModal.ClientID %> tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+    <%--script for checkboxes in Distributor Modal to remain atleast one Distributor--%>
+    <script type="text/javascript">
+
+        // Function to handle checkbox click
+        function handleCheckboxClick(checkbox) {
+            // Get all checkboxes
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+
+            // Count checked checkboxes
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+            // Apply the logic to ensure at least one checkbox remains unchecked
+            checkboxes.forEach(cb => {
+                if (!cb.checked && checkedCount === checkboxes.length - 1) {
+                    cb.disabled = true; // Disable the last unchecked checkbox
+
+                    // Show toast notification
+                    showToast("At least one Distributor will remain in Transfer case", "toast-danger");
+
+                } else {
+                    cb.disabled = false; // Enable others
+                }
+            });
+        }
+
+        // This function is triggered when the page or modal is loaded to ensure proper checkbox states
+        function setCheckboxState() {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+
+            if (checkboxes.length === 1) {
+                // Disable the checkbox if there's only one checkbox in the modal
+                checkboxes[0].disabled = true;
+            } else {
+                // Enable all checkboxes if there are multiple checkboxes
+                checkboxes.forEach(cb => cb.disabled = false);
+            }
+        }
+
+        // Ensure proper checkbox state on modal open
+        window.onload = function () {
+            setCheckboxState();
+        }
     </script>
 
     <script>

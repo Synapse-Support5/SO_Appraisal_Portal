@@ -115,7 +115,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", "");
                 cmd1.Parameters.AddWithValue("@Area", "");
-                cmd1.Parameters.AddWithValue("@SOCode", "");
+                cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -152,7 +152,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", "");
-                cmd1.Parameters.AddWithValue("@SOCode", "");
+                cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -189,7 +189,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@SOCode", "");
+                cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -201,7 +201,7 @@ namespace SO_Appraisal
                 FromSODrp.DataTextField = resdt.Columns["SOName"].ToString();
                 FromSODrp.DataValueField = resdt.Columns["SOCode"].ToString();
                 FromSODrp.DataBind();
-                AreaDrp.Items.Insert(0, new ListItem("From SO", ""));
+                FromSODrp.Items.Insert(0, new ListItem("From SO", ""));
                 con.Close();
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@SOCode", FromSODrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -247,8 +247,45 @@ namespace SO_Appraisal
 
         protected void SelectBtn_Click(object sender, EventArgs e)
         {
-            showToast("Toast is working fine", "toast-success");
+            ToSOLoad();
         }
+
+        #region ToSOLoad
+        public void ToSOLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Dropdowns", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "ToSoLoad");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
+                cmd1.ExecuteNonQuery();
+
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resdt.Rows.Clear();
+                da.Fill(resdt);
+                ToSODrp.DataSource = resdt;
+                ToSODrp.DataTextField = resdt.Columns["SOName"].ToString();
+                ToSODrp.DataValueField = resdt.Columns["SOCode"].ToString();
+                ToSODrp.DataBind();
+                ToSODrp.Items.Insert(0, new ListItem("To SO", ""));
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                showToast("An error occurred: " + ex.Message, "toast-danger");
+            }
+        }
+        #endregion
 
         #region ToastNotification
         private void showToast(string message, string styleClass)
@@ -278,9 +315,5 @@ namespace SO_Appraisal
 
         #endregion
 
-        protected void FromSODrp_SelectedIndexChanged1(object sender, EventArgs e)
-        {
-            DistModalLoad();
-        }
     }
 }
