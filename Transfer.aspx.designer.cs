@@ -123,13 +123,13 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlInputText ToSODrpSearch;
 
         /// <summary>
-        /// ApproveRowBtn control.
+        /// TransferBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ApproveRowBtn;
+        protected global::System.Web.UI.WebControls.Button TransferBtn;
 
         /// <summary>
         /// DistModal control.

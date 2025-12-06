@@ -136,10 +136,10 @@
             font-size: 14px;
         }
 
-            .ui-menu-item:hover {
-                background-color: #007bff;
-                color: white;
-            }
+        .ui-menu-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
 
         /* Hide any default message shown by jQuery UI */
         .ui-helper-hidden-accessible {
@@ -205,25 +205,25 @@
             margin-bottom: 20px;
         }
 
-            .loader::before, .loader::after {
-                content: "";
-                position: absolute;
-                border-radius: 50%;
-                animation: pulse 1.5s infinite ease-in-out;
-            }
+        .loader::before, .loader::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
 
-            .loader::before {
-                width: 80px;
-                height: 80px;
-                border: 6px solid #ff7eb3;
-            }
+        .loader::before {
+            width: 80px;
+            height: 80px;
+            border: 6px solid #ff7eb3;
+        }
 
-            .loader::after {
-                width: 60px;
-                height: 60px;
-                border: 6px solid #ff758c;
-                animation-delay: 0.75s;
-            }
+        .loader::after {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #ff758c;
+            animation-delay: 0.75s;
+        }
 
         @keyframes pulse {
             0% {
@@ -256,54 +256,60 @@
             /*margin-bottom: 1.5rem;*/
         }
 
-            .floating-label label {
-                position: absolute;
-                top: -0.6rem;
-                left: 0.75rem;
-                background: white;
-                padding: 0 4px;
-                font-size: 0.8rem;
-                color: #3f51b5;
-                z-index: 1;
-            }
+        .floating-label label {
+            position: absolute;
+            top: -0.6rem;
+            left: 0.75rem;
+            background: white;
+            padding: 0 4px;
+            font-size: 0.8rem;
+            color: #3f51b5;
+            z-index: 1;
+        }
 
-            .floating-label select,
-            .floating-label input,
-            .floating-label button,
-            .floating-label .aspNetDropDown {
-                width: 100%;
-                /* padding: 0.6rem 0.75rem; */
-                font-size: 1rem;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background-color: transparent;
-                /*appearance: none;*/
-                /*padding: 0.6rem 0.75rem;*/
-                position: relative;
-                z-index: 0;
-            }
+        .floating-label select,
+        .floating-label input,
+        .floating-label button,
+        .floating-label .aspNetDropDown {
+            width: 100%;
+            /* padding: 0.6rem 0.75rem; */
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: transparent;
+            /*appearance: none;*/
+            /*padding: 0.6rem 0.75rem;*/
+            position: relative;
+            z-index: 0;
+        }
 
-            .floating-label button {
-                text-align: left;
-            }
+        .floating-label button {
+            text-align: left;
+        }
 
-            /* Optional: prevent pointer cursor on readonly textbox */
-            .floating-label input[readonly] {
-                background-color: #f9f9f9;
-                cursor: default;
-            }
+        /* Optional: prevent pointer cursor on readonly textbox */
+        .floating-label input[readonly] {
+            background-color: #f9f9f9;
+            cursor: default;
+        }
 
-            .floating-label select:focus,
-            .floating-label select:not([value=""]) {
-                outline: none;
-            }
+        .floating-label select:focus,
+        .floating-label select:not([value=""]) {
+            outline: none;
+        }
 
-                .floating-label select:focus + label,
-                .floating-label select:not([value=""]) + label {
-                    top: -0.6rem;
-                    font-size: 0.8rem;
-                    color: #3f51b5;
-                }
+        .floating-label select:focus + label,
+        .floating-label select:not([value=""]) + label {
+            top: -0.6rem;
+            font-size: 0.8rem;
+            color: #3f51b5;
+        }
+
+        .disabled-red {
+            outline: 2px solid red !important;
+            box-shadow: 0 0 5px red !important;
+            cursor: not-allowed !important;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -436,7 +442,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-2 mb-md-0">
-                    <asp:Button ID="ApproveRowBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />
+                    <asp:Button ID="TransferBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />
                 </div>
             </div>
 
@@ -615,9 +621,9 @@
                         // Trigger SelectedIndexChanged of ZoneDrp
                         __doPostBack('<%= ZoneDrp.UniqueID %>', '');
 
-            return false;
-        }
-    });
+                        return false;
+                    }
+                });
             })();
 
             // --- FromSO autocomplete ---
@@ -699,22 +705,23 @@
 
         // Function to handle checkbox click
         function handleCheckboxClick(checkbox) {
-            // Get all checkboxes
             const checkboxes = document.querySelectorAll('.rowCheckbox');
 
-            // Count checked checkboxes
             const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
 
-            // Apply the logic to ensure at least one checkbox remains unchecked
             checkboxes.forEach(cb => {
                 if (!cb.checked && checkedCount === checkboxes.length - 1) {
-                    cb.disabled = true; // Disable the last unchecked checkbox
 
-                    // Show toast notification
+                    cb.disabled = true;
+                    cb.classList.add("disabled-red");  // highlight uncheckable
+
                     showToast("At least one Distributor will remain in Transfer case", "toast-danger");
 
                 } else {
-                    cb.disabled = false; // Enable others
+
+                    cb.disabled = false;
+                    cb.classList.remove("disabled-red");
+
                 }
             });
         }
@@ -724,11 +731,13 @@
             const checkboxes = document.querySelectorAll('.rowCheckbox');
 
             if (checkboxes.length === 1) {
-                // Disable the checkbox if there's only one checkbox in the modal
                 checkboxes[0].disabled = true;
+                checkboxes[0].classList.add("disabled-red");
             } else {
-                // Enable all checkboxes if there are multiple checkboxes
-                checkboxes.forEach(cb => cb.disabled = false);
+                checkboxes.forEach(cb => {
+                    cb.disabled = false;
+                    cb.classList.remove("disabled-red");
+                });
             }
         }
 
