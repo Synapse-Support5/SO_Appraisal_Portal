@@ -105,6 +105,24 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlButton btnOpenModal;
 
         /// <summary>
+        /// ToZoneLoadDrp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ToZoneLoadDrp;
+
+        /// <summary>
+        /// ToZoneLoadDrpSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText ToZoneLoadDrpSearch;
+
+        /// <summary>
         /// ToSODrp control.
         /// </summary>
         /// <remarks>

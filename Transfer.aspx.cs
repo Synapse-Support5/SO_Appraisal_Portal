@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
@@ -115,7 +116,9 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", "");
                 cmd1.Parameters.AddWithValue("@Area", "");
-                cmd1.Parameters.AddWithValue("@ZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromZoneName", "");
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -153,7 +156,9 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", "");
-                cmd1.Parameters.AddWithValue("@ZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromZoneName", "");
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -176,7 +181,7 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region ZoneLoad
+        #region FromZoneLoad
         public void ZoneLoad()
         {
             try
@@ -187,11 +192,13 @@ namespace SO_Appraisal
                 }
                 SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Dropdowns", con);
                 cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@ActionType", "ZoneLoad");
+                cmd1.Parameters.AddWithValue("@ActionType", "FromZoneLoad");
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@ZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromZoneName", "");
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -204,7 +211,7 @@ namespace SO_Appraisal
                 ZoneDrp.DataTextField = resdt.Columns["ZoneName"].ToString();
                 ZoneDrp.DataValueField = resdt.Columns["ZoneCode"].ToString();
                 ZoneDrp.DataBind();
-                ZoneDrp.Items.Insert(0, new ListItem("Zone", ""));
+                ZoneDrp.Items.Insert(0, new ListItem("From Zone", ""));
                 con.Close();
             }
             catch (Exception ex)
@@ -229,7 +236,9 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@FromZoneName", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", "");
                 cmd1.ExecuteNonQuery();
 
@@ -267,7 +276,9 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@FromZoneName", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
@@ -280,7 +291,7 @@ namespace SO_Appraisal
                 DistModal.DataBind();
                 con.Close();
 
-                if(resdt.Rows.Count == 1)
+                if (resdt.Rows.Count == 1)
                 {
                     showToast("At least one Distributor will remain in Transfer case", "toast-danger");
                 }
@@ -295,7 +306,47 @@ namespace SO_Appraisal
         #region SelectBtn_Click
         protected void SelectBtn_Click(object sender, EventArgs e)
         {
-            ToSOLoad();
+            ToZoneLoad();
+        }
+        #endregion
+
+        #region ToZoneLoad
+        public void ToZoneLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Dropdowns", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "ToZoneLoad");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@FromZoneName", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@DistCode", "");
+                cmd1.Parameters.AddWithValue("@ToZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromSOCode", "");
+                cmd1.ExecuteNonQuery();
+
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resdt.Rows.Clear();
+                da.Fill(resdt);
+                ToZoneLoadDrp.DataSource = resdt;
+                ToZoneLoadDrp.DataTextField = resdt.Columns["ZoneName"].ToString();
+                ToZoneLoadDrp.DataValueField = resdt.Columns["ZoneCode"].ToString();
+                ToZoneLoadDrp.DataBind();
+                ToZoneLoadDrp.Items.Insert(0, new ListItem("To Zone", ""));
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                showToast("An error occurred: " + ex.Message, "toast-danger");
+            }
         }
         #endregion
 
@@ -304,6 +355,20 @@ namespace SO_Appraisal
         {
             try
             {
+                List<string> checkedDists = new List<string>();
+
+                foreach (GridViewRow row in DistModal.Rows)
+                {
+                    HtmlInputCheckBox chkBox = (HtmlInputCheckBox)row.FindControl("CheckBox1");
+                    if (chkBox != null && chkBox.Checked)
+                    {
+                        string distCode = DistModal.DataKeys[row.RowIndex].Value.ToString();
+                        checkedDists.Add(distCode);
+                    }
+                }
+
+                string routes = string.Join(",", checkedDists);
+
                 if (con.State == ConnectionState.Closed)
                 {
                     con.Open();
@@ -314,7 +379,9 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@ZoneName", "");
+                cmd1.Parameters.AddWithValue("@FromZoneName", "");
+                cmd1.Parameters.AddWithValue("@DistCode", routes);
+                cmd1.Parameters.AddWithValue("@ToZoneName", ToZoneLoadDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
@@ -366,10 +433,15 @@ namespace SO_Appraisal
             DistModalLoad();
         }
 
+        protected void ToZoneLoadDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ToSOLoad();
+        }
+
 
 
         #endregion
 
-        
+
     }
 }

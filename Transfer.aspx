@@ -136,10 +136,10 @@
             font-size: 14px;
         }
 
-        .ui-menu-item:hover {
-            background-color: #007bff;
-            color: white;
-        }
+            .ui-menu-item:hover {
+                background-color: #007bff;
+                color: white;
+            }
 
         /* Hide any default message shown by jQuery UI */
         .ui-helper-hidden-accessible {
@@ -205,25 +205,25 @@
             margin-bottom: 20px;
         }
 
-        .loader::before, .loader::after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
+            .loader::before, .loader::after {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                animation: pulse 1.5s infinite ease-in-out;
+            }
 
-        .loader::before {
-            width: 80px;
-            height: 80px;
-            border: 6px solid #ff7eb3;
-        }
+            .loader::before {
+                width: 80px;
+                height: 80px;
+                border: 6px solid #ff7eb3;
+            }
 
-        .loader::after {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #ff758c;
-            animation-delay: 0.75s;
-        }
+            .loader::after {
+                width: 60px;
+                height: 60px;
+                border: 6px solid #ff758c;
+                animation-delay: 0.75s;
+            }
 
         @keyframes pulse {
             0% {
@@ -256,54 +256,54 @@
             /*margin-bottom: 1.5rem;*/
         }
 
-        .floating-label label {
-            position: absolute;
-            top: -0.6rem;
-            left: 0.75rem;
-            background: white;
-            padding: 0 4px;
-            font-size: 0.8rem;
-            color: #3f51b5;
-            z-index: 1;
-        }
+            .floating-label label {
+                position: absolute;
+                top: -0.6rem;
+                left: 0.75rem;
+                background: white;
+                padding: 0 4px;
+                font-size: 0.8rem;
+                color: #3f51b5;
+                z-index: 1;
+            }
 
-        .floating-label select,
-        .floating-label input,
-        .floating-label button,
-        .floating-label .aspNetDropDown {
-            width: 100%;
-            /* padding: 0.6rem 0.75rem; */
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: transparent;
-            /*appearance: none;*/
-            /*padding: 0.6rem 0.75rem;*/
-            position: relative;
-            z-index: 0;
-        }
+            .floating-label select,
+            .floating-label input,
+            .floating-label button,
+            .floating-label .aspNetDropDown {
+                width: 100%;
+                /* padding: 0.6rem 0.75rem; */
+                font-size: 1rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: transparent;
+                /*appearance: none;*/
+                /*padding: 0.6rem 0.75rem;*/
+                position: relative;
+                z-index: 0;
+            }
 
-        .floating-label button {
-            text-align: left;
-        }
+            .floating-label button {
+                text-align: left;
+            }
 
-        /* Optional: prevent pointer cursor on readonly textbox */
-        .floating-label input[readonly] {
-            background-color: #f9f9f9;
-            cursor: default;
-        }
+            /* Optional: prevent pointer cursor on readonly textbox */
+            .floating-label input[readonly] {
+                background-color: #f9f9f9;
+                cursor: default;
+            }
 
-        .floating-label select:focus,
-        .floating-label select:not([value=""]) {
-            outline: none;
-        }
+            .floating-label select:focus,
+            .floating-label select:not([value=""]) {
+                outline: none;
+            }
 
-        .floating-label select:focus + label,
-        .floating-label select:not([value=""]) + label {
-            top: -0.6rem;
-            font-size: 0.8rem;
-            color: #3f51b5;
-        }
+                .floating-label select:focus + label,
+                .floating-label select:not([value=""]) + label {
+                    top: -0.6rem;
+                    font-size: 0.8rem;
+                    color: #3f51b5;
+                }
 
         .disabled-red {
             outline: 2px solid red !important;
@@ -421,7 +421,7 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <button type="button" style="text-align: center;" class="form-control" id="btnOpenModal" runat="server" data-toggle="modal" data-target="#exampleModalCenter">
                             Distributor(s)
@@ -430,7 +430,18 @@
                         <asp:Label runat="server" Text="Distributor(s)" AssociatedControlID="btnOpenModal" />
                     </div>
                 </div>
-                <div class="col-6 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
+                        <asp:DropDownList ID="ToZoneLoadDrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control" OnSelectedIndexChanged="ToZoneLoadDrp_SelectedIndexChanged">
+                            <%--<asp:ListItem Text="Area" Value=""></asp:ListItem>--%>
+                        </asp:DropDownList>
+                        <%--<label for="ToSODrp">To SO</label>--%>
+                        <asp:Label runat="server" Text="To Zone" AssociatedControlID="ToZoneLoadDrp" />
+
+                        <input type="text" id="ToZoneLoadDrpSearch" runat="server" class="form-control" placeholder="Enter To Zone" />
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="ToSODrp" runat="server" AutoPostBack="true" Style="display: none;" class="form-control">
                             <asp:ListItem Text="To SO" Value=""></asp:ListItem>
@@ -441,13 +452,13 @@
                         <input type="text" id="ToSODrpSearch" runat="server" class="form-control" placeholder="Enter To SO" />
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-2 mb-md-0">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <asp:Button ID="TransferBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />
                 </div>
             </div>
 
             <div class="row mt-3">
-                <div class="col-4 col-md-4 mb-2 mb-md-0">
+                <div class="col-4 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <%-- <asp:DropDownList ID="ECOMRtrDrp" runat="server" AutoPostBack="true" class="form-control" onchange="showLoader(); this.form.submit();">
                             <asp:ListItem Text="ECOM Chain Group" Value=""></asp:ListItem>
@@ -499,7 +510,7 @@
                             </div>
                             <div class="form-group">
                                 <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
-                                    AutoGenerateColumns="false" DataKeyNames="" Style="margin-bottom: -18px; text-align: center">
+                                    AutoGenerateColumns="false" DataKeyNames="distcode" Style="margin-bottom: -18px; text-align: center">
                                     <Columns>
                                         <asp:TemplateField>
                                             <ItemTemplate>
@@ -510,6 +521,7 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
 
+                                        <asp:BoundField DataField="distCode" HeaderText="Dist. Code" Visible="false" />
                                         <asp:BoundField DataField="DistName" HeaderText="Distibutor" />
                                     </Columns>
                                     <HeaderStyle CssClass="header-hidden" />
@@ -679,6 +691,35 @@
                         ddl.val(ui.item.value);
                         // 🔴 this is what fires ToSODrp_SelectedIndexChanged
                         __doPostBack('<%= ToSODrp.UniqueID %>', '');
+                        return false;
+                    }
+                });
+            })();
+
+            // --- To Zone autocomplete ---
+            (function () {
+                var ddl = $('#<%= ToZoneLoadDrp.ClientID %>');
+                var searchBox = $('#<%= ToZoneLoadDrpSearch.ClientID %>');
+
+                var options = [];
+                ddl.find("option").each(function () {
+                    var text = $(this).text();
+                    var value = $(this).val();
+                    if (value) {
+                        options.push({ label: text, value: value });
+                    }
+                });
+
+                searchBox.autocomplete({
+                    source: options,
+                    minLength: 1,
+                    select: function (event, ui) {
+                        searchBox.val(ui.item.label);
+                        ddl.val(ui.item.value);
+
+                        // Trigger SelectedIndexChanged of ToZoneLoadDrp
+                        __doPostBack('<%= ToZoneLoadDrp.UniqueID %>', '');
+
                         return false;
                     }
                 });
