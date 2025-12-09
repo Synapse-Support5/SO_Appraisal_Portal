@@ -17,6 +17,8 @@ namespace SO_Appraisal
         DataTable dt = new DataTable();
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
+        
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -96,7 +98,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -136,7 +138,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -176,7 +178,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -216,7 +218,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -256,7 +258,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -298,7 +300,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -345,7 +347,7 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
             }
         }
         #endregion
@@ -367,7 +369,8 @@ namespace SO_Appraisal
                     }
                 }
 
-                string routes = string.Join(",", checkedDists);
+                string dists = string.Join(",", checkedDists);
+                ViewState["dists"] = dists;
 
                 if (con.State == ConnectionState.Closed)
                 {
@@ -380,7 +383,7 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@FromZoneName", "");
-                cmd1.Parameters.AddWithValue("@DistCode", routes);
+                cmd1.Parameters.AddWithValue("@DistCode", dists);
                 cmd1.Parameters.AddWithValue("@ToZoneName", ToZoneLoadDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
@@ -399,7 +402,129 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                showToast("An error occurred: " + ex.Message, "toast-danger");
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region UploFileBtn_Click
+        protected void SaveModalUploFileBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
+
+                if (!FileUpload_Id.HasFile)
+                {
+                    showToast("Please select a file to upload.", "toast-danger");
+                    return;
+                }
+
+                string ext = System.IO.Path.GetExtension(FileUpload_Id.FileName).ToLowerInvariant();
+                string[] allowed = { ".msg", ".mht", ".eml", ".jpg", ".jpeg", ".png", ".pdf" };
+
+                if (!allowed.Contains(ext))
+                {
+                    showToast("Invalid file type. Allowed: .msg, .mht, .eml, .jpg, .jpeg, .png, .pdf", "toast-danger");
+                    return;
+                }
+
+                // choose your upload path
+                string folder = Server.MapPath("~/Uploads/TransferProof/");
+                if (!System.IO.Directory.Exists(folder))
+                {
+                    System.IO.Directory.CreateDirectory(folder);
+                }
+
+                string fileName = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + FileUpload_Id.FileName;
+                string fullPath = System.IO.Path.Combine(folder, fileName);
+
+                FileUpload_Id.SaveAs(fullPath);
+
+                // store relative path for use later (e.g., in db)
+                string relativePath = "~/Uploads/TransferProof/" + fileName;
+                string virtualPath = "/Uploads/TransferProof/" + fileName;
+                ViewState["attachmentPath"] = virtualPath;
+
+                DataTable dt = FilesTable;
+                DataRow row = dt.NewRow();
+                row["FileName"] = FileUpload_Id.FileName;
+                row["FilePath"] = relativePath;
+                dt.Rows.Add(row);
+
+                BindFilesGrid();
+
+                showToast("File added successfully.", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region gvFiles_RowCommand
+        protected void gvFiles_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DeleteFile")
+            {
+                string filePath = e.CommandArgument.ToString();
+
+                DataTable dt = FilesTable;
+                DataRow[] rows = dt.Select($"FilePath = '{filePath.Replace("'", "''")}'");
+                foreach (DataRow r in rows)
+                {
+                    dt.Rows.Remove(r);
+                }
+
+                // delete physical file if needed
+                string physical = Server.MapPath(filePath);
+                if (System.IO.File.Exists(physical))
+                {
+                    System.IO.File.Delete(physical);
+                }
+
+                BindFilesGrid();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
+                showToast("File removed successfully.", "toast-success");
+            }
+        }
+
+        private DataTable FilesTable
+        {
+            get
+            {
+                if (Session["UploadedFiles"] == null)
+                {
+                    DataTable dt = new DataTable();
+                    dt.Columns.Add("FileName", typeof(string));
+                    dt.Columns.Add("FilePath", typeof(string)); // physical or virtual path
+                    Session["UploadedFiles"] = dt;
+                }
+                return (DataTable)Session["UploadedFiles"];
+            }
+        }
+
+        public void BindFilesGrid()
+        {
+            try
+            {
+                if (FilesTable.Rows.Count > 0)
+                {
+                    FileUploadDiv.Visible = false;
+                }
+                else
+                {
+                    FileUploadDiv.Visible = true;
+                }
+
+                gvFiles.DataSource = FilesTable;
+                gvFiles.DataBind();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         #endregion
@@ -441,6 +566,52 @@ namespace SO_Appraisal
 
 
         #endregion
+
+
+
+        protected void TestBtn_Click(object sender, EventArgs e)
+        {
+            showToast("Toast is working fine", "toast-success");
+        }
+
+        protected void Transfer_Submit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string dists = ViewState["dists"] as string ?? string.Empty;
+                string virtualPath = ViewState["attachmentPath"] as string ?? string.Empty;
+
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Newlogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "TransferClick");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@DistCode", dists);
+                cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@ToSOCode", ToSODrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@FromZone", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@ToZone", ToZoneLoadDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@Reason", txtRemarks.Text);
+                cmd1.Parameters.AddWithValue("@Attachment", virtualPath);
+                cmd1.Parameters.AddWithValue("@Status", "Pending for Approval");
+                cmd1.Parameters.AddWithValue("@LogFor", "Transfer");
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+
+                showToast("Distributor(s) Transferred Successfully!", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
     }

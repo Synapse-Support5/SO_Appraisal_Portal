@@ -453,7 +453,11 @@
                     </div>
                 </div>
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
-                    <asp:Button ID="TransferBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />
+                    <button type="button" style="text-align: center;" class="form-control btn btn-success" id="TransferBtn" runat="server" data-toggle="modal" data-target="#transferModalCenter">
+                        Transfer
+                    </button>
+                    <%--<asp:Button ID="TransferBtn" runat="server" Text="Transfer" CssClass="btn btn-success" OnClientClick="transferAlert(); return false;" />--%>
+                    <%--<asp:Button ID="TransferBtn" runat="server" Text="Transfer" CssClass="form-control btn btn-success" OnClientClick="showLoader()" />--%>
                 </div>
             </div>
 
@@ -539,6 +543,114 @@
                 </div>
             </div>
 
+            <%-- Modal for Transfer --%>
+            <div class="modal fade" id="transferModalCenter" tabindex="-1" role="dialog" aria-labelledby="transferModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="transferModalLongTitle">Confirmation Dialog</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body py-2 px-0">
+                            <%-- no left/right padding --%>
+                            <div class="px-3">
+                                <%-- small inner padding to keep things neat --%>
+
+                                <!-- File upload + button in same row -->
+                                <div class="form-group mb-2 py-2 px-0" id="FileUploadDiv" runat="server" visible="true">
+                                    <div class="input-group">
+                                        <asp:FileUpload ID="FileUpload_Id" runat="server"
+                                            CssClass="form-control file-upload-input"
+                                            accept=".mht,.msg,.eml,.jpg,.jpeg,.png,.pdf" />
+                                        <div class="input-group-append">
+                                            <asp:LinkButton ID="btnUpload" runat="server"
+                                                CssClass="btn btn-outline-info ml-1"
+                                                OnClick="SaveModalUploFileBtn_Click"
+                                                OnClientClick="showLoader()">
+                                                    <i class="bi bi-upload"></i>
+                                            </asp:LinkButton>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Grid of uploaded files -->
+                                <div class="form-group mb-3">
+                                    <asp:GridView ID="gvFiles" runat="server" AutoGenerateColumns="False"
+                                        CssClass="table table-bordered table-sm mb-0"
+                                        DataKeyNames="FilePath"
+                                        OnRowCommand="gvFiles_RowCommand" style="text-align:center;">
+                                        <Columns>
+                                           <%-- <asp:TemplateField HeaderText="#">
+                                                <ItemTemplate>
+                                                    <%# Container.DataItemIndex + 1 %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>--%>
+
+                                            <asp:BoundField DataField="FileName" HeaderText="File Name" />
+
+                                            <asp:TemplateField HeaderText="Action">
+                                                <ItemTemplate>
+                                                    <asp:LinkButton ID="lnkDelete" runat="server"
+                                                        CommandName="DeleteFile"
+                                                        CommandArgument='<%# Eval("FilePath") %>'
+                                                        CssClass="btn btn-outline-danger ml-1">
+                                                            <i class="bi bi-trash"></i>
+                                                    </asp:LinkButton>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+
+                                <!-- Remarks -->
+                                <div class="form-group mb-0">
+                                    <asp:TextBox ID="txtRemarks" runat="server"
+                                        CssClass="form-control text-left"
+                                        TextMode="MultiLine"
+                                        Rows="1"
+                                        placeholder="Write a valid reason here..." />
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <asp:Button ID="Transfer_Submit" runat="server" Text="Transfer" CssClass="btn btn-success" OnClick="Transfer_Submit_Click" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <%--Alert--%>
+            <%--<div class="container">
+                <div class="row mt-3">
+                    <div class="alert alert-success alert-box" role="alert" id="TransferAlert" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="alert-heading">Transfer Alert!</h4>
+                            <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <hr />
+                        <p class="mb-0">Do you want to Approve?</p>
+                        <asp:FileUpload ID="FileUpload1" runat="server" CssClass="form-control file-upload-input border-right" accept=".mht, .msg"
+                            Style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; width: 85%; margin-right: 5px;" />
+                        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="btn btn-outline-info"
+                            OnClick="SaveModalUploFileBtn_Click" OnClientClick="showLoader()" Style="border-top-left-radius: 0; border-bottom-left-radius: 0; width: 15%;">
+    <i class="bi bi-upload"></i>
+                        </asp:LinkButton>
+                        <div class="alert-footer mt-3 d-flex justify-content-end">
+                            <asp:Button ID="TestBtn" runat="server" Text="Test" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="TestBtn_Click" />
+                            <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>--%>
         </div>
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
         <asp:HiddenField ID="hdnBusinessType" runat="server" />
@@ -785,6 +897,21 @@
         // Ensure proper checkbox state on modal open
         window.onload = function () {
             setCheckboxState();
+        }
+    </script>
+
+    <%--script to handle alert--%>
+    <script>
+        function openTransferModal() {
+            $('#transferModalCenter').modal('show');
+        }
+
+        function transferAlert() {
+            document.getElementById("TransferAlert").style.display = "block";
+        }
+
+        function hideAlert() {
+            document.getElementById("TransferAlert").style.display = "none";
         }
     </script>
 

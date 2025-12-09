@@ -147,7 +147,7 @@ namespace SO_Appraisal
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button TransferBtn;
+        protected global::System.Web.UI.HtmlControls.HtmlButton TransferBtn;
 
         /// <summary>
         /// DistModal control.
@@ -166,6 +166,60 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button SelectBtn;
+
+        /// <summary>
+        /// FileUploadDiv control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl FileUploadDiv;
+
+        /// <summary>
+        /// FileUpload_Id control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload FileUpload_Id;
+
+        /// <summary>
+        /// btnUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnUpload;
+
+        /// <summary>
+        /// gvFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvFiles;
+
+        /// <summary>
+        /// txtRemarks control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRemarks;
+
+        /// <summary>
+        /// Transfer_Submit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Transfer_Submit;
 
         /// <summary>
         /// hdnBusinessType control.
