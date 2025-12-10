@@ -529,6 +529,47 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region Transfer_Submit_Click
+        protected void Transfer_Submit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string dists = ViewState["dists"] as string ?? string.Empty;
+                string virtualPath = ViewState["attachmentPath"] as string ?? string.Empty;
+
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Newlogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "TransferClick");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@DistCode", dists);
+                cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@ToSOCode", ToSODrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@FromZone", ZoneDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@ToZone", ToZoneLoadDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@Reason", txtRemarks.Text);
+                cmd1.Parameters.AddWithValue("@Attachment", virtualPath);
+                cmd1.Parameters.AddWithValue("@Status", "Pending for Approval");
+                cmd1.Parameters.AddWithValue("@LogFor", "Transfer");
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+
+                showToast("Distributor(s) Transferred Successfully!", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
         #region ToastNotification
         private void showToast(string message, string styleClass)
         {
@@ -574,44 +615,7 @@ namespace SO_Appraisal
             showToast("Toast is working fine", "toast-success");
         }
 
-        protected void Transfer_Submit_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string dists = ViewState["dists"] as string ?? string.Empty;
-                string virtualPath = ViewState["attachmentPath"] as string ?? string.Empty;
-
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Newlogic", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@ActionType", "TransferClick");
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@DistCode", dists);
-                cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@ToSOCode", ToSODrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@FromZone", ZoneDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@ToZone", ToZoneLoadDrp.SelectedItem.ToString());
-                cmd1.Parameters.AddWithValue("@Reason", txtRemarks.Text);
-                cmd1.Parameters.AddWithValue("@Attachment", virtualPath);
-                cmd1.Parameters.AddWithValue("@Status", "Pending for Approval");
-                cmd1.Parameters.AddWithValue("@LogFor", "Transfer");
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-
-                showToast("Distributor(s) Transferred Successfully!", "toast-success");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        
 
 
     }

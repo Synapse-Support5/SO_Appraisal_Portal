@@ -402,9 +402,9 @@
                             <%--<asp:ListItem Text="Area" Value=""></asp:ListItem>--%>
                         </asp:DropDownList>
                         <%--<label for="ToSODrp">To SO</label>--%>
-                        <asp:Label runat="server" Text="Zone" AssociatedControlID="ZoneDrp" />
+                        <asp:Label runat="server" Text="From Zone" AssociatedControlID="ZoneDrp" />
 
-                        <input type="text" id="ZoneDrpSearch" runat="server" class="form-control" placeholder="Enter Zone" />
+                        <input type="text" id="ZoneDrpSearch" runat="server" class="form-control" placeholder="Enter From Zone" />
                     </div>
                 </div>
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
