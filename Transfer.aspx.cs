@@ -17,7 +17,7 @@ namespace SO_Appraisal
         DataTable dt = new DataTable();
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
-        
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -98,7 +98,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("Access load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -138,7 +139,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("State Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -178,7 +180,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("Area Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -218,7 +221,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("From Zone Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -258,7 +262,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("From SOLoad Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -300,7 +305,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("Distributor Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -347,7 +353,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("To ZoneLoad Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -402,7 +409,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("To SOLoad Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -458,7 +466,8 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("File Upload Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
         #endregion
@@ -565,17 +574,10 @@ namespace SO_Appraisal
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogError("Transfer Submit Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
-        #endregion
-
-        #region ToastNotification
-        private void showToast(string message, string styleClass)
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
-        }
-
         #endregion
 
         #region SelectedIndexChanged
@@ -608,6 +610,42 @@ namespace SO_Appraisal
 
         #endregion
 
+        #region ToastNotification
+        private void showToast(string message, string styleClass)
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
+        }
+
+        #endregion
+
+        #region LogError
+        private void LogError(string message, Exception ex)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
+                cmd1.Parameters.AddWithValue("@Page", "Transfer");
+                cmd1.Parameters.AddWithValue("@Message", message);
+                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch
+            {
+            }
+        }
+        #endregion
+
+
 
 
         protected void TestBtn_Click(object sender, EventArgs e)
@@ -615,7 +653,7 @@ namespace SO_Appraisal
             showToast("Toast is working fine", "toast-success");
         }
 
-        
+
 
 
     }

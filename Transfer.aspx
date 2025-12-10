@@ -73,26 +73,6 @@
             overflow: auto;
         }
 
-        /* Container for the progress bar */
-        .progress-bar-container {
-            width: 100%; /* Makes the container take up the full width */
-            /*max-width: 600px;*/ /* Optional: sets a maximum width for larger screens */
-            background-color: #e0e0e0;
-            border-radius: 0px;
-            overflow: hidden;
-            position: relative;
-            margin-top: -20px; /* Adjusts spacing from the <hr /> */
-            margin-bottom: 20px; /* Optional: adds some space after the progress bar */
-        }
-
-        /* The animated progress bar */
-        .progress-bar {
-            height: 5px;
-            background: linear-gradient(to right, #4caf50, #81c784, #4caf50); /* Green gradient */
-            width: 0%; /* Starts from 0% width */
-            animation: progress-animation 2s infinite; /* Animation for progress effect */
-        }
-
         /* Keyframes for progress animation */
         @keyframes progress-animation {
             0% {
@@ -173,16 +153,6 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 1049; /* Just below the alert */
         }
-
-        /*body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(to right, #ece9e6, #ffffff);
-            font-family: Arial, sans-serif;
-        }*/
 
         .loader-container {
             display: none; /* Initially hidden */
@@ -618,7 +588,7 @@
 
 
                         <div class="modal-footer">
-                            <asp:Button ID="Transfer_Submit" runat="server" Text="Transfer" CssClass="btn btn-success" OnClick="Transfer_Submit_Click" />
+                            <asp:Button ID="Transfer_Submit" runat="server" Text="Transfer" CssClass="btn btn-success" OnClick="Transfer_Submit_Click" OnClientClick="showLoader()" />
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
