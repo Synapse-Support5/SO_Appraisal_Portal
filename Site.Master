@@ -143,7 +143,7 @@
                     <a class="nav-link" runat="server" href="~/Transfer">Transfer</a>
                     <a class="nav-link" runat="server" href="~/PendingApprovals">Transfer Pending Approvals
                         <span id="BadgeLabel" runat="server" class="badge badge-primary btn btn-outline-primary ml-1"
-                            style="border-radius: 50%; display: none; font-weight:lighter;">0
+                            style="border-radius: 50%; display: none; width:20px;">0
                         </span>
                     </a>
                 </li>
