@@ -389,6 +389,7 @@
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnRowApprove" runat="server"
                                             CssClass="btn btn-outline-success ml-1"
+                                            CommandArgument='<%# Eval("RequestId")%>'
                                             OnClientClick="showLoader()"
                                             OnClick="btnRowApprove_Click"
                                             ToolTip="Approve">
@@ -400,6 +401,7 @@
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnRowReject" runat="server"
                                             CssClass="btn btn-outline-danger ml-1"
+                                            CommandArgument='<%# Eval("RequestId")%>'
                                             OnClientClick="showLoader()"
                                             OnClick="btnRowReject_Click"
                                             ToolTip="Reject">
