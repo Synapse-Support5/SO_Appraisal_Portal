@@ -337,6 +337,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="grid-wrapper">
+                        <asp:Label ID="GridStatusLabel" runat="server"></asp:Label>
                         <asp:GridView ID="PendingApprovalsGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
                             Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId" OnRowCommand="PendingApprovalsGrid_RowCommand">
                             <Columns>
@@ -387,8 +388,6 @@
                                 <asp:TemplateField HeaderText="Approve">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnRowApprove" runat="server"
-                                            CommandName="ApproveRow"
-                                            CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-success ml-1"
                                             OnClientClick="showLoader()"
                                             OnClick="btnRowApprove_Click"
@@ -400,8 +399,6 @@
                                 <asp:TemplateField HeaderText="Reject">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnRowReject" runat="server"
-                                            CommandName="RejectRow"
-                                            CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-danger ml-1"
                                             OnClientClick="showLoader()"
                                             OnClick="btnRowReject_Click"
@@ -416,7 +413,7 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
+            <div class="row mt-3" id="ButtonsDiv" runat="server" visible="true">
                 <div class="d-flex justify-content-end gap-2 w-100">
                     <asp:Button ID="ApproveSelectedBtn" runat="server" Text="Approve Selected" CssClass="btn btn-outline-success"
                         OnClientClick="showLoader()" OnClick="ApproveSelectedBtn_Click"/>
