@@ -33,13 +33,31 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView PendingApprovalsGrid;
 
         /// <summary>
-        /// testTabel control.
+        /// ApproveSelectedBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label testTabel;
+        protected global::System.Web.UI.WebControls.Button ApproveSelectedBtn;
+
+        /// <summary>
+        /// RejectSelectedBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button RejectSelectedBtn;
+
+        /// <summary>
+        /// DistModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView DistModal;
 
         /// <summary>
         /// hdnBusinessType control.
@@ -67,5 +85,19 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfSelectedRowData;
+
+        /// <summary>
+        /// Master property.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated property.
+        /// </remarks>
+        public new SO_Appraisal.SiteMaster Master
+        {
+            get
+            {
+                return ((SO_Appraisal.SiteMaster)(base.Master));
+            }
+        }
     }
 }

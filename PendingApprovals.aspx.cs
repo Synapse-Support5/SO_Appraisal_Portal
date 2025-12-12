@@ -48,17 +48,6 @@ namespace SO_Appraisal
                         Session["name"] = remoteUser;
                     }
 
-                    var name = Session["name"]?.ToString().Trim().ToUpper();
-                    if (name == "G116036" || name == "G112377" || name == "SY12108G" || name == "G115193")
-                    {
-                        //isDev = true;
-                        Session["isDev"] = true;
-                    }
-                    else
-                    {
-                        Session["isDev"] = false;
-                    }
-
                     if (!string.IsNullOrEmpty(Session["name"]?.ToString()))
                     {
                         if (con.State == ConnectionState.Closed)
@@ -126,7 +115,15 @@ namespace SO_Appraisal
                 resdt.Rows.Clear();
                 da.Fill(resdt);
 
-                if (resdt.Rows.Count > 0)
+                int pendingCount = resdt.Rows.Count;
+
+                var siteMaster = this.Master as SO_Appraisal.SiteMaster;
+                if (siteMaster != null)
+                {
+                    siteMaster.SetPendingCount(pendingCount);
+                }
+
+                if (pendingCount > 0)
                 {
                     PendingApprovalsGrid.DataSource = resdt;
                     PendingApprovalsGrid.DataBind();
@@ -192,7 +189,36 @@ namespace SO_Appraisal
                 string[] CommandArgument = btn.CommandArgument.Split(',');
                 int CommandCPRequestId = Convert.ToInt32(CommandArgument[0]);
 
-                testTabel.Text = CommandCPRequestId.ToString();
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_PendingApprovals", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@ActionType", "ViewGridLoad");
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@RequestId", CommandCPRequestId);
+
+                cmd1.ExecuteNonQuery();
+
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resdt.Rows.Clear();
+                da.Fill(resdt);
+
+                if (resdt.Rows.Count > 0)
+                {
+                    DistModal.DataSource = resdt;
+                    DistModal.DataBind();
+                }
+                else
+                {
+                    DistModal.DataSource = null;
+                    DistModal.DataBind();
+                }
+
+                con.Close();
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
             }
@@ -255,6 +281,30 @@ namespace SO_Appraisal
             }
         }
 
+        protected void RejectSelectedBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                showToast("Approve selected button is working fine", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                LogError("Rejected Selected Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
 
+        protected void ApproveSelectedBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                showToast("Rejected selected button is working fine", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                LogError("Approve Selected Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
     }
 }

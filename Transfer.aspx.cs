@@ -33,7 +33,7 @@ namespace SO_Appraisal
         {
             try
             {
-                string remoteUser = "G116036";
+                string remoteUser = "G112377";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
 
                 if (!string.IsNullOrEmpty(remoteUser))
@@ -552,9 +552,8 @@ namespace SO_Appraisal
                 }
                 SqlCommand cmd1 = new SqlCommand("SP_SOApp_Transfer_Newlogic", con);
                 cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@ActionType", "TransferClick");
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@State", StateDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@DistCode", dists);
                 cmd1.Parameters.AddWithValue("@FromSOCode", FromSODrp.SelectedValue);

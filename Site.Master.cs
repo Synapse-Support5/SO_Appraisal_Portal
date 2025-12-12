@@ -13,5 +13,22 @@ namespace SO_Appraisal
         {
 
         }
+
+        public void SetPendingCount(int count)
+        {
+            if (BadgeLabel != null)
+            {
+                if (count > 0)
+                {
+                    BadgeLabel.InnerText = count.ToString();
+                    BadgeLabel.Style["display"] = "inline-block";
+                }
+                else
+                {
+                    BadgeLabel.InnerText = "0";
+                    BadgeLabel.Style["display"] = "none";
+                }
+            }
+        }
     }
 }

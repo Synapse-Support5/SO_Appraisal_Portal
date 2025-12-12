@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="PendingApprovals" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="PendingApprovals.aspx.cs" Inherits="SO_Appraisal.PendingApprovals" %>
+<%@ MasterType VirtualPath="~/Site.Master" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
     <link href="Content/bootstrap.css" rel="stylesheet" />
@@ -371,7 +372,7 @@
                                         </asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="View">
+                                <asp:TemplateField HeaderText="Distributor(s)">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnViewThisRequest" runat="server"
                                             CssClass="btn btn-outline-info ml-1"
@@ -389,6 +390,7 @@
                                             CommandName="ApproveRow"
                                             CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-success ml-1"
+                                            OnClientClick="showLoader()"
                                             ToolTip="Approve">
                                                 <i class="bi bi-check2-square"></i>
                                         </asp:LinkButton>
@@ -400,14 +402,25 @@
                                             CommandName="RejectRow"
                                             CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-danger ml-1"
+                                            OnClientClick="showLoader()"
                                             ToolTip="Reject">
-                                                   <i class="bi bi-x-square"></i>
+                                                   <i class="bi bi-x-lg"></i>
                                         </asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                     </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="d-flex justify-content-end gap-2 w-100">
+                    <asp:Button ID="ApproveSelectedBtn" runat="server" Text="Approve Selected" CssClass="btn btn-outline-success"
+                        OnClientClick="showLoader()" OnClick="ApproveSelectedBtn_Click"/>
+
+                    <asp:Button ID="RejectSelectedBtn" runat="server" Text="Reject Selected" CssClass="btn btn-outline-danger ms-2"
+                        OnClientClick="showLoader()" OnClick="RejectSelectedBtn_Click" />
                 </div>
             </div>
 
@@ -423,29 +436,19 @@
                             </button>
                         </div>
                         <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                            <div class="form-group d-flex justify-content-center align-items-center">
+                            <%--<div class="form-group d-flex justify-content-center align-items-center">
                                 <input type="text" id="txtSearch" class="form-control" placeholder="Search..." />
-                            </div>
+                            </div>--%>
                             <div class="form-group">
-                                <asp:Label ID="testTabel" runat="server"></asp:Label>
-                                <%--<asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
+                                <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
                                     AutoGenerateColumns="false" DataKeyNames="distcode" Style="margin-bottom: -18px; text-align: center">
                                     <Columns>
-                                        <asp:TemplateField>
-                                            <ItemTemplate>
-                                                <div style="margin-right: 10px;">
-                                                    <input type="checkbox" id="CheckBox1" runat="server" class="form-check-input rowCheckbox" style="margin-left: -3px;"
-                                                        onclick="handleCheckboxClick(this)" />
-                                                </div>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-
-                                        <asp:BoundField DataField="distCode" HeaderText="Dist. Code" Visible="false" />
-                                        <asp:BoundField DataField="DistName" HeaderText="Distibutor" />
+                                        <asp:BoundField DataField="DistCode" HeaderText="Dist. Code" />
+                                        <asp:BoundField DataField="DistNm" HeaderText="Distibutor Name" />
                                     </Columns>
                                     <HeaderStyle CssClass="header-hidden" />
                                     <RowStyle CssClass="fixed-height-row" BackColor="#FFFFFF" />
-                                </asp:GridView>--%>
+                                </asp:GridView>
                             </div>
                         </div>
 
