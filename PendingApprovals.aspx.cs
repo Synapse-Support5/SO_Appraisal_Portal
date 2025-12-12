@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
@@ -229,6 +230,138 @@ namespace SO_Appraisal
             }
         }
 
+        protected void btnRowApprove_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LinkButton btn = (LinkButton)sender;
+                string[] CommandArgument = btn.CommandArgument.Split(',');
+                int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
+
+                DataSet ds = ApproveReject(CommandRequestId, "Approved");
+
+                // If dataset is empty -> SP/DB failure
+                if (ds == null || ds.Tables.Count == 0)
+                {
+                    LogError("ApproveReject returned no resultset", null);
+                    showToast("Something went wrong while processing. Please try again later.", "toast-danger");
+                    return;
+                }
+
+                // First resultset = per-dist details
+                DataTable details = ds.Tables[0];
+
+                // Optionally second resultset = summary counts
+                DataTable summary = ds.Tables.Count > 1 ? ds.Tables[1] : null;
+
+                // Check for any errors in the detailed results
+                var errorRows = details.AsEnumerable()
+                                       .Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase))
+                                       .ToList();
+
+                if (errorRows.Any())
+                {
+                    // Build a compact error message: show first N errors + count
+                    int showMax = 3;
+                    var firstErrors = errorRows.Take(showMax)
+                                              .Select(r => $"{r.Field<string>("DistCode")}: {r.Field<string>("ResultMsg")}");
+                    string msg = $"Errors for {errorRows.Count} distributor(s): {string.Join("; ", firstErrors)}";
+                    if (errorRows.Count > showMax) msg += $" ...(+{errorRows.Count - showMax} more)";
+
+                    showToast(msg, "toast-danger");
+                    return;
+                }
+
+                // Otherwise success (no errors). Summarize actions
+                int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
+                int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
+                int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
+                int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
+
+                // Compose a friendly success message
+                var parts = new List<string>();
+                if (inserted > 0) parts.Add($"{inserted} inserted");
+                if (activated > 0) parts.Add($"{activated} activated");
+                if (updated > 0) parts.Add($"{updated} updated");
+                if (noInsert > 0) parts.Add($"{noInsert} marked");
+
+                string successMsg = parts.Count > 0 ? $"Success: {string.Join(", ", parts)}." : "Request processed successfully.";
+                showToast(successMsg, "toast-success");
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Approve row wise Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+
+        protected void btnRowReject_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LinkButton btn = (LinkButton)sender;
+                string[] CommandArgument = btn.CommandArgument.Split(',');
+                int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
+
+                DataSet ds = ApproveReject(CommandRequestId, "Rejected");
+
+                // If dataset is empty -> SP/DB failure
+                if (ds == null || ds.Tables.Count == 0)
+                {
+                    LogError("ApproveReject returned no resultset", null);
+                    showToast("Something went wrong while processing. Please try again later.", "toast-danger");
+                    return;
+                }
+
+                // First resultset = per-dist details
+                DataTable details = ds.Tables[0];
+
+                // Optionally second resultset = summary counts
+                DataTable summary = ds.Tables.Count > 1 ? ds.Tables[1] : null;
+
+                // Check for any errors in the detailed results
+                var errorRows = details.AsEnumerable()
+                                       .Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase))
+                                       .ToList();
+
+                if (errorRows.Any())
+                {
+                    // Build a compact error message: show first N errors + count
+                    int showMax = 3;
+                    var firstErrors = errorRows.Take(showMax)
+                                              .Select(r => $"{r.Field<string>("DistCode")}: {r.Field<string>("ResultMsg")}");
+                    string msg = $"Errors for {errorRows.Count} distributor(s): {string.Join("; ", firstErrors)}";
+                    if (errorRows.Count > showMax) msg += $" ...(+{errorRows.Count - showMax} more)";
+
+                    showToast(msg, "toast-danger");
+                    return;
+                }
+
+                // Otherwise success (no errors). Summarize actions
+                int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
+                int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
+                int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
+                int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
+
+                // Compose a friendly success message
+                var parts = new List<string>();
+                if (inserted > 0) parts.Add($"{inserted} inserted");
+                if (activated > 0) parts.Add($"{activated} activated");
+                if (updated > 0) parts.Add($"{updated} updated");
+                if (noInsert > 0) parts.Add($"{noInsert} marked");
+
+                string successMsg = parts.Count > 0 ? $"Success: {string.Join(", ", parts)}." : "Request processed successfully.";
+                showToast(successMsg, "toast-success");
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Reject row wise Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+
         protected void PendingApprovalsGrid_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "DownloadAttachment")
@@ -298,7 +431,18 @@ namespace SO_Appraisal
         {
             try
             {
-                showToast("Rejected selected button is working fine", "toast-success");
+                foreach (GridViewRow row in PendingApprovalsGrid.Rows)
+                {
+                    HtmlInputCheckBox chkBox = (HtmlInputCheckBox)row.FindControl("CheckBox1");
+                    if (chkBox != null && chkBox.Checked)
+                    {
+                        int requestId = Convert.ToInt32(row.Cells[1].Text);
+
+                        ApproveReject(requestId, "Approved");
+                    }
+                }
+                showToast("", "toast-success"); // success
+                showToast("", "toast-danger"); //danger
             }
             catch (Exception ex)
             {
@@ -306,5 +450,44 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+
+        public DataSet ApproveReject(int requestId, string approveRejected)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_ApproveReject_Newlogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@RequestId", requestId);
+                cmd1.Parameters.AddWithValue("@ApproveReject", approveRejected);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                ds.Clear();
+                da.Fill(ds);
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("Approve/Rejected Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+
+            return ds;
+        }
+
+        
+
+        
+
+
+
+
     }
 }

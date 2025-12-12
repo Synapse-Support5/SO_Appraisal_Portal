@@ -459,7 +459,7 @@ namespace SO_Appraisal
                 row["FileName"] = FileUpload_Id.FileName;
                 row["FilePath"] = relativePath;
                 dt.Rows.Add(row);
-
+                FilesTable = dt;
                 BindFilesGrid();
 
                 showToast("File added successfully.", "toast-success");
@@ -513,6 +513,10 @@ namespace SO_Appraisal
                 }
                 return (DataTable)Session["UploadedFiles"];
             }
+            set
+            {
+                ViewState["FilesTable"] = value;
+            }
         }
 
         public void BindFilesGrid()
@@ -546,6 +550,54 @@ namespace SO_Appraisal
                 string dists = ViewState["dists"] as string ?? string.Empty;
                 string virtualPath = ViewState["attachmentPath"] as string ?? string.Empty;
 
+                if (StateSearch.Value == "" || StateSearch.Value == null || StateDrp.SelectedValue == "" || StateDrp.SelectedValue == null)
+                {
+                    showToast("Please select State", "toast-danger");
+                    return;
+                }
+                else if (AreaSearch.Value == "" || AreaSearch.Value == null || AreaDrp.SelectedValue == "" || AreaDrp.SelectedValue == null)
+                {
+                    showToast("Please select Area", "toast-danger");
+                    return;
+                }
+                else if (ZoneDrpSearch.Value == "" || ZoneDrpSearch.Value == null || ZoneDrp.SelectedValue == "" || ZoneDrp.SelectedValue == null)
+                {
+                    showToast("Please select Zone", "toast-danger");
+                    return;
+                }
+                else if (FromSOSearch.Value == "" || FromSOSearch.Value == null || FromSODrp.SelectedValue == "" || FromSODrp.SelectedValue == null)
+                {
+                    showToast("Please select From SO", "toast-danger");
+                    return;
+                }
+                else if (dists == "" || dists == null)
+                {
+                    showToast("Please select atleast one distributor", "toast-danger");
+                    return;
+                }
+                else if (ToZoneLoadDrpSearch.Value == "" || ToZoneLoadDrpSearch.Value == null || ToZoneLoadDrp.SelectedValue == "" || ToZoneLoadDrp.SelectedValue == null)
+                {
+                    showToast("Please select To Zone", "toast-danger");
+                    return;
+                }
+                else if (ToSODrpSearch.Value == "" || ToSODrpSearch.Value == null || ToSODrp.SelectedValue == "" || ToSODrp.SelectedValue == null)
+                {
+                    showToast("Please select To SO", "toast-danger");
+                    return;
+                }
+                else if (virtualPath == "" || virtualPath == null)
+                {
+                    showToast("Please upload any file", "toast-danger");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
+                    return;
+                }
+                else if (txtRemarks.Text == "" || txtRemarks.Text == null)
+                {
+                    showToast("Reason should not be blank", "toast-danger");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
+                    return;
+                }
+
                 if (con.State == ConnectionState.Closed)
                 {
                     con.Open();
@@ -570,6 +622,8 @@ namespace SO_Appraisal
                 con.Close();
 
                 showToast("Distributor(s) Transferred Successfully!", "toast-success");
+
+                ClearForm();
             }
             catch (Exception ex)
             {
@@ -644,8 +698,81 @@ namespace SO_Appraisal
         }
         #endregion
 
+        public void ClearForm()
+        {
+            // Clear Search Boxes
+            StateSearch.Value = string.Empty;
+            AreaSearch.Value = string.Empty;
+            ZoneDrpSearch.Value = string.Empty;
+            FromSOSearch.Value = string.Empty;
+            ToZoneLoadDrpSearch.Value = string.Empty;
+            ToSODrpSearch.Value = string.Empty;
 
+            // Reset DropDownLists
+            StateDrp.ClearSelection();
+            AreaDrp.ClearSelection();
+            ZoneDrp.ClearSelection();
+            FromSODrp.ClearSelection();
+            ToZoneLoadDrp.ClearSelection();
+            ToSODrp.ClearSelection();
 
+            StateDrp.SelectedValue = string.Empty;
+            AreaDrp.SelectedValue = string.Empty;
+            ZoneDrp.SelectedValue = string.Empty;
+            FromSODrp.SelectedValue = string.Empty;
+            ToZoneLoadDrp.SelectedValue = string.Empty;
+            ToSODrp.SelectedValue = string.Empty;
+
+            // Clear Distributors checkboxes inside DistModal Grid
+            foreach (GridViewRow row in DistModal.Rows)
+            {
+                HtmlInputCheckBox chk = (HtmlInputCheckBox)row.FindControl("CheckBox1");
+                if (chk != null)
+                {
+                    chk.Checked = false;
+                    chk.Disabled = false;
+                    chk.Style["border-color"] = "";  // reset red color if applied
+                }
+            }
+
+            // Clear Distributor Modal grid
+            DistModal.DataSource = null;
+            DistModal.DataBind();
+
+            // Clear Uploaded Files Grid & ViewState table
+            ViewState["FilesTable"] = null;
+            gvFiles.DataSource = null;
+            gvFiles.DataBind();
+
+            ViewState["dists"] = null;
+            ViewState["attachmentPath"] = null;
+            Session["UploadedFiles"] = null;
+
+            // Clear Remarks
+            txtRemarks.Text = string.Empty;
+
+            // Clear FileUpload control by forcing re-render
+            FileUpload_Id.Attributes.Clear(); // keeps HTML clean
+
+            // Clear stored dynamic values
+            ViewState["dists"] = null;
+            ViewState["attachmentPath"] = null;
+
+            FileUploadDiv.Visible = true;
+
+            // Reset the files table to a fresh empty table
+            FilesTable = CreateEmptyFilesTable();
+            BindFilesGrid();
+        }
+
+        // helper used by both property-init and ClearForm
+        private DataTable CreateEmptyFilesTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("FileName", typeof(string));
+            dt.Columns.Add("FilePath", typeof(string));
+            return dt;
+        }
 
         protected void TestBtn_Click(object sender, EventArgs e)
         {

@@ -391,6 +391,7 @@
                                             CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-success ml-1"
                                             OnClientClick="showLoader()"
+                                            OnClick="btnRowApprove_Click"
                                             ToolTip="Approve">
                                                 <i class="bi bi-check2-square"></i>
                                         </asp:LinkButton>
@@ -403,6 +404,7 @@
                                             CommandArgument='<%# Eval("RequestId") %>'
                                             CssClass="btn btn-outline-danger ml-1"
                                             OnClientClick="showLoader()"
+                                            OnClick="btnRowReject_Click"
                                             ToolTip="Reject">
                                                    <i class="bi bi-x-lg"></i>
                                         </asp:LinkButton>

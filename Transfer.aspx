@@ -431,43 +431,6 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-4 col-md-3 mb-2 mb-md-0">
-                    <div class="floating-label">
-                        <%-- <asp:DropDownList ID="ECOMRtrDrp" runat="server" AutoPostBack="true" class="form-control" onchange="showLoader(); this.form.submit();">
-                            <asp:ListItem Text="ECOM Chain Group" Value=""></asp:ListItem>
-                        </asp:DropDownList>
-                        <label for="ECOMRtrDrp">ECOM Chain Group</label>--%>
-                    </div>
-
-                </div>
-                <div class="col-4 col-md-4 mb-2 mb-md-0">
-                    <%--<asp:Button ID="FetchToSaveBtn" runat="server" Text="Fetch To Save" CssClass="btn btn-primary form-control" OnClientClick="showLoader()" OnClick="FetchToSaveBtn_Click" />--%>
-                </div>
-
-            </div>
-
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="grid-wrapper">
-                        <%--<asp:GridView ID="FetchtoSaveGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
-                            Style="margin-bottom: 0px; text-align: center;"
-                            OnRowDataBound="FetchtoSaveGrid_RowDataBound">
-                            <Columns>
-                                <asp:BoundField HeaderText="Hierarchy Level Name" DataField="HierarchyLevelName" />
-                                <asp:TemplateField HeaderText="Brand">
-                                    <ItemTemplate>
-                                        <asp:Label ID="Label9" runat="server" Text='<%# Bind("BrandName") %>'></asp:Label>
-                                        <asp:Label ID="Label10" runat="server" Text='<%# Bind("BrandID") %>' Visible="false"></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>--%>
-                    </div>
-                </div>
-            </div>
-
             <%-- Modal for Distributor(s) --%>
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
