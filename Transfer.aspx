@@ -493,18 +493,35 @@
 
                                 <!-- File upload + button in same row -->
                                 <div class="form-group mb-2 py-2 px-0" id="FileUploadDiv" runat="server" visible="true">
-                                    <div class="input-group">
-                                        <asp:FileUpload ID="FileUpload_Id" runat="server"
-                                            CssClass="form-control file-upload-input"
-                                            accept=".mht,.msg,.eml,.jpg,.jpeg,.png,.pdf" />
-                                        <div class="input-group-append">
-                                            <asp:LinkButton ID="btnUpload" runat="server"
-                                                CssClass="btn btn-outline-info ml-1"
-                                                OnClick="SaveModalUploFileBtn_Click"
-                                                OnClientClick="showLoader()">
-                                                    <i class="bi bi-upload"></i>
-                                            </asp:LinkButton>
+                                    <div class="d-flex align-items-center">
+
+                                        <!-- Input group -->
+                                        <div class="input-group">
+
+                                            <asp:FileUpload ID="FileUpload_Id" runat="server"
+                                                CssClass="form-control"
+                                                accept=".mht,.msg,.eml,.jpg,.jpeg,.png,.pdf" />
+
+                                            <div class="input-group-append ml-1">
+                                                <asp:LinkButton ID="btnUpload" runat="server"
+                                                    CssClass="btn btn-outline-info"
+                                                    OnClick="SaveModalUploFileBtn_Click"
+                                                    OnClientClick="showLoader()">
+                                                        <i class="bi bi-upload"></i>
+                                                </asp:LinkButton>
+                                            </div>
+
                                         </div>
+
+                                        <!-- Info icon (outside input-group but same row) -->
+                                        <span class="ml-2 d-flex align-items-center"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Allowed file types: .msg, .mht, .eml, .jpg, .jpeg, .png and pdf">
+                                            <i class="bi bi-info-circle text-danger"
+                                                style="cursor: pointer; font-size: 1rem;"></i>
+                                        </span>
+
                                     </div>
                                 </div>
 
@@ -513,9 +530,9 @@
                                     <asp:GridView ID="gvFiles" runat="server" AutoGenerateColumns="False"
                                         CssClass="table table-bordered table-sm mb-0"
                                         DataKeyNames="FilePath"
-                                        OnRowCommand="gvFiles_RowCommand" style="text-align:center;">
+                                        OnRowCommand="gvFiles_RowCommand" Style="text-align: center;">
                                         <Columns>
-                                           <%-- <asp:TemplateField HeaderText="#">
+                                            <%-- <asp:TemplateField HeaderText="#">
                                                 <ItemTemplate>
                                                     <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
