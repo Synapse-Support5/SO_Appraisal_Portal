@@ -19,7 +19,7 @@ namespace SO_Appraisal
         DataTable dt = new DataTable();
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
-
+        bool anyCheckboxSelected = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -94,6 +94,7 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region GetPendingApprovals
         public void GetPendingApprovals()
         {
             try
@@ -146,43 +147,9 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
-
-
-        #region ToastNotification
-        private void showToast(string message, string styleClass)
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
-        }
-
         #endregion
 
-        #region LogError
-        private void LogError(string message, Exception ex)
-        {
-            try
-            {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
-                cmd1.Parameters.AddWithValue("@Page", "PendingApprovals");
-                cmd1.Parameters.AddWithValue("@Message", message);
-                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-            }
-            catch
-            {
-            }
-        }
-        #endregion
-
+        #region btnViewThisRequest_Click
         protected void btnViewThisRequest_Click(object sender, EventArgs e)
         {
             try
@@ -230,7 +197,9 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region ApproveReject
         public DataSet ApproveReject(int requestId, string approveRejected)
         {
             try
@@ -261,16 +230,20 @@ namespace SO_Appraisal
 
             return ds;
         }
+        #endregion
 
+        #region btnRowApprove_Click
         protected void btnRowApprove_Click(object sender, EventArgs e)
         {
             try
             {
-                LinkButton btn = (LinkButton)sender;
-                string[] CommandArgument = btn.CommandArgument.Split(',');
-                int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
+                //LinkButton btn = (LinkButton)sender;
+                //string[] CommandArgument = btn.CommandArgument.Split(',');
+                //int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
 
-                DataSet ds = ApproveReject(CommandRequestId, "Approved");
+                int requestId = Convert.ToInt32(hfApproveRequestId.Value);
+
+                DataSet ds = ApproveReject(requestId, "Approved");
 
                 // If dataset is empty -> SP/DB failure
                 if (ds == null || ds.Tables.Count == 0)
@@ -328,16 +301,20 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region btnRowReject_Click
         protected void btnRowReject_Click(object sender, EventArgs e)
         {
             try
             {
-                LinkButton btn = (LinkButton)sender;
-                string[] CommandArgument = btn.CommandArgument.Split(',');
-                int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
+                //LinkButton btn = (LinkButton)sender;
+                //string[] CommandArgument = btn.CommandArgument.Split(',');
+                //int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
 
-                DataSet ds = ApproveReject(CommandRequestId, "Rejected");
+                int requestId = Convert.ToInt32(hfRejectRequestId.Value);
+
+                DataSet ds = ApproveReject(requestId, "Rejected");
 
                 // If dataset is empty -> SP/DB failure
                 if (ds == null || ds.Tables.Count == 0)
@@ -395,7 +372,9 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
-        
+        #endregion
+
+        #region ApproveSelectedBtn_Click
         protected void ApproveSelectedBtn_Click(object sender, EventArgs e)
         {
             try
@@ -421,11 +400,13 @@ namespace SO_Appraisal
                         if (PendingApprovalsGrid.DataKeys != null && PendingApprovalsGrid.DataKeys.Count > row.RowIndex)
                         {
                             requestId = Convert.ToInt32(PendingApprovalsGrid.DataKeys[row.RowIndex].Value);
+                            anyCheckboxSelected = true;
                         }
                         else
                         {
                             // Fallback — adjust cell index if RequestId column location changes
                             requestId = Convert.ToInt32(row.Cells[1].Text);
+                            anyCheckboxSelected = true;
                         }
 
                         totalRequests++;
@@ -470,6 +451,12 @@ namespace SO_Appraisal
                     }
                 }
 
+                if (!anyCheckboxSelected)
+                {
+                    showToast("Please select atleast any one request to approve", "toast-danger");
+                    return;
+                }
+
                 // Build final toast message
                 if (totalErrors > 0)
                 {
@@ -500,112 +487,114 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region RejectSelectedBtn_Click
         protected void RejectSelectedBtn_Click(object sender, EventArgs e)
         {
             try
             {
-                try
+                // Totals across all processed requests
+                int totalRequests = 0;
+                int totalInserted = 0;
+                int totalActivated = 0;
+                int totalUpdated = 0;
+                int totalNoInsert = 0;
+                int totalErrors = 0;
+
+                // Collect error details (limit to avoid massive text)
+                var errorDetails = new List<string>();
+
+                foreach (GridViewRow row in PendingApprovalsGrid.Rows)
                 {
-                    // Totals across all processed requests
-                    int totalRequests = 0;
-                    int totalInserted = 0;
-                    int totalActivated = 0;
-                    int totalUpdated = 0;
-                    int totalNoInsert = 0;
-                    int totalErrors = 0;
-
-                    // Collect error details (limit to avoid massive text)
-                    var errorDetails = new List<string>();
-
-                    foreach (GridViewRow row in PendingApprovalsGrid.Rows)
+                    var chkBox = row.FindControl("CheckBox1") as HtmlInputCheckBox;
+                    if (chkBox != null && chkBox.Checked)
                     {
-                        var chkBox = row.FindControl("CheckBox1") as HtmlInputCheckBox;
-                        if (chkBox != null && chkBox.Checked)
+                        // Prefer DataKeys for RequestId (safer)
+                        int requestId = 0;
+                        if (PendingApprovalsGrid.DataKeys != null && PendingApprovalsGrid.DataKeys.Count > row.RowIndex)
                         {
-                            // Prefer DataKeys for RequestId (safer)
-                            int requestId = 0;
-                            if (PendingApprovalsGrid.DataKeys != null && PendingApprovalsGrid.DataKeys.Count > row.RowIndex)
+                            requestId = Convert.ToInt32(PendingApprovalsGrid.DataKeys[row.RowIndex].Value);
+                            anyCheckboxSelected = true;
+                        }
+                        else
+                        {
+                            // Fallback — adjust cell index if RequestId column location changes
+                            requestId = Convert.ToInt32(row.Cells[1].Text);
+                            anyCheckboxSelected = true;
+                        }
+
+                        totalRequests++;
+
+                        // Call SP for this request (returns DataSet with details + summary)
+                        DataSet ds = ApproveReject(requestId, "Rejected");
+
+                        if (ds == null || ds.Tables.Count == 0)
+                        {
+                            // SP failed to return anything
+                            totalErrors++;
+                            errorDetails.Add($"Req {requestId}: no response from server");
+                            continue;
+                        }
+
+                        DataTable details = ds.Tables[0];
+
+                        // Count action types in this request
+                        int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
+                        int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
+                        int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
+                        int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
+                        int errors = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase));
+
+                        totalInserted += inserted;
+                        totalActivated += activated;
+                        totalUpdated += updated;
+                        totalNoInsert += noInsert;
+                        totalErrors += errors;
+
+                        // Collect sample error messages (limit to first 5 overall)
+                        if (errors > 0 && errorDetails.Count < 10)
+                        {
+                            foreach (var rowErr in details.AsEnumerable().Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase)))
                             {
-                                requestId = Convert.ToInt32(PendingApprovalsGrid.DataKeys[row.RowIndex].Value);
-                            }
-                            else
-                            {
-                                // Fallback — adjust cell index if RequestId column location changes
-                                requestId = Convert.ToInt32(row.Cells[1].Text);
-                            }
-
-                            totalRequests++;
-
-                            // Call SP for this request (returns DataSet with details + summary)
-                            DataSet ds = ApproveReject(requestId, "Rejected");
-
-                            if (ds == null || ds.Tables.Count == 0)
-                            {
-                                // SP failed to return anything
-                                totalErrors++;
-                                errorDetails.Add($"Req {requestId}: no response from server");
-                                continue;
-                            }
-
-                            DataTable details = ds.Tables[0];
-
-                            // Count action types in this request
-                            int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
-                            int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
-                            int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
-                            int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
-                            int errors = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase));
-
-                            totalInserted += inserted;
-                            totalActivated += activated;
-                            totalUpdated += updated;
-                            totalNoInsert += noInsert;
-                            totalErrors += errors;
-
-                            // Collect sample error messages (limit to first 5 overall)
-                            if (errors > 0 && errorDetails.Count < 10)
-                            {
-                                foreach (var rowErr in details.AsEnumerable().Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase)))
-                                {
-                                    string dist = rowErr.Field<string>("DistCode");
-                                    string msg = rowErr.Field<string>("ResultMsg");
-                                    errorDetails.Add($"Req {requestId} - {dist}: {msg}");
-                                    if (errorDetails.Count >= 10) break;
-                                }
+                                string dist = rowErr.Field<string>("DistCode");
+                                string msg = rowErr.Field<string>("ResultMsg");
+                                errorDetails.Add($"Req {requestId} - {dist}: {msg}");
+                                if (errorDetails.Count >= 10) break;
                             }
                         }
                     }
-
-                    // Build final toast message
-                    if (totalErrors > 0)
-                    {
-                        // Error toast: show error count + few samples
-                        string sample = errorDetails.Count > 0 ? string.Join("; ", errorDetails.Take(3)) : "";
-                        string msg = $"Processed {totalRequests} request(s). Errors: {totalErrors}. {(sample == "" ? "" : "Sample: " + sample)}";
-                        showToast(msg, "toast-danger");
-                    }
-                    else
-                    {
-                        // Success toast: summarize actions performed
-                        var parts = new List<string>();
-                        if (totalInserted > 0) parts.Add($"{totalInserted} inserted");
-                        if (totalActivated > 0) parts.Add($"{totalActivated} activated");
-                        if (totalUpdated > 0) parts.Add($"{totalUpdated} updated");
-                        if (totalNoInsert > 0) parts.Add($"{totalNoInsert} marked");
-
-                        string summary = parts.Count > 0 ? string.Join(", ", parts) : "No changes needed";
-                        string msg = $"Processed {totalRequests} request(s). Success: {summary}.";
-                        showToast(msg, "toast-success");
-                    }
-
-                    GetPendingApprovals();
                 }
-                catch (Exception ex)
+
+                if (!anyCheckboxSelected)
                 {
-                    LogError("Approve Selected Error", ex);
-                    showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+                    showToast("Please select atleast any one request to reject", "toast-danger");
+                    return;
                 }
+
+                // Build final toast message
+                if (totalErrors > 0)
+                {
+                    // Error toast: show error count + few samples
+                    string sample = errorDetails.Count > 0 ? string.Join("; ", errorDetails.Take(3)) : "";
+                    string msg = $"Processed {totalRequests} request(s). Errors: {totalErrors}. {(sample == "" ? "" : "Sample: " + sample)}";
+                    showToast(msg, "toast-danger");
+                }
+                else
+                {
+                    // Success toast: summarize actions performed
+                    var parts = new List<string>();
+                    if (totalInserted > 0) parts.Add($"{totalInserted} inserted");
+                    if (totalActivated > 0) parts.Add($"{totalActivated} activated");
+                    if (totalUpdated > 0) parts.Add($"{totalUpdated} updated");
+                    if (totalNoInsert > 0) parts.Add($"{totalNoInsert} marked");
+
+                    string summary = parts.Count > 0 ? string.Join(", ", parts) : "No changes needed";
+                    string msg = $"Processed {totalRequests} request(s). Success: {summary}.";
+                    showToast(msg, "toast-success");
+                }
+
+                GetPendingApprovals();
             }
             catch (Exception ex)
             {
@@ -613,7 +602,9 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region PendingApprovalsGrid_RowCommand
         protected void PendingApprovalsGrid_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "DownloadAttachment")
@@ -655,8 +646,41 @@ namespace SO_Appraisal
                 Response.End();
             }
         }
+        #endregion
 
+        #region ToastNotification
+        private void showToast(string message, string styleClass)
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
+        }
 
+        #endregion
 
+        #region LogError
+        private void LogError(string message, Exception ex)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
+                cmd1.Parameters.AddWithValue("@Page", "PendingApprovals");
+                cmd1.Parameters.AddWithValue("@Message", message);
+                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch
+            {
+            }
+        }
+        #endregion
     }
 }

@@ -78,6 +78,42 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView DistModal;
 
         /// <summary>
+        /// ApproveAlertButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ApproveAlertButton;
+
+        /// <summary>
+        /// RejectButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button RejectButton;
+
+        /// <summary>
+        /// Button1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button1;
+
+        /// <summary>
+        /// Button2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button2;
+
+        /// <summary>
         /// hdnBusinessType control.
         /// </summary>
         /// <remarks>
@@ -96,13 +132,22 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.HiddenField hdnRole;
 
         /// <summary>
-        /// hfSelectedRowData control.
+        /// hfApproveRequestId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfSelectedRowData;
+        protected global::System.Web.UI.WebControls.HiddenField hfApproveRequestId;
+
+        /// <summary>
+        /// hfRejectRequestId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfRejectRequestId;
 
         /// <summary>
         /// Master property.
