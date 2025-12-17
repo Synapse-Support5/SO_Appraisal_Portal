@@ -282,6 +282,37 @@
             box-shadow: 0 0 5px red !important;
             cursor: not-allowed !important;
         }
+
+        /* Background image container */
+        /*.body-content {
+            position: relative;
+            z-index: 1;*/ /* content stays above background */
+        /*}*/
+
+            /* Background image layer */
+            /*.body-content::before {
+                content: "";
+                position: fixed;*/ /* covers full screen */
+                /*top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-image: url('<%= ResolveUrl("~/Images/so_dbr.png") %>');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;*/ /* responsive */
+
+                /*opacity: 0.12;*/ /* subtle background */
+                /*z-index: -999;*/ /* lowest possible */
+                /*pointer-events: none;*/ /* clickable elements work */
+            /*}*/
+
+        /* MEDIUM and larger screens */
+        /*@media (min-width: 768px) {
+            .body-content::before {
+                background-size: 30% auto;*/ /* ✅ md+ */
+            /*}
+        }*/
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -336,7 +367,7 @@
     </div>
 
     <div class="container body-content">
-        <h2 style="text-align: center; margin-top: 20px;">SO DBR MASTER</h2>
+        <h2 style="text-align: center; margin-top: 20px;">SO & Distributor Details</h2>
 
         <div class="headtag">
             <asp:Label ID="lblUserName" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>
@@ -345,7 +376,7 @@
         <br />
         <br />
 
-        <div class="container" style="text-align: center; align-content : center; align-items : center ">
+        <div class="container" style="text-align: center; align-content: center; align-items: center">
 
             <!-- Center Search Bar -->
             <%--<div class="row d-flex justify-content-center mt-3 mb-4">
@@ -359,25 +390,22 @@
                 </div>
             </div>--%>
 
-             <!-- SEARCH BAR -->
+            <!-- SEARCH BAR -->
             <%--<div class="row justify-content-center mb-3" >--%>
-        <div class="row justify-content-center mb-3" style="text-align: center; align-content : center; align-items : center ">
-            <div class="col-md-6 d-flex justify-content-center">
-                <div class="input-group" style="max-width: 250px; width: 100%;">
-                    <asp:TextBox ID="MainSearch" runat="server" CssClass="form-control rounded-pill" 
-                        placeholder="Search here..." />
-                    <div class="input-group-append">
-                        <asp:LinkButton ID="SearchBtn" runat="server" CssClass="btn btn-primary rounded-pill ml-2" 
-                            OnClick="SearchBtn_Click">
+            <div class="row justify-content-center mb-3" style="text-align: center; align-content: center; align-items: center">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div class="input-group" style="max-width: 250px; width: 100%;">
+                        <asp:TextBox ID="MainSearch" runat="server" CssClass="form-control rounded-pill"
+                            placeholder="Search here..." />
+                        <div class="input-group-append">
+                            <asp:LinkButton ID="SearchBtn" runat="server" CssClass="btn btn-primary rounded-pill ml-2"
+                                OnClick="SearchBtn_Click">
                             <i class="bi bi-search"></i>
-                        </asp:LinkButton>
+                            </asp:LinkButton>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-
 
             <br />
             <div class="row">
@@ -425,19 +453,22 @@
                 </div>
             </div>
 
-
-
-
-            <div class="modal-footer">
-            
-                <asp:Button ID="Fetch" runat="server" Text="Fetch" CssClass="btn btn-success" OnClick="Fetch_Click" OnClientClick="showLoader()" />
-
-                &nbsp;&nbsp;
-                <%--<asp:Button ID="Download" runat="server" Text="Download" CssClass="btn btn-primary" OnClick="Download_Click" OnClientClick="showLoader()" />--%>
-             
+            <div class="row mt-3">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
                 </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <asp:Button ID="Fetch" runat="server" Text="Fetch" CssClass="form-control btn btn-success" OnClick="Fetch_Click" OnClientClick="showLoader()" />
+                </div>
+            </div>
+            <%--<asp:Button ID="Download" runat="server" Text="Download" CssClass="btn btn-primary" OnClick="Download_Click" OnClientClick="showLoader()" />--%>
+
+
             <!-- GridView -->
-            <div class="row mt-4">
+            <div class="row">
                 <div class="col-12">
                     <asp:GridView ID="ResultGrid" runat="server" AutoGenerateColumns="true"
                         CssClass="table table-bordered table-sm" Style="text-align: center;">
@@ -446,12 +477,12 @@
             </div>
         </div>
     </div>
-    
-        <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
+
+    <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
     <asp:HiddenField ID="hdnBusinessType" runat="server" />
     <asp:HiddenField ID="hdnRole" runat="server" />
     <asp:HiddenField ID="hfSelectedRowData" runat="server" />
-    </div>
+
 
     <%--Script for Dropdown Auto Search--%>
     <script>

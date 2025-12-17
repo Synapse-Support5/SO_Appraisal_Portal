@@ -280,6 +280,30 @@
             box-shadow: 0 0 5px red !important;
             cursor: not-allowed !important;
         }
+
+        /* Background image container */
+        /*.body-content {
+            position: relative;
+            z-index: 1;*/ /* content stays above background */
+        /*}*/
+
+            /* Background image layer */
+            /*.body-content::before {
+                content: "";
+                position: fixed;*/ /* covers full screen */
+                /*top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-image: url('<%= ResolveUrl("~/Images/transfer.png") %>');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;*/ /* responsive */
+
+                /*opacity: 0.12;*/ /* subtle background */
+                /*z-index: -999;*/ /* lowest possible */
+                /*pointer-events: none;*/ /* clickable elements work */
+            /*}*/
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -575,32 +599,6 @@
                 </div>
             </div>
 
-
-            <%--Alert--%>
-            <%--<div class="container">
-                <div class="row mt-3">
-                    <div class="alert alert-success alert-box" role="alert" id="TransferAlert" style="display: none;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h4 class="alert-heading">Transfer Alert!</h4>
-                            <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <hr />
-                        <p class="mb-0">Do you want to Approve?</p>
-                        <asp:FileUpload ID="FileUpload1" runat="server" CssClass="form-control file-upload-input border-right" accept=".mht, .msg"
-                            Style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; width: 85%; margin-right: 5px;" />
-                        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="btn btn-outline-info"
-                            OnClick="SaveModalUploFileBtn_Click" OnClientClick="showLoader()" Style="border-top-left-radius: 0; border-bottom-left-radius: 0; width: 15%;">
-    <i class="bi bi-upload"></i>
-                        </asp:LinkButton>
-                        <div class="alert-footer mt-3 d-flex justify-content-end">
-                            <asp:Button ID="TestBtn" runat="server" Text="Test" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="TestBtn_Click" />
-                            <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>--%>
         </div>
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
         <asp:HiddenField ID="hdnBusinessType" runat="server" />

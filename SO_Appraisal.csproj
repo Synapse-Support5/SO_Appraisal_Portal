@@ -122,6 +122,9 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Images\pending.png" />
+    <Content Include="Images\so_dbr.png" />
+    <Content Include="Images\transfer.png" />
     <Content Include="PendingApprovals.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />

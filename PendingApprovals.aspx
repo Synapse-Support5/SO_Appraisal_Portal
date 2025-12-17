@@ -92,6 +92,30 @@
                 width: 100%; /* Full width on smaller screens */
                 max-width: 100%; /* Ensures the progress bar can stretch to the screen size */
             }
+
+            /* Background image container */
+            .body-content {
+                position: relative;
+                z-index: 1; /* content stays above background */
+            }
+
+                /* Background image layer */
+                .body-content::before {
+                    content: "";
+                    position: fixed; /* covers full screen */
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background-image: url('<%= ResolveUrl("~/Images/pending.png") %>');
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: contain; /* responsive */
+
+                    opacity: 0.12; /* subtle background */
+                    z-index: -999; /* lowest possible */
+                    pointer-events: none; /* clickable elements work */
+                }
         }
 
         /* Style the autocomplete dropdown to look like a DropDownList */
@@ -278,6 +302,37 @@
             box-shadow: 0 0 5px red !important;
             cursor: not-allowed !important;
         }
+
+        /* Background image container */
+        /*.body-content {
+            position: relative;
+            z-index: 1;*/ /* content stays above background */
+        /*}*/
+
+            /* Background image layer */
+            /*.body-content::before {
+                content: "";
+                position: fixed;*/ /* covers full screen */
+                /*top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-image: url('<%= ResolveUrl("~/Images/pending.png") %>');
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;*/ /* responsive */
+
+                /*opacity: 0.12;*/ /* subtle background */
+                /*z-index: -999;*/ /* lowest possible */
+                /*pointer-events: none;*/ /* clickable elements work */
+            /*}*/
+
+        /* MEDIUM and larger screens */
+        /*@media (min-width: 768px) {
+            .body-content::before {
+                background-size: 30% auto;*/ /* ✅ md+ */
+            /*}
+        }*/
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -597,6 +652,8 @@
         function hideAlert() {
             document.getElementById("ApproveAlert").style.display = "none";
             document.getElementById("RejectAlert").style.display = "none";
+            document.getElementById("ApproveSelectedAlert").style.display = "none";
+            document.getElementById("ApproveRejectedAlert").style.display = "none";
         }
     </script>
 

@@ -698,6 +698,7 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region ClearForm
         public void ClearForm()
         {
             // Clear Search Boxes
@@ -764,7 +765,9 @@ namespace SO_Appraisal
             FilesTable = CreateEmptyFilesTable();
             BindFilesGrid();
         }
+        #endregion
 
+        #region Helpers
         // helper used by both property-init and ClearForm
         private DataTable CreateEmptyFilesTable()
         {
@@ -778,7 +781,7 @@ namespace SO_Appraisal
         {
             showToast("Toast is working fine", "toast-success");
         }
-
+        #endregion
 
 
 
