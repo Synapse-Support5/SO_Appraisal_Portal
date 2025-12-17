@@ -32,7 +32,7 @@ namespace SO_Appraisal
         {
             try
             {
-                string remoteUser = "G112377";
+                string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
 
                 if (!string.IsNullOrEmpty(remoteUser))
