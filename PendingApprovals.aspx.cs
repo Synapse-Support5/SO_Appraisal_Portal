@@ -122,7 +122,7 @@ namespace SO_Appraisal
                 var siteMaster = this.Master as SO_Appraisal.SiteMaster;
                 if (siteMaster != null)
                 {
-                    siteMaster.SetPendingCount(pendingCount);
+                    //siteMaster.SetPendingCount(pendingCount);
                 }
 
                 if (pendingCount > 0)

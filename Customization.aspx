@@ -1,4 +1,4 @@
-﻿<%@ Page Title="PendingApprovals" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="PendingApprovals.aspx.cs" Inherits="SO_Appraisal.PendingApprovals" %>
+﻿<%@ Page Title="Customization" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Customization.aspx.cs" Inherits="SO_Appraisal.Customization" %>
 
 <%@ MasterType VirtualPath="~/Site.Master" %>
 
@@ -309,11 +309,11 @@
             z-index: 1;*/ /* content stays above background */
         /*}*/
 
-            /* Background image layer */
-            /*.body-content::before {
+        /* Background image layer */
+        /*.body-content::before {
                 content: "";
                 position: fixed;*/ /* covers full screen */
-                /*top: 0;
+        /*top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
@@ -322,16 +322,16 @@
                 background-position: center center;
                 background-size: contain;*/ /* responsive */
 
-                /*opacity: 0.12;*/ /* subtle background */
-                /*z-index: -999;*/ /* lowest possible */
-                /*pointer-events: none;*/ /* clickable elements work */
-            /*}*/
+        /*opacity: 0.12;*/ /* subtle background */
+        /*z-index: -999;*/ /* lowest possible */
+        /*pointer-events: none;*/ /* clickable elements work */
+        /*}*/
 
         /* MEDIUM and larger screens */
         /*@media (min-width: 768px) {
             .body-content::before {
                 background-size: 30% auto;*/ /* ✅ md+ */
-            /*}
+        /*}
         }*/
     </style>
 
@@ -380,7 +380,7 @@
     </div>
 
     <div class="container body-content">
-        <h2 style="text-align: center; margin-top: 20px;">Pending Approvals</h2>
+        <h2 style="text-align: center; margin-top: 20px;">Customization</h2>
 
         <div class="headtag">
             <asp:Label ID="lblUserName" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>
@@ -390,95 +390,21 @@
         <br />
 
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="grid-wrapper">
-                        <asp:Label ID="GridStatusLabel" runat="server"></asp:Label>
-                        <asp:GridView ID="PendingApprovalsGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
-                            Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId" OnRowCommand="PendingApprovalsGrid_RowCommand">
-                            <Columns>
-                                <asp:TemplateField HeaderText="Select All">
-                                    <HeaderTemplate>
-                                        <div style="margin-right: 14px; position: relative; align-items: center; align-content: center;">
-                                            <input type="checkbox" id="parentCheckbox" style="margin-left: 0px;" class="form-check-input" />
-                                        </div>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <div style="margin-right: 14px; position: relative;">
-                                            <input type="checkbox" id="CheckBox1" runat="server" class="child-checkbox form-check-input rowCheckbox" style="margin-left: 0px;" />
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
+            <div class="row" id="ButtonsDiv">
+                <div class="d-flex justify-content-center gap-4">
+                    <asp:Button ID="AreaCustomBtn" runat="server" Text="Area Customization" CssClass="btn btn-outline-primary" OnClick="AreaCustomBtn_Click" />
 
-                                <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
-                                <asp:BoundField DataField="FromZone" HeaderText="FromZone" />
-                                <asp:BoundField DataField="FromSO" HeaderText="FromSO" />
-                                <asp:BoundField DataField="ToZone" HeaderText="ToZone" />
-                                <asp:BoundField DataField="ToSO" HeaderText="ToSO" />
-                                <asp:BoundField DataField="Reason" HeaderText="Reason" />
-                                <asp:BoundField DataField="RequestedBy" HeaderText="RequestedBy" />
-                                <asp:BoundField DataField="RequestedDt" HeaderText="RequestedDt" />
-                                <asp:TemplateField HeaderText="Attachment">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnDownload" runat="server"
-                                            CommandName="DownloadAttachment"
-                                            CommandArgument='<%# Eval("ProofOfAttachment") %>'
-                                            CssClass="btn btn-outline-primary ml-1"
-                                            ToolTip="Download proof of attachment">
-                                            <i class="bi bi-download"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Distributor(s)">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnViewThisRequest" runat="server"
-                                            CssClass="btn btn-outline-info ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
-                                            OnClick="btnViewThisRequest_Click"
-                                            OnClientClick="showLoader()"
-                                            ToolTip="View this request">
-                                                <i class="bi bi-eye"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Approve">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnRowApprove" runat="server"
-                                            CssClass="btn btn-outline-success ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
-                                            OnClientClick='<%# "showApproveAlert(" + Eval("RequestId") + "); return false;" %>'
-                                            ToolTip="Approve">
-                                                <i class="bi bi-check2-square"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Reject">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnRowReject" runat="server"
-                                            CssClass="btn btn-outline-danger ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
-                                            OnClientClick='<%# "showRejectAlert(" + Eval("RequestId") + "); return false;" %>'
-                                            ToolTip="Reject">
-                                                   <i class="bi bi-x-lg"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
-                    </div>
+                    <asp:Button ID="ZoneCustomBtn" runat="server" Text="Zone Customization" CssClass="btn btn-outline-primary" OnClick="ZoneCustomBtn_Click" />
                 </div>
             </div>
 
-            <div class="row mt-3" id="ButtonsDiv" runat="server" visible="true">
-                <div class="d-flex justify-content-end gap-2 w-100">
-                    <asp:Button ID="ApproveSelectedBtn" runat="server" Text="Approve Selected" CssClass="btn btn-outline-success"
-                        OnClientClick="approveSelectedAlert(); return false;" />
-
-                    <asp:Button ID="RejectSelectedBtn" runat="server" Text="Reject Selected" CssClass="btn btn-outline-danger ms-2"
-                        OnClientClick="approveRejectedAlert(); return false;" />
-                </div>
+            <div id="AreaCustomBtnDiv" runat="server" visible="true">
+                <asp:Label ID="Label1" runat="server"></asp:Label>
             </div>
 
+            <div id="ZoneCustomBtnDiv" runat="server" visible="false">
+                <asp:Label ID="Label2" runat="server"></asp:Label>
+            </div>
 
             <%-- Modal for Distributor(s) --%>
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -495,7 +421,7 @@
                                 <input type="text" id="txtSearch" class="form-control" placeholder="Search..." />
                             </div>--%>
                             <div class="form-group">
-                                <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
+                                <%-- <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
                                     AutoGenerateColumns="false" DataKeyNames="distcode" Style="margin-bottom: -18px; text-align: center">
                                     <Columns>
                                         <asp:BoundField DataField="DistCode" HeaderText="Dist. Code" />
@@ -503,7 +429,7 @@
                                     </Columns>
                                     <HeaderStyle CssClass="header-hidden" />
                                     <RowStyle CssClass="fixed-height-row" BackColor="#FFFFFF" />
-                                </asp:GridView>
+                                </asp:GridView>--%>
                             </div>
                         </div>
 
@@ -521,141 +447,9 @@
 
     </div>
 
-    <div class="container">
-        <div class="row mt-3">
-            <div class="alert alert-success alert-box" role="alert" id="ApproveAlert" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4 class="alert-heading">Approve Alert!</h4>
-                    <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <hr />
-                <p class="mb-0">Do you want to Approve?</p>
-                <div class="alert-footer mt-3 d-flex justify-content-end">
-                    <asp:Button ID="ApproveAlertButton" runat="server" Text="Approve" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="btnRowApprove_Click" />
-                    <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
-                </div>
-            </div>
-
-            <div class="alert alert-danger alert-box" role="alert" id="RejectAlert" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4 class="alert-heading">Reject Alert!</h4>
-                    <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <hr />
-                <p class="mb-0">Do you want to Reject?</p>
-                <div class="alert-footer mt-3 d-flex justify-content-end">
-                    <asp:Button ID="RejectButton" runat="server" Text="Reject" CssClass="btn btn-danger" OnClientClick="showLoader()" OnClick="btnRowReject_Click" />
-                    <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
-                </div>
-            </div>
-
-            <div class="alert alert-success alert-box" role="alert" id="ApproveSelectedAlert" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4 class="alert-heading">Approve Alert!</h4>
-                    <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <hr />
-                <p class="mb-0">Do you want to Approve?</p>
-                <div class="alert-footer mt-3 d-flex justify-content-end">
-                    <asp:Button ID="Button1" runat="server" Text="Approve" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="ApproveSelectedBtn_Click" />
-                    <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
-                </div>
-            </div>
-
-            <div class="alert alert-danger alert-box" role="alert" id="ApproveRejectedAlert" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4 class="alert-heading">Reject Alert!</h4>
-                    <button type="button" class="close" aria-label="Close" onclick="hideAlert(); return false;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <hr />
-                <p class="mb-0">Do you want to Reject?</p>
-                <div class="alert-footer mt-3 d-flex justify-content-end">
-                    <asp:Button ID="Button2" runat="server" Text="Reject" CssClass="btn btn-danger" OnClientClick="showLoader()" OnClick="RejectSelectedBtn_Click" />
-                    <button type="button" class="btn btn-secondary ml-2" onclick="hideAlert(); return false;">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
     <asp:HiddenField ID="hdnBusinessType" runat="server" />
     <asp:HiddenField ID="hdnRole" runat="server" />
-    <asp:HiddenField ID="hfApproveRequestId" runat="server" />
-    <asp:HiddenField ID="hfRejectRequestId" runat="server" />
-
-    <%--script for select all in pending approval Grid--%>
-    <script>
-        $(document).ready(function () {
-            const updateParentCheckbox = () => {
-                const childCheckboxes = $(".child-checkbox");
-                const checkedCheckboxes = childCheckboxes.filter(":checked");
-                const parentCheckbox = $("#parentCheckbox");
-
-                if (checkedCheckboxes.length === 0) {
-                    parentCheckbox.prop("checked", false).prop("indeterminate", false);
-                } else if (checkedCheckboxes.length === childCheckboxes.length) {
-                    parentCheckbox.prop("checked", true).prop("indeterminate", false);
-                } else {
-                    parentCheckbox.prop("checked", false).prop("indeterminate", true);
-                }
-            };
-
-            $("#parentCheckbox").on("change", function () {
-                const isChecked = $(this).is(":checked");
-                $(".child-checkbox").prop("checked", isChecked);
-            });
-
-            $(".child-checkbox").on("change", updateParentCheckbox);
-
-            updateParentCheckbox(); // Initialize state on page load
-        });
-    </script>
-
-    <%--script to handle alert--%>
-    <script>
-        function openTransferModal() {
-            $('#exampleModalCenter').modal('show');
-        }
-
-        function showApproveAlert(requestId) {
-            // Store RequestId in HiddenField
-            document.getElementById('<%= hfApproveRequestId.ClientID %>').value = requestId;
-
-            // Show alert
-            document.getElementById('ApproveAlert').style.display = 'block';
-        }
-
-        function showRejectAlert(requestId) {
-            // Store RequestId in HiddenField
-            document.getElementById('<%= hfRejectRequestId.ClientID %>').value = requestId;
-
-            // Show alert
-            document.getElementById('RejectAlert').style.display = 'block';
-        }
-
-        function approveSelectedAlert() {
-            document.getElementById("ApproveSelectedAlert").style.display = "block";
-        }
-
-        function approveRejectedAlert() {
-            document.getElementById("ApproveRejectedAlert").style.display = "block";
-        }
-
-        function hideAlert() {
-            document.getElementById("ApproveAlert").style.display = "none";
-            document.getElementById("RejectAlert").style.display = "none";
-            document.getElementById("ApproveSelectedAlert").style.display = "none";
-            document.getElementById("ApproveRejectedAlert").style.display = "none";
-        }
-    </script>
 
     <script>
         const messages = [
