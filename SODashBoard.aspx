@@ -438,7 +438,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
-                    <asp:Button ID="DistCountBtn" runat="server" Text="Dist. Count : 30" CssClass="btn btn-primary form-control" />
+                    <asp:Button ID="DistCountBtn" runat="server" Text="Dist. Count : 30" CssClass="btn btn-outline-primary form-control" />
                 </div>
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
@@ -456,7 +456,7 @@
                 </div>
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
-                    <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" />
+                    <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" OnClick="ExportBtn_Click" />
                 </div>
             </div>
         </div>
