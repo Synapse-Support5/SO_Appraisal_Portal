@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />--%>
 
     <style>
         /* Solid CSS so styles work even with CDN Tailwind (no @apply needed) */
@@ -327,6 +327,42 @@
             box-shadow: 0 0 5px red !important;
             cursor: not-allowed !important;
         }
+
+        /* OUTER WRAPPER CARD */
+        .dashboard-wrapper {
+            background: #dce3ea; /*#f8f9fa*/
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        /* INNER DASHBOARD CARD */
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            height: 100%;
+        }
+
+        /* Title smaller */
+        .dashboard-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+            color: #374151;
+        }
+
+        /* Table font smaller */
+        .dashboard-card table {
+            font-size: 12px;
+        }
+
+        /* Spacing between cards */
+        .dashboard-row > div {
+            margin-bottom: 20px;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -393,38 +429,145 @@
         <br />
         <br />
 
-        <div class="max-w-7xl mx-auto">
+        <div class="container mt-4">
 
-            <!-- Grid for cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-
-                <!-- Add On Services (header-like card) -->
-                <a href="#" class="card hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" role="button" style="display: none">
-                    <i data-lucide="layers" class="icon text-blue-600"></i>
-                    <span class="text-lg text-gray-700">Add On Services</span>
-                </a>
-
-                <!-- Reports (header-like card) -->
-                <a href="#" class="card hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" role="button" style="display: none">
-                    <i data-lucide="bar-chart-3" class="icon text-green-600"></i>
-                    <span class="text-lg text-gray-700">Reports</span>
-                </a>
-
-                <!-- Billing Restrict Product -->
-                <a href="http://intra.wipro.com/BillingRestrict/index.aspx" class="card hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" role="button">
-                    <i data-lucide="slash" class="icon text-red-600"></i>
-                    <span class="text-lg text-gray-700">Billing Restrict Product</span>
-                </a>
-
-                <!-- Check Invoice Not Downloading -->
-                <a href="http://intra.wipro.com/Synapse_Automation/InvoiceNotDownloading.aspx" class="card hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" role="button">
-                    <i data-lucide="cloud-off" class="icon text-green-600"></i>
-                    <span class="text-lg text-gray-700">Check Invoice Not Downloading</span>
-                </a>
-
+            <!-- OUTER CARD -->
+            <div class="dashboard-wrapper">
+                
+            <div class="dashboard-card-title">
+                Sales Value
             </div>
 
+                <div class="row dashboard-row">
+
+                    <!-- Last Year -->
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">
+                                Last Year
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered text-center mb-0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Col 1</th>
+                                            <th>Col 2</th>
+                                            <th>Col 3</th>
+                                            <th>Col 4</th>
+                                            <th>Col 5</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>R1C1</td>
+                                            <td>R1C2</td>
+                                            <td>R1C3</td>
+                                            <td>R1C4</td>
+                                            <td>R1C5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>R2C1</td>
+                                            <td>R2C2</td>
+                                            <td>R2C3</td>
+                                            <td>R2C4</td>
+                                            <td>R2C5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>R3C1</td>
+                                            <td>R3C2</td>
+                                            <td>R3C3</td>
+                                            <td>R3C4</td>
+                                            <td>R3C5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Plan -->
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Plan</div>
+                        </div>
+                    </div>
+
+                    <!-- Achievement -->
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Achievement</div>
+                            <!-- same table -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- % Achievement -->
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">
+                                % Achievement
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered text-center mb-0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Col 1</th>
+                                            <th>Col 2</th>
+                                            <th>Col 3</th>
+                                            <th>Col 4</th>
+                                            <th>Col 5</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>R1C1</td>
+                                            <td>R1C2</td>
+                                            <td>R1C3</td>
+                                            <td>R1C4</td>
+                                            <td>R1C5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>R2C1</td>
+                                            <td>R2C2</td>
+                                            <td>R2C3</td>
+                                            <td>R2C4</td>
+                                            <td>R2C5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>R3C1</td>
+                                            <td>R3C2</td>
+                                            <td>R3C3</td>
+                                            <td>R3C4</td>
+                                            <td>R3C5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- GOLY -->
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">GOLY</div>
+                            <!-- same table -->
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
+
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
         <asp:HiddenField ID="hdnBusinessType" runat="server" />
         <asp:HiddenField ID="hdnRole" runat="server" />
