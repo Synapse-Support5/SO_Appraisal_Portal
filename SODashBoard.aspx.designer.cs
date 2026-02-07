@@ -24,6 +24,51 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Label lblUserName;
 
         /// <summary>
+        /// GeoLbl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText GeoLbl;
+
+        /// <summary>
+        /// DistCountBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button DistCountBtn;
+
+        /// <summary>
+        /// FYDrp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FYDrp;
+
+        /// <summary>
+        /// FYSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputText FYSearch;
+
+        /// <summary>
+        /// ExportBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ExportBtn;
+
+        /// <summary>
         /// gvSalesLastYear control.
         /// </summary>
         /// <remarks>

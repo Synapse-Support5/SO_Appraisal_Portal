@@ -23,6 +23,7 @@ namespace SO_Appraisal
             if (!IsPostBack)
             {
                 AccessLoad();
+                BindFYDropdown();
                 LoadAllTables();
                 
             }
@@ -104,6 +105,18 @@ namespace SO_Appraisal
         }
         #endregion
 
+        private void BindFYDropdown()
+        {
+            FYDrp.Items.Clear();
+
+            FYDrp.Items.Add(new ListItem("Select FY", ""));
+
+            FYDrp.Items.Add(new ListItem("24-25", "2425"));
+            FYDrp.Items.Add(new ListItem("25-26", "2526"));
+            FYDrp.Items.Add(new ListItem("26-27", "2627"));
+        }
+
+        #region LoadAllTables
         public void LoadAllTables()
         {
             SalesLastYearData();
@@ -118,6 +131,7 @@ namespace SO_Appraisal
             BrandPerAchievementData();
             BrandGolyData();
         }
+        #endregion
 
         #region SalesLastYearData
         public void SalesLastYearData()
@@ -380,6 +394,7 @@ namespace SO_Appraisal
             gvBrandGoly.DataBind();
         }
         #endregion
+
 
 
 

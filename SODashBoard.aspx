@@ -429,6 +429,38 @@
         <br />
         <br />
 
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
+                        <input type="text" id="GeoLbl" runat="server" class="form-control" placeholder="Mirzapur" readonly="true" />
+                        <label for="GeoLbl">Geo</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <asp:Button ID="DistCountBtn" runat="server" Text="Dist. Count : 30" CssClass="btn btn-primary form-control" />
+                </div>
+
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
+                        <asp:DropDownList ID="FYDrp" runat="server" AutoPostBack="true" Style="display: none" class="form-control">
+                            <%--<asp:ListItem Text="Select FY" Value=""></asp:ListItem>
+                            <asp:ListItem Text="24-25" Value="2425"></asp:ListItem>
+                            <asp:ListItem Text="25-26" Value="2526"></asp:ListItem>--%>
+                        </asp:DropDownList>
+                        <label for="FYDrp">FY</label>
+                        <%--<asp:Label runat="server" Text="FY" AssociatedControlID="FYDrp" />--%>
+
+                        <input type="text" id="FYSearch" runat="server" class="form-control" placeholder="Enter FY" />
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" />
+                </div>
+            </div>
+        </div>
+
         <div class="container mt-4">
 
             <!-- OUTER CARD (Sales Value) -->
@@ -542,7 +574,7 @@
                 </div>
             </div>
 
-            </div>
+        </div>
         <div class="container mt-4">
 
             <!-- OUTER CARD (Brand Volume) -->
@@ -664,6 +696,36 @@
         <asp:HiddenField ID="hfSelectedRowData" runat="server" />
     </div>
 
+    <script>
+        // --- FYDrp autocomplete ---
+        (function () {
+            var ddl = $('#<%= FYDrp.ClientID %>');
+            var searchBox = $('#<%= FYSearch.ClientID %>');
+
+            var options = [];
+            ddl.find("option").each(function () {
+                var text = $(this).text();
+                var value = $(this).val();
+                if (value) {
+                    options.push({ label: text, value: value });
+                }
+            });
+
+            searchBox.autocomplete({
+                source: options,
+                minLength: 1,
+                select: function (event, ui) {
+                    // set visible text
+                    searchBox.val(ui.item.label);
+                    // set hidden dropdown selected value
+                    ddl.val(ui.item.value);
+                    // 🔴 this is what fires ToSODrp_SelectedIndexChanged
+                    __doPostBack('<%= FYDrp.UniqueID %>', '');
+                    return false;
+                }
+            });
+        })();
+    </script>
 
     <script>
         const messages = [
@@ -701,14 +763,5 @@
         }
     </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            if (window.lucide) {
-                lucide.createIcons();
-            } else {
-                console.error("Lucide failed to load");
-            }
-        });
-    </script>
 
 </asp:Content>
