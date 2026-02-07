@@ -372,7 +372,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <%--<script src="https://cdn.tailwindcss.com"></script>--%>
     <!-- Lucide icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 
@@ -431,17 +431,17 @@
 
         <div class="container mt-4">
 
-            <!-- OUTER CARD -->
+            <!-- OUTER CARD (Sales Value) -->
             <div class="dashboard-wrapper">
-                
-            <div class="dashboard-card-title">
-                Sales Value
-            </div>
+
+                <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                    Sales Value
+                </div>
 
                 <div class="row dashboard-row">
 
                     <!-- Last Year -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="dashboard-card">
 
                             <div class="dashboard-card-title">
@@ -449,57 +449,70 @@
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-sm table-bordered text-center mb-0">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Col 1</th>
-                                            <th>Col 2</th>
-                                            <th>Col 3</th>
-                                            <th>Col 4</th>
-                                            <th>Col 5</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>R1C1</td>
-                                            <td>R1C2</td>
-                                            <td>R1C3</td>
-                                            <td>R1C4</td>
-                                            <td>R1C5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>R2C1</td>
-                                            <td>R2C2</td>
-                                            <td>R2C3</td>
-                                            <td>R2C4</td>
-                                            <td>R2C5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>R3C1</td>
-                                            <td>R3C2</td>
-                                            <td>R3C3</td>
-                                            <td>R3C4</td>
-                                            <td>R3C5</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <asp:GridView
+                                    ID="gvSalesLastYear"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
                             </div>
 
                         </div>
                     </div>
 
                     <!-- Plan -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">Plan</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesPlan"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
                         </div>
                     </div>
 
                     <!-- Achievement -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">Achievement</div>
-                            <!-- same table -->
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- % Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">% Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesPerAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
                         </div>
                     </div>
 
@@ -507,65 +520,142 @@
 
                 <div class="row dashboard-row">
 
-                    <!-- % Achievement -->
-                    <div class="col-md-4">
-                        <div class="dashboard-card">
-
-                            <div class="dashboard-card-title">
-                                % Achievement
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered text-center mb-0">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Col 1</th>
-                                            <th>Col 2</th>
-                                            <th>Col 3</th>
-                                            <th>Col 4</th>
-                                            <th>Col 5</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>R1C1</td>
-                                            <td>R1C2</td>
-                                            <td>R1C3</td>
-                                            <td>R1C4</td>
-                                            <td>R1C5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>R2C1</td>
-                                            <td>R2C2</td>
-                                            <td>R2C3</td>
-                                            <td>R2C4</td>
-                                            <td>R2C5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>R3C1</td>
-                                            <td>R3C2</td>
-                                            <td>R3C3</td>
-                                            <td>R3C4</td>
-                                            <td>R3C5</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-
                     <!-- GOLY -->
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">GOLY</div>
-                            <!-- same table -->
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesGoly"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
                         </div>
                     </div>
 
 
                 </div>
             </div>
+
+            </div>
+        <div class="container mt-4">
+
+            <!-- OUTER CARD (Brand Volume) -->
+            <div class="dashboard-wrapper">
+
+                <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                    Brand Volume
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- Last Year -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">
+                                Last Year
+                            </div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandLastYear"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Plan -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Plan</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandPlan"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- % Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">% Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandPerAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- GOLY -->
+                    <div class="col-md-12">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">GOLY</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandGoly"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
         </div>
 
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
