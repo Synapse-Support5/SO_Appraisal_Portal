@@ -16,7 +16,8 @@ namespace SO_Appraisal
         DataTable dt = new DataTable();
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
-
+        public DataSet resds = new DataSet();
+        string SOCode = "4076L2";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -24,8 +25,8 @@ namespace SO_Appraisal
             {
                 AccessLoad();
                 BindFYDropdown();
-                LoadAllTables();
-                
+                //LoadAllTables();
+
             }
         }
 
@@ -106,299 +107,113 @@ namespace SO_Appraisal
         #endregion
 
         #region BindFYDropdown
-        private void BindFYDropdown()
+        public void BindFYDropdown()
         {
-            FYDrp.Items.Clear();
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_HR_DashBoardLoad", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "Landing");
+                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@PcYearText", "");
+                cmd1.Parameters.AddWithValue("@PcYearVal", "");
+                cmd1.ExecuteNonQuery();
 
-            FYDrp.Items.Add(new ListItem("Select FY", ""));
+                cmd1.CommandTimeout = 6000;
 
-            FYDrp.Items.Add(new ListItem("24-25", "2425"));
-            FYDrp.Items.Add(new ListItem("25-26", "2526"));
-            FYDrp.Items.Add(new ListItem("26-27", "2627"));
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                ds.Clear();
+                da.Fill(ds);
+
+                // ✅ First Result Set → Geo
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    lblGeo.Text = "Geo : " + ds.Tables[0].Rows[0]["Geo"].ToString();
+                }
+
+                // ✅ Second Result Set → FY
+                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                {
+                    DataTable dtFY = ds.Tables[1];
+
+                    FYDrp.DataSource = dtFY;
+                    FYDrp.DataTextField = "PcYear";   // Column name
+                    FYDrp.DataValueField = "Value";   // Column name
+                    FYDrp.DataBind();
+
+                    FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
+
+                    // ✅ Auto select where IsCurrent = 1
+                    DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
+                    if (currentRow.Length > 0)
+                    {
+                        FYDrp.SelectedValue = currentRow[0]["Value"].ToString();
+
+                        FetchAllData();
+
+                        if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+                        {
+                            DistCountBtn.Text = "Dist. Count : " +
+                                resds.Tables[0].Rows[0]["DistCount"].ToString();
+                        }
+                        else
+                        {
+                            DistCountBtn.Text = "Dist. Count : 0";
+                        }
+                    }
+
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("FY and Geo Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
         }
         #endregion
 
-        #region LoadAllTables
-        public void LoadAllTables()
+        #region
+        public void FetchAllData()
         {
-            SalesLastYearData();
-            SalesPlanData();
-            SalesAchievementData();
-            SalesPerAchievementData();
-            SalesGolyData();
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_HR_DashBoardLoad", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
+                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
+                cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
+                cmd1.ExecuteNonQuery();
 
-            BrandLastYearData();
-            BrandPlanData();
-            BrandAchievementData();
-            BrandPerAchievementData();
-            BrandGolyData();
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resds.Clear();
+                da.Fill(resds);
+
+                Session["DashData"] = resds;
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("Fetch All Data Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
         }
         #endregion
-
-        #region SalesLastYearData
-        public void SalesLastYearData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Sales Value");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-            dt.Columns.Add("Total");
-
-            // Dynamic rows
-            dt.Rows.Add("Actual_Value(Rs Lacs)", "581.53", "520.77", "231.323", "324.123", "3245.1234");
-            dt.Rows.Add("NStr_Value_Actual(Rs Lacs)", "101.11", "99.28", "233.43", "123.00", "1234.234");
-            dt.Rows.Add("Str_Value_Actual(Rs Lacs)", "480.11", "998.213", "54.234", "5342.213", "342.234");
-            dt.Rows.Add("Str_Volume_intons(In Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-
-            gvSalesLastYear.DataSource = dt;
-            gvSalesLastYear.DataBind();
-        }
-        #endregion
-
-        #region SalesPlanData
-        public void SalesPlanData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Sales Value");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Actual_Value(Rs Lacs)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("NStr_Value_Actual(Rs Lacs)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Str_Value_Actual(Rs Lacs)", "480.11", "998.213", "54.234", "5342.213");
-            dt.Rows.Add("Str_Volume_intons(In Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvSalesPlan.DataSource = dt;
-            gvSalesPlan.DataBind();
-        }
-        #endregion
-
-        #region SalesAchievementData
-        public void SalesAchievementData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Sales Value");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Actual_Value(Rs Lacs)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("NStr_Value_Actual(Rs Lacs)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Str_Value_Actual(Rs Lacs)", "480.11", "998.213", "54.234", "5342.213");
-            dt.Rows.Add("Str_Volume_intons(In Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvSalesAchievement.DataSource = dt;
-            gvSalesAchievement.DataBind();
-        }
-        #endregion
-
-        #region SalesAchievementData
-        public void SalesPerAchievementData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Sales Value");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Actual_Value(Rs Lacs)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("NStr_Value_Actual(Rs Lacs)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Str_Value_Actual(Rs Lacs)", "480.11", "998.213", "54.234", "5342.213");
-            dt.Rows.Add("Str_Volume_intons(In Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvSalesPerAchievement.DataSource = dt;
-            gvSalesPerAchievement.DataBind();
-        }
-        #endregion
-
-        #region SalesGolyData
-        public void SalesGolyData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Sales Value");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Actual_Value(Rs Lacs)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("NStr_Value_Actual(Rs Lacs)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Str_Value_Actual(Rs Lacs)", "480.11", "998.213", "54.234", "5342.213");
-            dt.Rows.Add("Str_Volume_intons(In Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvSalesGoly.DataSource = dt;
-            gvSalesGoly.DataBind();
-        }
-        #endregion
-
-        #region BrandLastYearData
-        public void BrandLastYearData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Brand Volume");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-            dt.Columns.Add("Total");
-
-            // Dynamic rows
-            dt.Rows.Add("Santoor(Tonnes)", "581.53", "520.77", "231.323", "324.123", "3245.1234");
-            dt.Rows.Add("Fabric-Softner(Tonnes)", "101.11", "99.28", "233.43", "123.00", "1234.234");
-            dt.Rows.Add("Santoor-White(Tonnes)", "480.11", "998.213", "54.234", "5342.213", "342.234");
-            dt.Rows.Add("Santoor45(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("SantoorLime(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("Maxkleen(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("HandWash(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("Safewash-Matic(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("Glucovita-Bolts(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-            dt.Rows.Add("Sweetener(Tonnes)", "220.32", "12.31", "342.45", "324.21", "234534.23");
-
-            gvBrandLastYear.DataSource = dt;
-            gvBrandLastYear.DataBind();
-        }
-        #endregion
-
-        #region BrandPlanData
-        public void BrandPlanData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Brand Volume");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Santoor(Tonnes)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("Fabric-Softner(Tonnes)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Santoor-White(Tonnes)", "480.11", "998.213", "54.234");
-            dt.Rows.Add("Santoor45(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("SantoorLime(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Maxkleen(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("HandWash(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Safewash-Matic(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Glucovita-Bolts(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Sweetener(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvBrandPlan.DataSource = dt;
-            gvBrandPlan.DataBind();
-        }
-        #endregion
-
-        #region BrandAchievementData
-        public void BrandAchievementData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Brand Volume");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Santoor(Tonnes)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("Fabric-Softner(Tonnes)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Santoor-White(Tonnes)", "480.11", "998.213", "54.234", "987.65");
-            dt.Rows.Add("Santoor45(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("SantoorLime(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Maxkleen(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("HandWash(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Safewash-Matic(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Glucovita-Bolts(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Sweetener(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvBrandAchievement.DataSource = dt;
-            gvBrandAchievement.DataBind();
-        }
-        #endregion
-
-        #region BrandPerAchievementData
-        public void BrandPerAchievementData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Brand Volume");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Santoor(Tonnes)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("Fabric-Softner(Tonnes)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Santoor-White(Tonnes)", "480.11", "998.213", "54.234", "987.65");
-            dt.Rows.Add("Santoor45(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("SantoorLime(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Maxkleen(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("HandWash(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Safewash-Matic(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Glucovita-Bolts(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Sweetener(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvBrandPerAchievement.DataSource = dt;
-            gvBrandPerAchievement.DataBind();
-        }
-        #endregion
-
-        #region BrandGolyData
-        public void BrandGolyData()
-        {
-            DataTable dt = new DataTable();
-
-            // Dynamic columns
-            dt.Columns.Add("Brand Volume");
-            dt.Columns.Add("Q1");
-            dt.Columns.Add("Q2");
-            dt.Columns.Add("Q3");
-            dt.Columns.Add("Q4");
-
-            // Dynamic rows
-            dt.Rows.Add("Santoor(Tonnes)", "581.53", "520.77", "231.323", "324.123");
-            dt.Rows.Add("Fabric-Softner(Tonnes)", "101.11", "99.28", "233.43", "123.00");
-            dt.Rows.Add("Santoor-White(Tonnes)", "480.11", "998.213", "54.234", "987.65");
-            dt.Rows.Add("Santoor45(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("SantoorLime(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Maxkleen(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("HandWash(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Safewash-Matic(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Glucovita-Bolts(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-            dt.Rows.Add("Sweetener(Tonnes)", "220.32", "12.31", "342.45", "324.21");
-
-            gvBrandGoly.DataSource = dt;
-            gvBrandGoly.DataBind();
-        }
-        #endregion
-
-
-
 
         #region ToastNotification
         private void showToast(string message, string styleClass)
@@ -437,7 +252,178 @@ namespace SO_Appraisal
 
         protected void ExportBtn_Click(object sender, EventArgs e)
         {
-            showToast("Toast is working fine", "toast-success");
+            showToast("Working in progress", "toast-success");
+        }
+
+        protected void FYDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FetchAllData();
+
+            if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+            {
+                DistCountBtn.Text = "Dist. Count : " +
+                    resds.Tables[0].Rows[0]["DistCount"].ToString();
+            }
+            else
+            {
+                DistCountBtn.Text = "Dist. Count : 0";
+            }
+        }
+
+        protected void TypeDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (TypeDrp.SelectedValue == "Primary")
+            {
+                PrimaryLoad();
+            }
+            else if (TypeDrp.SelectedValue == "Secondary")
+            {
+                SecondaryLoad();
+            }
+            else if (TypeDrp.SelectedValue == "Distributors")
+            {
+                DistributorLoad();
+            }
+            else
+            {
+                PriSecDiv.Visible = false;
+            }
+
+        }
+
+        public void PrimaryLoad()
+        {
+            try
+            {
+                if (Session["DashData"] != null)
+                {
+                    PriSecDiv.Visible = true;
+
+                    resds = (DataSet)Session["DashData"];
+
+                    //Sales Value ------------
+                    gvSalesLastYear.DataSource = resds.Tables[1];
+                    gvSalesLastYear.DataBind();
+
+                    gvSalesPlan.DataSource = resds.Tables[2];
+                    gvSalesPlan.DataBind();
+
+                    gvSalesAchievement.DataSource = resds.Tables[3];
+                    gvSalesAchievement.DataBind();
+
+                    gvSalesPerAchievement.DataSource = resds.Tables[4];
+                    gvSalesPerAchievement.DataBind();
+
+                    gvSalesGoly.DataSource = resds.Tables[5];
+                    gvSalesGoly.DataBind();
+                    //------------------------
+
+                    //Brand Volume -----------
+                    gvBrandLastYear.DataSource = resds.Tables[6];
+                    gvBrandLastYear.DataBind();
+
+                    gvBrandPlan.DataSource = resds.Tables[7];
+                    gvBrandPlan.DataBind();
+
+                    gvBrandAchievement.DataSource = resds.Tables[8];
+                    gvBrandAchievement.DataBind();
+
+                    gvBrandPerAchievement.DataSource = resds.Tables[9];
+                    gvBrandPerAchievement.DataBind();
+
+                    gvBrandGoly.DataSource = resds.Tables[10];
+                    gvBrandGoly.DataBind();
+                    //------------------------
+                }
+                else
+                {
+                    PriSecDiv.Visible = false;
+                    showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Primary Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+
+        public void SecondaryLoad()
+        {
+            try
+            {
+                if (Session["DashData"] != null)
+                {
+                    PriSecDiv.Visible = true;
+
+                    resds = (DataSet)Session["DashData"];
+
+                    //Sales Value ------------
+                    gvSalesLastYear.DataSource = resds.Tables[11];
+                    gvSalesLastYear.DataBind();
+
+                    gvSalesPlan.DataSource = resds.Tables[12];
+                    gvSalesPlan.DataBind();
+
+                    gvSalesAchievement.DataSource = resds.Tables[13];
+                    gvSalesAchievement.DataBind();
+
+                    gvSalesPerAchievement.DataSource = resds.Tables[14];
+                    gvSalesPerAchievement.DataBind();
+
+                    gvSalesGoly.DataSource = resds.Tables[15];
+                    gvSalesGoly.DataBind();
+                    //------------------------
+
+                    //Brand Volume -----------
+                    gvBrandLastYear.DataSource = resds.Tables[16];
+                    gvBrandLastYear.DataBind();
+
+                    gvBrandPlan.DataSource = resds.Tables[17];
+                    gvBrandPlan.DataBind();
+
+                    gvBrandAchievement.DataSource = resds.Tables[18];
+                    gvBrandAchievement.DataBind();
+
+                    gvBrandPerAchievement.DataSource = resds.Tables[19];
+                    gvBrandPerAchievement.DataBind();
+
+                    gvBrandGoly.DataSource = resds.Tables[20];
+                    gvBrandGoly.DataBind();
+                    //------------------------
+                }
+                else
+                {
+                    PriSecDiv.Visible = false;
+                    showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Secondary Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+
+        public void DistributorLoad()
+        {
+            try
+            {
+                PriSecDiv.Visible = false;
+                showToast("Working in progress", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                LogError("Primary Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+
+        protected void DistCountBtn_Click(object sender, EventArgs e)
+        {
+            DistributorLoad();
         }
     }
 }

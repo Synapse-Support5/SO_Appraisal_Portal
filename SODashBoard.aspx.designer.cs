@@ -24,22 +24,13 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Label lblUserName;
 
         /// <summary>
-        /// GeoLbl control.
+        /// lblGeo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText GeoLbl;
-
-        /// <summary>
-        /// DistCountBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DistCountBtn;
+        protected global::System.Web.UI.WebControls.Label lblGeo;
 
         /// <summary>
         /// FYDrp control.
@@ -60,6 +51,24 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlInputText FYSearch;
 
         /// <summary>
+        /// TypeDrp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList TypeDrp;
+
+        /// <summary>
+        /// DistCountBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button DistCountBtn;
+
+        /// <summary>
         /// ExportBtn control.
         /// </summary>
         /// <remarks>
@@ -67,6 +76,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button ExportBtn;
+
+        /// <summary>
+        /// PriSecDiv control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PriSecDiv;
 
         /// <summary>
         /// gvSalesLastYear control.

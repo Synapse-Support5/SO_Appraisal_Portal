@@ -147,6 +147,7 @@
                         </span>
                     </a>
                     <a class="nav-link" runat="server" href="~/SO_DBR_Master">SO DBR Details</a>
+                    <a class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
                 </li>
             </ul>
         </aside>

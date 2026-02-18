@@ -283,17 +283,49 @@
             cursor: not-allowed !important;
         }
 
+        .grid-wrapper {
+            max-height: 300px;
+            max-width: 100%;
+            overflow: auto;
+        }
+
+        @media (max-width: 768px) {
+            .col-12 {
+                text-align: center;
+            }
+
+            /*#btnOpenModal {
+                width: 100%;
+            }
+*/
+            .grid-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+                .grid-wrapper table {
+                    width: 100%;
+                    display: block;
+                }
+
+                    .grid-wrapper table thead,
+                    .grid-wrapper table tbody {
+                        display: table;
+                        width: 100%;
+                    }
+        }
+
         /* Background image container */
         /*.body-content {
             position: relative;
             z-index: 1;*/ /* content stays above background */
         /*}*/
 
-            /* Background image layer */
-            /*.body-content::before {
+        /* Background image layer */
+        /*.body-content::before {
                 content: "";
                 position: fixed;*/ /* covers full screen */
-                /*top: 0;
+        /*top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
@@ -302,16 +334,16 @@
                 background-position: center center;
                 background-size: contain;*/ /* responsive */
 
-                /*opacity: 0.12;*/ /* subtle background */
-                /*z-index: -999;*/ /* lowest possible */
-                /*pointer-events: none;*/ /* clickable elements work */
-            /*}*/
+        /*opacity: 0.12;*/ /* subtle background */
+        /*z-index: -999;*/ /* lowest possible */
+        /*pointer-events: none;*/ /* clickable elements work */
+        /*}*/
 
         /* MEDIUM and larger screens */
         /*@media (min-width: 768px) {
             .body-content::before {
                 background-size: 30% auto;*/ /* ✅ md+ */
-            /*}
+        /*}
         }*/
     </style>
 
@@ -468,11 +500,13 @@
 
 
             <!-- GridView -->
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-12">
-                    <asp:GridView ID="ResultGrid" runat="server" AutoGenerateColumns="true"
-                        CssClass="table table-bordered table-sm" Style="text-align: center;">
-                    </asp:GridView>
+                    <div class="grid-wrapper">
+                        <asp:GridView ID="ResultGrid" runat="server" AutoGenerateColumns="true"
+                            CssClass="table table-bordered form-group" Style="text-align: center;">
+                        </asp:GridView>
+                    </div>
                 </div>
             </div>
         </div>
