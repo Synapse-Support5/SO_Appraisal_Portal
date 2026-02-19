@@ -239,7 +239,8 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@ActionType", "SoLoad");
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                //cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
                 cmd1.Parameters.AddWithValue("@SOCode", "");
                 cmd1.Parameters.AddWithValue("@DistCode", "");
@@ -374,7 +375,8 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@ActionType", "FetchData");
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@StateId", StateDrp.SelectedValue);
-                    cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                    //cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                    cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@ZoneName", ZoneDrp.SelectedItem.ToString());
                     cmd1.Parameters.AddWithValue("@SOCode", SODrp.SelectedItem.ToString());
                     cmd1.Parameters.AddWithValue("@DistCode", "");
