@@ -701,6 +701,42 @@
             </div>
         </div>
 
+        <div id="distDiv" runat="server" visible="false">
+            <div class="container mt-4">
+
+                <!-- OUTER CARD (Distributor) -->
+                <div class="dashboard-wrapper">
+
+                    <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                        Distributors
+                    </div>
+
+                    <div class="row dashboard-row">
+
+                        <!-- Dist -->
+                        <div class="col-md-12">
+                            <div class="dashboard-card">
+                                <%--<div class="dashboard-card-title">Dist</div>--%>
+
+                                <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                    <asp:GridView
+                                        ID="gvDistributors"
+                                        runat="server"
+                                        CssClass="table table-sm table-bordered text-center mb-0"
+                                        AutoGenerateColumns="true"
+                                        GridLines="Both">
+                                    </asp:GridView>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
         <asp:HiddenField ID="hdnBusinessType" runat="server" />
         <asp:HiddenField ID="hdnRole" runat="server" />

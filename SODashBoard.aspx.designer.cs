@@ -177,6 +177,24 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView gvBrandGoly;
 
         /// <summary>
+        /// distDiv control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl distDiv;
+
+        /// <summary>
+        /// gvDistributors control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvDistributors;
+
+        /// <summary>
         /// hdnBusinessType control.
         /// </summary>
         /// <remarks>

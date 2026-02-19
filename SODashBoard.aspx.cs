@@ -179,7 +179,7 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region
+        #region FetchAllData
         public void FetchAllData()
         {
             try
@@ -215,46 +215,7 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region ToastNotification
-        private void showToast(string message, string styleClass)
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
-        }
-
-        #endregion
-
-        #region LogError
-        private void LogError(string message, Exception ex)
-        {
-            try
-            {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
-                cmd1.Parameters.AddWithValue("@Page", "SODashBoard");
-                cmd1.Parameters.AddWithValue("@Message", message);
-                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-            }
-            catch
-            {
-            }
-        }
-        #endregion
-
-        protected void ExportBtn_Click(object sender, EventArgs e)
-        {
-            showToast("Working in progress", "toast-success");
-        }
-
+        #region SelectedIndexChanged
         protected void FYDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
             FetchAllData();
@@ -290,11 +251,15 @@ namespace SO_Appraisal
             }
 
         }
+        #endregion
 
+        #region PrimaryLoad
         public void PrimaryLoad()
         {
             try
             {
+                distDiv.Visible = false;
+
                 if (Session["DashData"] != null)
                 {
                     PriSecDiv.Visible = true;
@@ -348,11 +313,15 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region SecondaryLoad
         public void SecondaryLoad()
         {
             try
             {
+                distDiv.Visible = false;
+
                 if (Session["DashData"] != null)
                 {
                     PriSecDiv.Visible = true;
@@ -406,24 +375,136 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region DistributorLoad
         public void DistributorLoad()
         {
             try
             {
                 PriSecDiv.Visible = false;
-                showToast("Working in progress", "toast-success");
+                if (Session["DashData"] != null)
+                {
+                    distDiv.Visible = true;
+
+                    resds = (DataSet)Session["DashData"];
+
+                    //Sales Value ------------
+                    gvDistributors.DataSource = resds.Tables[21];
+                    gvDistributors.DataBind();
+                }
             }
             catch (Exception ex)
             {
-                LogError("Primary Load Error", ex);
+                LogError("Distributor Load Error", ex);
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
+        #endregion
 
+        #region DistCountBtn_Click
         protected void DistCountBtn_Click(object sender, EventArgs e)
         {
+            TypeDrp.SelectedValue = "Distributors";
             DistributorLoad();
         }
+        #endregion
+
+        #region ToastNotification
+        private void showToast(string message, string styleClass)
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
+        }
+
+        #endregion
+
+        #region LogError
+        private void LogError(string message, Exception ex)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
+                cmd1.Parameters.AddWithValue("@Page", "SODashBoard");
+                cmd1.Parameters.AddWithValue("@Message", message);
+                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch
+            {
+            }
+        }
+        #endregion
+
+        protected void ExportBtn_Click(object sender, EventArgs e)
+        {
+            if (Session["DashData"] != null)
+            {
+                DataSet ds = (DataSet)Session["DashData"];
+
+                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
+                {
+                    // ================= PRIMARY SHEET =================
+                    var wsPrimary = wb.Worksheets.Add("Primary");
+                    int primaryRow = 1;
+
+                    for (int i = 1; i <= 10 && i < ds.Tables.Count; i++)
+                    {
+                        DataTable dt = ds.Tables[i];
+
+                        wsPrimary.Cell(primaryRow, 1).InsertTable(dt, true);
+                        primaryRow += dt.Rows.Count + 3; // space between tables
+                    }
+
+                    // ================= SECONDARY SHEET =================
+                    var wsSecondary = wb.Worksheets.Add("Secondary");
+                    int secondaryRow = 1;
+
+                    for (int i = 11; i <= 20 && i < ds.Tables.Count; i++)
+                    {
+                        DataTable dt = ds.Tables[i];
+
+                        wsSecondary.Cell(secondaryRow, 1).InsertTable(dt, true);
+                        secondaryRow += dt.Rows.Count + 3;
+                    }
+
+                    // ================= DISTRIBUTORS SHEET =================
+                    if (ds.Tables.Count > 21)
+                    {
+                        var wsDist = wb.Worksheets.Add("Distributors");
+                        wsDist.Cell(1, 1).InsertTable(ds.Tables[21], true);
+                    }
+
+                    // ================= DOWNLOAD =================
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.ContentType =
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition",
+                        "attachment;filename=Dashboard_Report.xlsx");
+
+                    using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
+                    {
+                        wb.SaveAs(memoryStream);
+                        memoryStream.WriteTo(Response.OutputStream);
+                        Response.Flush();
+                        Response.End();
+                    }
+                }
+            }
+        }
+
+
+
+
     }
 }
