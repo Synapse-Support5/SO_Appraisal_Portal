@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -410,6 +411,164 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region ExportBtn_Click
+        protected void ExportBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Session["DashData"] == null) return;
+
+                DataSet ds = (DataSet)Session["DashData"];
+
+                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
+                {
+                    CreateCustomSheet(wb, ds, 1, 10, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 11, 20, "Secondary", secondaryNames);
+
+                    // ================= Distributor Sheet =================
+                    if (ds.Tables.Count > 21)
+                    {
+                        var wsDist = wb.Worksheets.Add("Distributors");
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[21], false);
+
+                        FormatTable(table);
+                        wsDist.Columns().AdjustToContents();
+                    }
+
+                    Response.Clear();
+                    Response.ContentType =
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition",
+                        "attachment;filename=Dashboard_Report_" + SOCode + ".xlsx");
+
+                    using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
+                    {
+                        wb.SaveAs(memoryStream);
+                        memoryStream.WriteTo(Response.OutputStream);
+                        Response.End();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError("Export Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+        #endregion
+
+        #region Helpers
+        private void CreateCustomSheet(XLWorkbook wb, DataSet ds,
+                               int startIndex, int endIndex,
+                               string sheetName,
+                               string[] tableNames)
+        {
+            var ws = wb.Worksheets.Add(sheetName);
+
+            int currentRow = 1;
+            int currentCol;
+            int maxHeightTop = 0;
+
+            // ===== TOP 5 TABLES =====
+            currentCol = 1;
+
+            for (int i = startIndex; i < startIndex + 5 && i < ds.Tables.Count; i++)
+            {
+                DataTable dt = ds.Tables[i];
+
+                ws.Cell(currentRow, currentCol).Value =
+                    tableNames[i - startIndex];
+
+                ws.Cell(currentRow, currentCol).Style.Font.Bold = true;
+                ws.Cell(currentRow, currentCol).Style.Font.FontSize = 10;
+
+                var table = ws.Cell(currentRow + 1, currentCol)
+                              .InsertTable(dt, false);
+
+                FormatTable(table);
+
+                int tableWidth = dt.Columns.Count;
+                int tableHeight = dt.Rows.Count + 1;
+
+                maxHeightTop = Math.Max(maxHeightTop, tableHeight);
+
+                currentCol += tableWidth + 1;
+            }
+
+            currentRow += maxHeightTop + 3;
+            currentCol = 1;
+
+            // ===== NEXT 5 TABLES =====
+            for (int i = startIndex + 5; i <= endIndex && i < ds.Tables.Count; i++)
+            {
+                DataTable dt = ds.Tables[i];
+
+                ws.Cell(currentRow, currentCol).Value =
+                    tableNames[i - startIndex];
+
+                ws.Cell(currentRow, currentCol).Style.Font.Bold = true;
+                ws.Cell(currentRow, currentCol).Style.Font.FontSize = 10;
+
+                var table = ws.Cell(currentRow + 1, currentCol)
+                              .InsertTable(dt, false);
+
+                FormatTable(table);
+
+                int tableWidth = dt.Columns.Count;
+
+                currentCol += tableWidth + 1;
+            }
+
+            ws.Columns().AdjustToContents();
+        }
+
+        private void FormatTable(IXLTable table)
+        {
+            table.ShowAutoFilter = false;        // Remove filter
+            table.Theme = XLTableTheme.None;     // Remove color theme
+
+            var range = table.AsRange();
+
+            range.Style.Font.FontSize = 10;
+            range.Style.Font.Bold = false;
+
+            // Header bold
+            range.FirstRow().Style.Font.Bold = true;
+
+            // Borders
+            range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+        }
+
+        string[] primaryNames = new string[]
+        {
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY",
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY"
+        };
+
+        string[] secondaryNames = new string[]
+        {
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY",
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY"
+        };
+        #endregion
+
         #region ToastNotification
         private void showToast(string message, string styleClass)
         {
@@ -445,63 +604,7 @@ namespace SO_Appraisal
         }
         #endregion
 
-        protected void ExportBtn_Click(object sender, EventArgs e)
-        {
-            if (Session["DashData"] != null)
-            {
-                DataSet ds = (DataSet)Session["DashData"];
-
-                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
-                {
-                    // ================= PRIMARY SHEET =================
-                    var wsPrimary = wb.Worksheets.Add("Primary");
-                    int primaryRow = 1;
-
-                    for (int i = 1; i <= 10 && i < ds.Tables.Count; i++)
-                    {
-                        DataTable dt = ds.Tables[i];
-
-                        wsPrimary.Cell(primaryRow, 1).InsertTable(dt, true);
-                        primaryRow += dt.Rows.Count + 3; // space between tables
-                    }
-
-                    // ================= SECONDARY SHEET =================
-                    var wsSecondary = wb.Worksheets.Add("Secondary");
-                    int secondaryRow = 1;
-
-                    for (int i = 11; i <= 20 && i < ds.Tables.Count; i++)
-                    {
-                        DataTable dt = ds.Tables[i];
-
-                        wsSecondary.Cell(secondaryRow, 1).InsertTable(dt, true);
-                        secondaryRow += dt.Rows.Count + 3;
-                    }
-
-                    // ================= DISTRIBUTORS SHEET =================
-                    if (ds.Tables.Count > 21)
-                    {
-                        var wsDist = wb.Worksheets.Add("Distributors");
-                        wsDist.Cell(1, 1).InsertTable(ds.Tables[21], true);
-                    }
-
-                    // ================= DOWNLOAD =================
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.ContentType =
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition",
-                        "attachment;filename=Dashboard_Report.xlsx");
-
-                    using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
-                    {
-                        wb.SaveAs(memoryStream);
-                        memoryStream.WriteTo(Response.OutputStream);
-                        Response.Flush();
-                        Response.End();
-                    }
-                }
-            }
-        }
+        
 
 
 
