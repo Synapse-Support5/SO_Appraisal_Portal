@@ -237,18 +237,22 @@ namespace SO_Appraisal
             if (TypeDrp.SelectedValue == "Primary")
             {
                 PrimaryLoad();
+                statusBtnDiv.Visible = true;
             }
             else if (TypeDrp.SelectedValue == "Secondary")
             {
                 SecondaryLoad();
+                statusBtnDiv.Visible = true;
             }
             else if (TypeDrp.SelectedValue == "Distributors")
             {
                 DistributorLoad();
+                statusBtnDiv.Visible = true;
             }
             else
             {
                 PriSecDiv.Visible = false;
+                statusBtnDiv.Visible = false;
             }
 
         }
@@ -602,10 +606,38 @@ namespace SO_Appraisal
             {
             }
         }
+
+
+
+
+
         #endregion
 
-        
-
+        protected void Proceed_Submit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtRemarks.Text == string.Empty)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
+                        "$('#proceedModalCenter').modal('show');", true);
+                    return;
+                }
+                else if (!chkConfirm.Checked)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "showToast('You must confirm that the data has been reviewed before submission', 'toast-danger');" +
+                        "$('#proceedModalCenter').modal('show');", true);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError("Proceed Submit Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
 
 
 

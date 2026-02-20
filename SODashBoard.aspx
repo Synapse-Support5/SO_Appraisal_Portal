@@ -737,11 +737,90 @@
             </div>
         </div>
 
+        <div id="statusBtnDiv" runat="server" visible="false">
+            <div class="container mt-4">
+                <div class="row justify-content-end">
+                    <div class="col-6 col-md-3 mb-2 mb-md-0">
+                        <button type="button" style="text-align: center;" class="form-control btn btn-primary" id="btn_Proceed" runat="server" data-toggle="modal" data-target="#proceedModalCenter">
+                            Proceed
+                        </button>
+                        <%--<asp:Button ID="btn_Proceed"
+                            runat="server"
+                            Text="Proceed"
+                            CssClass="btn btn-primary form-control" Visible="true" />--%>
+                        <asp:Button ID="btn_Requested"
+                            runat="server"
+                            Text="Requested for Approval"
+                            CssClass="btn btn-outline-primary form-control" disabled="true" Visible="false" />
+                        <asp:Button ID="Button1"
+                            runat="server"
+                            Text="Approved"
+                            CssClass="btn btn-outline-success form-control" disabled="true" Visible="false" />
+                        <asp:Button ID="btn_Rejected"
+                            runat="server"
+                            Text="Rejected"
+                            CssClass="btn btn-outline-danger form-control" disabled="true" Visible="false" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <%-- Modal for Proceed --%>
+        <div class="modal fade" id="proceedModalCenter" tabindex="-1" role="dialog" aria-labelledby="proceedModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="proceedModalLongTitle">Confirmation Dialog</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body py-2 px-0">
+                        <div class="px-3">
+
+                            <!-- Remarks -->
+                            <div class="form-group mb-0">
+                                <asp:TextBox ID="txtRemarks" runat="server"
+                                    CssClass="form-control text-left"
+                                    TextMode="MultiLine"
+                                    Rows="1"
+                                    placeholder="Write a valid reason here..." />
+                            </div>
+
+                            <!-- Confirmation Checkbox -->
+                            <div class="form-group mt-3 mb-0">
+                                <div class="form-check">
+                                    <asp:CheckBox
+                                        ID="chkConfirm"
+                                        runat="server"
+                                        CssClass="" />
+
+                                    <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
+                                        I have checked the data carefully before confirming.
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <asp:Button ID="Proceed_Submit" runat="server" Text="Confirm" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="Proceed_Submit_Click" />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
         <asp:HiddenField ID="hdnBusinessType" runat="server" />
         <asp:HiddenField ID="hdnRole" runat="server" />
         <asp:HiddenField ID="hfSelectedRowData" runat="server" />
+
     </div>
+
 
     <script>
         // --- FYDrp autocomplete ---
