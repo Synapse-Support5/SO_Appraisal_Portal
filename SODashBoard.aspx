@@ -737,30 +737,17 @@
             </div>
         </div>
 
-        <div id="statusBtnDiv" runat="server" visible="false">
-            <div class="container mt-4">
-                <div class="row justify-content-end">
-                    <div class="col-6 col-md-3 mb-2 mb-md-0">
-                        <button type="button" style="text-align: center;" class="form-control btn btn-primary" id="btn_Proceed" runat="server" data-toggle="modal" data-target="#proceedModalCenter">
-                            Proceed
-                        </button>
-                        <%--<asp:Button ID="btn_Proceed"
-                            runat="server"
-                            Text="Proceed"
-                            CssClass="btn btn-primary form-control" Visible="true" />--%>
-                        <asp:Button ID="btn_Requested"
-                            runat="server"
-                            Text="Requested for Approval"
-                            CssClass="btn btn-outline-primary form-control" disabled="true" Visible="false" />
-                        <asp:Button ID="Button1"
-                            runat="server"
-                            Text="Approved"
-                            CssClass="btn btn-outline-success form-control" disabled="true" Visible="false" />
-                        <asp:Button ID="btn_Rejected"
-                            runat="server"
-                            Text="Rejected"
-                            CssClass="btn btn-outline-danger form-control" disabled="true" Visible="false" />
-                    </div>
+        <div class="container mt-4">
+            <div class="row justify-content-end">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <button type="button" style="text-align: center;" class="form-control btn btn-primary" id="btn_Proceed" runat="server" data-toggle="modal" data-target="#proceedModalCenter" visible="false">
+                        Proceed
+                    </button>
+                    <asp:Button ID="btn_Common"
+                        runat="server"
+                        Text=""
+                        disabled="true" Visible="false" />
+
                 </div>
             </div>
         </div>

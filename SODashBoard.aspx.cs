@@ -19,6 +19,7 @@ namespace SO_Appraisal
         DataSet ds = new DataSet();
         public DataSet resds = new DataSet();
         string SOCode = "4076L2";
+        string Button;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -170,6 +171,13 @@ namespace SO_Appraisal
 
                 }
 
+                // ✅ Third Result Set → Button status
+                if (ds.Tables.Count > 1 && ds.Tables[2].Rows.Count > 0)
+                {
+                    Button = ds.Tables[2].Rows[0]["Status"].ToString();
+                    Session["Button"] = Button;
+                }
+
                 con.Close();
             }
             catch (Exception ex)
@@ -237,22 +245,24 @@ namespace SO_Appraisal
             if (TypeDrp.SelectedValue == "Primary")
             {
                 PrimaryLoad();
-                statusBtnDiv.Visible = true;
+                ButtonVisibilityHelper();
+
             }
             else if (TypeDrp.SelectedValue == "Secondary")
             {
                 SecondaryLoad();
-                statusBtnDiv.Visible = true;
+                ButtonVisibilityHelper();
             }
             else if (TypeDrp.SelectedValue == "Distributors")
             {
                 DistributorLoad();
-                statusBtnDiv.Visible = true;
+                ButtonVisibilityHelper();
             }
             else
             {
                 PriSecDiv.Visible = false;
-                statusBtnDiv.Visible = false;
+                btn_Proceed.Visible = false;
+                btn_Common.Visible = false;
             }
 
         }
@@ -400,11 +410,7 @@ namespace SO_Appraisal
                         gvDistributors.DataSource = resds.Tables[21];
                         gvDistributors.DataBind();
 
-                        statusBtnDiv.Visible = true;
-                    }
-                    else
-                    {
-                        statusBtnDiv.Visible = false;
+                        //statusBtnDiv.Visible = true;
                     }
                 }
             }
@@ -421,6 +427,8 @@ namespace SO_Appraisal
         {
             TypeDrp.SelectedValue = "Distributors";
             DistributorLoad();
+
+            ButtonVisibilityHelper();
         }
         #endregion
 
@@ -465,6 +473,45 @@ namespace SO_Appraisal
             catch (Exception ex)
             {
                 LogError("Export Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+        #endregion
+
+        #region Proceed_Submit_Click
+        protected void Proceed_Submit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtRemarks.Text == string.Empty)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
+                        "$('#proceedModalCenter').modal('show');", true);
+                    return;
+                }
+
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
+                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
+                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+
+                showToast("Data Submitted!", "toast-success");
+            }
+            catch (Exception ex)
+            {
+                LogError("Proceed Submit Error", ex);
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
@@ -580,6 +627,31 @@ namespace SO_Appraisal
             "% Achievement",
             "GOLY"
         };
+
+        public void ButtonVisibilityHelper()
+        {
+            btn_Proceed.Visible = false;
+            btn_Common.Visible = true;
+            btn_Common.Text = Session["Button"].ToString();
+
+            if (Session["Button"].ToString() == "NewRequest")
+            {
+                btn_Proceed.Visible = true;
+                btn_Common.Visible = false;
+            }
+            else if (Session["Button"].ToString() == "Pending approval")
+            {
+                btn_Common.CssClass = "btn btn-outline-primary form-control";
+            }
+            else if (Session["Button"].ToString() == "Approved")
+            {
+                btn_Common.CssClass = "btn btn-outline-success form-control";
+            }
+            else if (Session["Button"].ToString() == "Rejected")
+            {
+                btn_Common.CssClass = "btn btn-outline-danger form-control";
+            }
+        }
         #endregion
 
         #region ToastNotification
@@ -622,43 +694,7 @@ namespace SO_Appraisal
 
         #endregion
 
-        protected void Proceed_Submit_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (txtRemarks.Text == string.Empty)
-                {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
-                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
-                        "$('#proceedModalCenter').modal('show');", true);
-                    return;
-                }
-                
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
-                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
-                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-
-                showToast("Data Submitted!", "toast-success");
-            }
-            catch (Exception ex)
-            {
-                LogError("Proceed Submit Error", ex);
-                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
-            }
-        }
-
+        
 
 
     }

@@ -195,15 +195,6 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView gvDistributors;
 
         /// <summary>
-        /// statusBtnDiv control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl statusBtnDiv;
-
-        /// <summary>
         /// btn_Proceed control.
         /// </summary>
         /// <remarks>
@@ -213,31 +204,13 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlButton btn_Proceed;
 
         /// <summary>
-        /// btn_Requested control.
+        /// btn_Common control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn_Requested;
-
-        /// <summary>
-        /// Button1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
-
-        /// <summary>
-        /// btn_Rejected control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn_Rejected;
+        protected global::System.Web.UI.WebControls.Button btn_Common;
 
         /// <summary>
         /// txtRemarks control.
