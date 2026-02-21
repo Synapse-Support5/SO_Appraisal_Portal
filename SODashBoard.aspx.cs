@@ -116,7 +116,7 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_HR_DashBoardLoad", con);
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Landing");
@@ -189,7 +189,7 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_HR_DashBoardLoad", con);
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
@@ -395,8 +395,17 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    gvDistributors.DataSource = resds.Tables[21];
-                    gvDistributors.DataBind();
+                    if (resds.Tables[21] != null)
+                    {
+                        gvDistributors.DataSource = resds.Tables[21];
+                        gvDistributors.DataBind();
+
+                        statusBtnDiv.Visible = true;
+                    }
+                    else
+                    {
+                        statusBtnDiv.Visible = false;
+                    }
                 }
             }
             catch (Exception ex)
@@ -624,13 +633,24 @@ namespace SO_Appraisal
                         "$('#proceedModalCenter').modal('show');", true);
                     return;
                 }
-                else if (!chkConfirm.Checked)
+                
+                if (con.State == ConnectionState.Closed)
                 {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
-                        "showToast('You must confirm that the data has been reviewed before submission', 'toast-danger');" +
-                        "$('#proceedModalCenter').modal('show');", true);
-                    return;
+                    con.Open();
                 }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
+                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
+                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+
+                showToast("Data Submitted!", "toast-success");
             }
             catch (Exception ex)
             {

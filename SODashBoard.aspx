@@ -797,9 +797,19 @@
                                         CssClass="" />
 
                                     <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
-                                        I have checked the data carefully before confirming.
+                                        I have reviewed the data carefully and request to freeze it for appraisal.
                                     </label>
                                 </div>
+                                <%--<div class="form-check">
+                                    <asp:CheckBox
+                                        ID="CheckBox1"
+                                        runat="server"
+                                        CssClass="" />
+
+                                    <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
+                                        I have checked the data carefully before confirming.
+                                    </label>
+                                </div>--%>
                             </div>
 
                         </div>
