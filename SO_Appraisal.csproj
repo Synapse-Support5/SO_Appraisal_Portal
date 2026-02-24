@@ -223,6 +223,7 @@
     <Content Include="Site.Master" />
     <Content Include="SODashBoard.aspx" />
     <Content Include="SO_DBR_Master.aspx" />
+    <Content Include="SO_TrackbyHR.aspx" />
     <Content Include="Transfer.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
@@ -305,6 +306,13 @@
     </Compile>
     <Compile Include="SO_DBR_Master.aspx.designer.cs">
       <DependentUpon>SO_DBR_Master.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SO_TrackbyHR.aspx.cs">
+      <DependentUpon>SO_TrackbyHR.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SO_TrackbyHR.aspx.designer.cs">
+      <DependentUpon>SO_TrackbyHR.aspx</DependentUpon>
     </Compile>
     <Compile Include="Transfer.aspx.cs">
       <DependentUpon>Transfer.aspx</DependentUpon>

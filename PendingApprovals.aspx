@@ -380,7 +380,7 @@
     </div>
 
     <div class="container body-content">
-        <h2 style="text-align: center; margin-top: 20px;">Pending Approvals</h2>
+        <h2 style="text-align: center; margin-top: 20px;">Pending Transfer Approvals</h2>
 
         <div class="headtag">
             <asp:Label ID="lblUserName" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>
