@@ -24,15 +24,6 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Label lblUserName;
 
         /// <summary>
-        /// lblGeo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblGeo;
-
-        /// <summary>
         /// StateDrp control.
         /// </summary>
         /// <remarks>
@@ -130,6 +121,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList TypeDrp;
+
+        /// <summary>
+        /// FetchBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button FetchBtn;
 
         /// <summary>
         /// ExportBtn control.
@@ -256,33 +256,6 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvDistributors;
-
-        /// <summary>
-        /// txtRemarks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtRemarks;
-
-        /// <summary>
-        /// chkConfirm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkConfirm;
-
-        /// <summary>
-        /// Proceed_Submit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Proceed_Submit;
 
         /// <summary>
         /// hdnBusinessType control.

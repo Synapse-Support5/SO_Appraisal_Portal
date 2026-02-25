@@ -423,8 +423,8 @@
         <h2 style="text-align: center; margin-top: 20px;">SO Achivements</h2>
 
         <div class="headtag">
-            <asp:Label ID="lblUserName" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label><br />
-            <asp:Label ID="lblGeo" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>
+            <asp:Label ID="lblUserName" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>
+            <%--<asp:Label ID="lblGeo" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>--%>
             <%--<asp:Label ID="lblDistCount" Text="DistCount : 30" runat="server" Style="color: black; float: right; margin-top: 0px; margin-bottom: -20px; margin-right: 20px"></asp:Label>--%>
         </div>
 
@@ -474,6 +474,9 @@
                         <input type="text" id="SODrpSearch" runat="server" class="form-control" style="display: none" placeholder="Enter SO Code" />
                     </div>
                 </div>
+            </div>
+
+            <div class="row mt-3">
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
@@ -503,347 +506,335 @@
                     </div>
                 </div>
 
-                <%--<div class="col-6 col-md-3 mb-2 mb-md-0">
-                    <asp:Button ID="DistCountBtn" runat="server" CssClass="btn btn-outline-primary form-control" OnClick="DistCountBtn_Click" />
-                </div>--%>
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <asp:Button ID="FetchBtn" runat="server" Text="Fetch" CssClass="btn btn-primary form-control" OnClick="FetchBtn_Click" />
+                </div>
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" OnClick="ExportBtn_Click" />
                 </div>
             </div>
+    </div>
+
+    <div id="PriSecDiv" runat="server" visible="false">
+        <div class="container mt-4">
+
+            <!-- OUTER CARD (Sales Value) -->
+            <div class="dashboard-wrapper">
+
+                <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                    Sales Value
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- Last Year -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">
+                                Last Year
+                            </div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesLastYear"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Plan -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Plan</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesPlan"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- % Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">% Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesPerAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- GOLY -->
+                    <div class="col-md-12">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">GOLY</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvSalesGoly"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
         </div>
+        <div class="container mt-4">
 
-        <div id="PriSecDiv" runat="server" visible="false">
-            <div class="container mt-4">
+            <!-- OUTER CARD (Brand Volume) -->
+            <div class="dashboard-wrapper">
 
-                <!-- OUTER CARD (Sales Value) -->
-                <div class="dashboard-wrapper">
+                <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                    Brand Volume
+                </div>
 
-                    <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
-                        Sales Value
+                <div class="row dashboard-row">
+
+                    <!-- Last Year -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">
+                                Last Year
+                            </div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandLastYear"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="row dashboard-row">
+                    <!-- Plan -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Plan</div>
 
-                        <!-- Last Year -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-
-                                <div class="dashboard-card-title">
-                                    Last Year
-                                </div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvSalesLastYear"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandPlan"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
                             </div>
+
                         </div>
-
-                        <!-- Plan -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">Plan</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvSalesPlan"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Achievement -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">Achievement</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvSalesAchievement"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- % Achievement -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-
-                                <div class="dashboard-card-title">% Achievement</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvSalesPerAchievement"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
                     </div>
 
-                    <div class="row dashboard-row">
+                    <!-- Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">Achievement</div>
 
-                        <!-- GOLY -->
-                        <div class="col-md-12">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">GOLY</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvSalesGoly"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
                             </div>
+
+                        </div>
+                    </div>
+
+                    <!-- % Achievement -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+
+                            <div class="dashboard-card-title">% Achievement</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandPerAchievement"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- GOLY -->
+                    <div class="col-md-12">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">GOLY</div>
+
+                            <div class="table-responsive">
+                                <asp:GridView
+                                    ID="gvBrandGoly"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="distDiv" runat="server" visible="false">
+        <div class="container mt-4">
+
+            <!-- OUTER CARD (Distributor) -->
+            <div class="dashboard-wrapper">
+
+                <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                    Distributors
+                </div>
+
+                <div class="row dashboard-row">
+
+                    <!-- Dist -->
+                    <div class="col-md-12">
+                        <div class="dashboard-card">
+                            <%--<div class="dashboard-card-title">Dist</div>--%>
+
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                <asp:GridView
+                                    ID="gvDistributors"
+                                    runat="server"
+                                    CssClass="table table-sm table-bordered text-center mb-0"
+                                    AutoGenerateColumns="true"
+                                    GridLines="Both">
+                                </asp:GridView>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <%-- Modal for Proceed --%>
+    <%--<div class="modal fade" id="proceedModalCenter" tabindex="-1" role="dialog" aria-labelledby="proceedModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="proceedModalLongTitle">Confirmation Dialog</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body py-2 px-0">
+                    <div class="px-3">
+
+                        <div class="form-group mb-0">
+                            <asp:TextBox ID="txtRemarks" runat="server"
+                                CssClass="form-control text-left"
+                                TextMode="MultiLine"
+                                Rows="1"
+                                placeholder="Write a valid reason here..." />
                         </div>
 
+                        <div class="form-group mt-3 mb-0">
+                            <div class="form-check">
+                                <asp:CheckBox
+                                    ID="chkConfirm"
+                                    runat="server"
+                                    CssClass="" />
+
+                                <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
+                                    I have reviewed the data carefully and request to freeze it for appraisal.
+                                </label>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
 
-            </div>
-            <div class="container mt-4">
 
-                <!-- OUTER CARD (Brand Volume) -->
-                <div class="dashboard-wrapper">
-
-                    <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
-                        Brand Volume
-                    </div>
-
-                    <div class="row dashboard-row">
-
-                        <!-- Last Year -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-
-                                <div class="dashboard-card-title">
-                                    Last Year
-                                </div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvBrandLastYear"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Plan -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">Plan</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvBrandPlan"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Achievement -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">Achievement</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvBrandAchievement"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- % Achievement -->
-                        <div class="col-md-6">
-                            <div class="dashboard-card">
-
-                                <div class="dashboard-card-title">% Achievement</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvBrandPerAchievement"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row dashboard-row">
-
-                        <!-- GOLY -->
-                        <div class="col-md-12">
-                            <div class="dashboard-card">
-                                <div class="dashboard-card-title">GOLY</div>
-
-                                <div class="table-responsive">
-                                    <asp:GridView
-                                        ID="gvBrandGoly"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div id="distDiv" runat="server" visible="false">
-            <div class="container mt-4">
-
-                <!-- OUTER CARD (Distributor) -->
-                <div class="dashboard-wrapper">
-
-                    <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
-                        Distributors
-                    </div>
-
-                    <div class="row dashboard-row">
-
-                        <!-- Dist -->
-                        <div class="col-md-12">
-                            <div class="dashboard-card">
-                                <%--<div class="dashboard-card-title">Dist</div>--%>
-
-                                <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-                                    <asp:GridView
-                                        ID="gvDistributors"
-                                        runat="server"
-                                        CssClass="table table-sm table-bordered text-center mb-0"
-                                        AutoGenerateColumns="true"
-                                        GridLines="Both">
-                                    </asp:GridView>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
+                <div class="modal-footer">
+                    <asp:Button ID="Proceed_Submit" runat="server" Text="Confirm" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="Proceed_Submit_Click" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
+    </div>--%>
 
-
-
-        <%-- Modal for Proceed --%>
-        <div class="modal fade" id="proceedModalCenter" tabindex="-1" role="dialog" aria-labelledby="proceedModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="proceedModalLongTitle">Confirmation Dialog</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body py-2 px-0">
-                        <div class="px-3">
-
-                            <!-- Remarks -->
-                            <div class="form-group mb-0">
-                                <asp:TextBox ID="txtRemarks" runat="server"
-                                    CssClass="form-control text-left"
-                                    TextMode="MultiLine"
-                                    Rows="1"
-                                    placeholder="Write a valid reason here..." />
-                            </div>
-
-                            <!-- Confirmation Checkbox -->
-                            <div class="form-group mt-3 mb-0">
-                                <div class="form-check">
-                                    <asp:CheckBox
-                                        ID="chkConfirm"
-                                        runat="server"
-                                        CssClass="" />
-
-                                    <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
-                                        I have reviewed the data carefully and request to freeze it for appraisal.
-                                    </label>
-                                </div>
-                                <%--<div class="form-check">
-                                    <asp:CheckBox
-                                        ID="CheckBox1"
-                                        runat="server"
-                                        CssClass="" />
-
-                                    <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
-                                        I have checked the data carefully before confirming.
-                                    </label>
-                                </div>--%>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <div class="modal-footer">
-                        <asp:Button ID="Proceed_Submit" runat="server" Text="Confirm" CssClass="btn btn-success" OnClientClick="showLoader()" OnClick="Proceed_Submit_Click" />
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
-        <asp:HiddenField ID="hdnBusinessType" runat="server" />
-        <asp:HiddenField ID="hdnRole" runat="server" />
-        <asp:HiddenField ID="hfSelectedRowData" runat="server" />
+    <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
+    <asp:HiddenField ID="hdnBusinessType" runat="server" />
+    <asp:HiddenField ID="hdnRole" runat="server" />
+    <asp:HiddenField ID="hfSelectedRowData" runat="server" />
 
     </div>
 

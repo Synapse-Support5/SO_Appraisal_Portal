@@ -305,10 +305,10 @@ namespace SO_Appraisal
                 }
 
                 // ✅ First Result Set → Geo
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    lblGeo.Text = "Geo : " + ds.Tables[0].Rows[0]["Geo"].ToString();
-                }
+                //if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                //{
+                //    lblGeo.Text = "Geo : " + ds.Tables[0].Rows[0]["Geo"].ToString();
+                //}
 
                 // ✅ Second Result Set → FY
                 if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
@@ -403,15 +403,6 @@ namespace SO_Appraisal
         {
             FetchAllData();
 
-            //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-            //{
-            //    DistCountBtn.Text = "Dist. Count : " +
-            //        resds.Tables[0].Rows[0]["DistCount"].ToString();
-            //}
-            //else
-            //{
-            //    DistCountBtn.Text = "Dist. Count : 0";
-            //}
         }
 
         protected void TypeDrp_SelectedIndexChanged(object sender, EventArgs e)
@@ -419,18 +410,15 @@ namespace SO_Appraisal
             if (TypeDrp.SelectedValue == "Primary")
             {
                 PrimaryLoad();
-                //ButtonVisibilityHelper();
 
             }
             else if (TypeDrp.SelectedValue == "Secondary")
             {
                 SecondaryLoad();
-                //ButtonVisibilityHelper();
             }
             else if (TypeDrp.SelectedValue == "Distributors")
             {
                 DistributorLoad();
-                //ButtonVisibilityHelper();
             }
             else
             {
@@ -442,6 +430,21 @@ namespace SO_Appraisal
         protected void SODrp_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindFYDropdown();
+        }
+
+        protected void StateDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AreaLoad();
+        }
+
+        protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ZoneLoad();
+        }
+
+        protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SOLoad();
         }
         #endregion
 
@@ -599,13 +602,26 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region DistCountBtn_Click
-        protected void DistCountBtn_Click(object sender, EventArgs e)
+        #region FetchBtn_Click
+        protected void FetchBtn_Click(object sender, EventArgs e)
         {
-            TypeDrp.SelectedValue = "Distributors";
-            DistributorLoad();
+            if (TypeDrp.SelectedValue == "Primary")
+            {
+                PrimaryLoad();
 
-            //ButtonVisibilityHelper();
+            }
+            else if (TypeDrp.SelectedValue == "Secondary")
+            {
+                SecondaryLoad();
+            }
+            else if (TypeDrp.SelectedValue == "Distributors")
+            {
+                DistributorLoad();
+            }
+            else
+            {
+                PriSecDiv.Visible = false;
+            }
         }
         #endregion
 
@@ -650,45 +666,6 @@ namespace SO_Appraisal
             catch (Exception ex)
             {
                 LogError("Export Error", ex);
-                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
-            }
-        }
-        #endregion
-
-        #region Proceed_Submit_Click
-        protected void Proceed_Submit_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (txtRemarks.Text == string.Empty)
-                {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
-                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
-                        "$('#proceedModalCenter').modal('show');", true);
-                    return;
-                }
-
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", SODrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
-                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-
-                showToast("Data Submitted!", "toast-success");
-            }
-            catch (Exception ex)
-            {
-                LogError("Proceed Submit Error", ex);
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
@@ -876,20 +853,6 @@ namespace SO_Appraisal
 
         #endregion
 
-        protected void StateDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AreaLoad();
-        }
-
-        protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ZoneLoad();
-        }
-
-        protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SOLoad();
-        }
 
     }
 }
