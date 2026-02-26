@@ -124,9 +124,10 @@ namespace SO_Appraisal
 
                     Session["LoggedIn"] = true;
 
-                    string redirectUrl = $"/SOAppraisal/";
-                    Response.Redirect(redirectUrl, false);
-                    Context.ApplicationInstance.CompleteRequest();
+                    //string redirectUrl = $"/SOAppraisal/";
+                    //Response.Redirect(redirectUrl, false);
+                    //Context.ApplicationInstance.CompleteRequest();
+                    Response.Redirect("~/Default.aspx");
 
                     //Session["LoggedIn"] = true;
                 }
