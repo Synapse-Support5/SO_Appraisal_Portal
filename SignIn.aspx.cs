@@ -124,7 +124,7 @@ namespace SO_Appraisal
 
                     Session["LoggedIn"] = true;
 
-                    string redirectUrl = $"/";
+                    string redirectUrl = $"/SOAppraisal/";
                     Response.Redirect(redirectUrl, false);
                     Context.ApplicationInstance.CompleteRequest();
 
