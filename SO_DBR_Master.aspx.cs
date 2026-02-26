@@ -44,6 +44,20 @@ namespace SO_Appraisal
                 string businessType = "";
                 string role = "";
 
+                //if (Session["UserId"] != null)
+                //{
+                //    //userId = Session["UserId"].ToString();
+                //    userId = Session["abs"].ToString();
+                //    businessType = Session["BusinessType"].ToString();
+                //    role = Session["Role"].ToString();
+                //    // Use the userId here
+                //}
+                //else
+                //{
+                //    Response.Redirect("SignIn.aspx");
+                //}
+
+
 
                 if (con.State == ConnectionState.Closed)
                 {

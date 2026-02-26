@@ -212,7 +212,7 @@
 
     <div class="container">
         <div class="left-section">
-            <img src="Logo/SYNAPSE_LOGO.png" alt="Logo">
+            <%--<img src="Logo/SYNAPSE_LOGO.png" alt="Logo">--%>
             <%--<h1>SYNAPSE</h1>--%>
         </div>
 

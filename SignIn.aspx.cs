@@ -119,14 +119,16 @@ namespace SO_Appraisal
                     Session["UserId"] = resdt.Rows[0][0].ToString();
                     Session["BusinessType"] = resdt.Rows[0][2].ToString();
                     Session["Role"] = resdt.Rows[0][3].ToString();
-
+                    Session["abs"] = resdt.Rows[0][0].ToString();
                     Session["Token"] = token;
+
+                    Session["LoggedIn"] = true;
 
                     string redirectUrl = $"/";
                     Response.Redirect(redirectUrl, false);
                     Context.ApplicationInstance.CompleteRequest();
 
-                    Session["LoggedIn"] = true;
+                    //Session["LoggedIn"] = true;
                 }
                 else
                 {
