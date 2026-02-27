@@ -98,6 +98,7 @@ namespace SO_Appraisal
                 SqlDataAdapter da = new SqlDataAdapter(cmd1);
                 da.Fill(resdt);
 
+                
                 if (resdt.Rows.Count > 0)
                 {
                     if (con.State == ConnectionState.Closed)
@@ -119,7 +120,7 @@ namespace SO_Appraisal
                     Session["UserId"] = resdt.Rows[0][0].ToString();
                     Session["BusinessType"] = resdt.Rows[0][2].ToString();
                     Session["Role"] = resdt.Rows[0][3].ToString();
-                    Session["abs"] = resdt.Rows[0][0].ToString();
+                    //Session["abs"] = resdt.Rows[0][0].ToString();
                     Session["Token"] = token;
 
                     Session["LoggedIn"] = true;
@@ -127,9 +128,9 @@ namespace SO_Appraisal
                     //string redirectUrl = $"/SOAppraisal/";
                     //Response.Redirect(redirectUrl, false);
                     //Context.ApplicationInstance.CompleteRequest();
-                    Response.Redirect("~/Default.aspx");
-
-                    //Session["LoggedIn"] = true;
+                    Response.Redirect("~/Default.aspx",false);
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
                 else
                 {
