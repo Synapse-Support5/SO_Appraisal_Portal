@@ -1,14 +1,17 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="SO_Appraisal.Login" Async="true" %>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Email OTP Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
 
     <style>
         .toast-custom {
@@ -30,73 +33,36 @@
             border-left: 5px solid #dc3545; /* Red */
         }
 
-        body {
-            min-height: 100vh;
+        .card {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-
-        /* OUTER DASHBOARD WRAPPER */
-        .dashboard-wrapper {
-            background: #dce3ea;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        /* INNER DASHBOARD CARD */
-        .dashboard-card {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            height: 100%;
-        }
-
-        .login-title {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            transition: background-color .2s ease, box-shadow .2s ease, transform .1s ease;
+            text-align: center;
             font-weight: 600;
-            color: #4e73df;
+            color: #374151;
+            width: 100%;
+            max-width: 400px;
         }
 
-        .form-control {
-            border-radius: 6px;
-        }
-
-        .btn-primary {
-            background-color: #4e73df;
-            border: none;
-            border-radius: 6px;
-            transition: 0.3s ease;
-        }
-
-            .btn-primary:hover {
-                background-color: #2e59d9;
+            .card:hover {
+                box-shadow: 0 8px 20px rgba(0,0,0,.12);
+                transform: translateY(-2px);
             }
 
-        /*.otp-section {
-            display: none;
-        }*/
-
-        .resend-link {
-            font-size: 14px;
-            color: #858796;
-            cursor: pointer;
+        .login-card input {
+            font-weight: 500;
         }
-
-            .resend-link:hover {
-                text-decoration: underline;
-            }
 
         @media (max-width: 576px) {
-            .dashboard-wrapper {
-                padding: 15px;
-            }
-
-            .dashboard-card {
-                padding: 20px;
+            .card {
+                padding: 1.5rem;
+                max-width: 95%;
             }
         }
     </style>
@@ -144,52 +110,46 @@
         }
     </script>
 </head>
-<body>
+<body class="bg-light">
+    <form runat="server">
+        <div class="container vh-100 d-flex align-items-center justify-content-center">
 
-    <form id="form1" runat="server">
+            <div class="card login-card">
 
-        <div class="container">
-            <div class="dashboard-wrapper mx-auto">
-                <div class="dashboard-card">
+                <%--<h3 class="mb-4 text-primary">
+                    <i class="fa fa-user-circle"></i>Login
+                </h3>--%>
 
-                    <h4 class="text-center login-title mb-4">Secure Login</h4>
-
-                    <!-- Email Section -->
-                    <div id="emailSection" runat="server" visible="true">
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <asp:TextBox ID="EmailTxt" type="email" runat="server" CssClass="form-control" Placeholder="Enter your email" required="true"></asp:TextBox>
-                        </div>
-
-                        <asp:Button Text="Send OTP" ID="SendOTPBtn" runat="server" class="btn btn-primary w-100" OnClick="SendOTPBtn_Click" />
-                    </div>
-
-                    <!-- OTP Section -->
-                    <div id="otpSection" class="otp-section" runat="server" visible="false">
-                        <div class="mb-3">
-                            <label class="form-label">Enter OTP</label>
-                            <asp:TextBox ID="EnterOtpTxt" runat="server" class="form-control" placeholder="Enter 6-digit OTP"></asp:TextBox>
-                        </div>
-
-                        <asp:Button ID="VerifyLoginBtn" runat="server" class="btn btn-primary w-100 mb-3" Text="Verify & Login" OnClick="VerifyLoginBtn_Click"></asp:Button>
-
-                        <div class="text-center">
-                            <span class="resend-link">Resend OTP</span>
-                        </div>
-                    </div>
-
+                <div class="form-group w-100 text-left">
+                    <label>Username</label>
+                    <asp:TextBox ID="txtUsername" runat="server" CssClass="form-control" />
                 </div>
+
+                <div class="form-group w-100 text-left">
+                    <label>Password</label>
+                    <asp:TextBox ID="txtPassword" runat="server"
+                        TextMode="Password" CssClass="form-control" />
+                </div>
+
+                <asp:Button ID="btnLogin"
+                    runat="server"
+                    Text="Login"
+                    CssClass="btn btn-primary btn-block mt-3"
+                    OnClick="btnLogin_Click" />
+
+                <asp:Label ID="lblMessage" runat="server"
+                    ForeColor="Red" CssClass="mt-2" />
+
             </div>
+
+            <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+            <asp:HiddenField ID="hdnBusinessType" runat="server" />
+            <asp:HiddenField ID="hdnRole" runat="server" />
+            <asp:HiddenField ID="hfSelectedRowData" runat="server" />
+
         </div>
-
-
-
-        <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
-        <asp:HiddenField ID="hdnBusinessType" runat="server" />
-        <asp:HiddenField ID="hdnRole" runat="server" />
-
     </form>
-
-
 </body>
 </html>
+

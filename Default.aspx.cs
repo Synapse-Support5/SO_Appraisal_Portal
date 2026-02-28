@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class _Default : Page
+    public partial class _Default : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
