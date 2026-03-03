@@ -18,8 +18,8 @@ namespace SO_Appraisal
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
         public DataSet resds = new DataSet();
-        string SOCode = "4076L2";
-        string Button;
+        //string SOCode = "4076L2";
+        string Button, remoteUser;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -38,9 +38,9 @@ namespace SO_Appraisal
         {
             try
             {
-                string remoteUser = "G116036";
+                //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                //string remoteUser = Session["UserId"];
+                remoteUser = Session["UserId"].ToString();
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {
@@ -82,7 +82,7 @@ namespace SO_Appraisal
                         {
                             //lblUserName.Text = "User Name > " + resdt.Rows[0][0].ToString() + ": User ID > " + Session["name"].ToString();
                             lblUserName.Text = "Welcome, " + resdt.Rows[0][1].ToString();
-                            Session["Username"] = resdt.Rows[0][0].ToString();
+                            Session["Username"] = resdt.Rows[0][1].ToString();
                             hdnBusinessType.Value = resdt.Rows[0][2].ToString();
                             hdnRole.Value = resdt.Rows[0][3].ToString();
                         }
@@ -123,7 +123,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Landing");
-                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
                 cmd1.Parameters.AddWithValue("@PcYearText", "");
                 cmd1.Parameters.AddWithValue("@PcYearVal", "");
                 cmd1.ExecuteNonQuery();
@@ -203,7 +203,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
-                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
                 cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
                 cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
@@ -462,7 +462,7 @@ namespace SO_Appraisal
                     Response.ContentType =
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     Response.AddHeader("content-disposition",
-                        "attachment;filename=Dashboard_Report_" + SOCode + ".xlsx");
+                        "attachment;filename=Dashboard_Report_" + remoteUser + ".xlsx");
 
                     using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
                     {
@@ -501,7 +501,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
                 cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                 cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
                 cmd1.CommandTimeout = 6000;

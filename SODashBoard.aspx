@@ -483,7 +483,7 @@
                     <div class="row dashboard-row">
 
                         <!-- Last Year -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
 
                                 <div class="dashboard-card-title">
@@ -495,6 +495,7 @@
                                         ID="gvSalesLastYear"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -504,7 +505,7 @@
                         </div>
 
                         <!-- Plan -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">Plan</div>
 
@@ -513,6 +514,7 @@
                                         ID="gvSalesPlan"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -522,7 +524,7 @@
                         </div>
 
                         <!-- Achievement -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">Achievement</div>
 
@@ -531,6 +533,7 @@
                                         ID="gvSalesAchievement"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -558,12 +561,8 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class="row dashboard-row">
-
                         <!-- GOLY -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">GOLY</div>
 
@@ -597,7 +596,7 @@
                     <div class="row dashboard-row">
 
                         <!-- Last Year -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
 
                                 <div class="dashboard-card-title">
@@ -609,6 +608,7 @@
                                         ID="gvBrandLastYear"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -618,7 +618,7 @@
                         </div>
 
                         <!-- Plan -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">Plan</div>
 
@@ -627,6 +627,7 @@
                                         ID="gvBrandPlan"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -636,7 +637,7 @@
                         </div>
 
                         <!-- Achievement -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">Achievement</div>
 
@@ -645,6 +646,7 @@
                                         ID="gvBrandAchievement"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
+                                        style="font-size:7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -672,12 +674,8 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class="row dashboard-row">
-
                         <!-- GOLY -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">GOLY</div>
 
