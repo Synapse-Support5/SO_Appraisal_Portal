@@ -449,6 +449,15 @@
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
+                        <asp:DropDownList ID="QtrDrp" runat="server" AutoPostBack="true" class="form-control" OnSelectedIndexChanged="QtrDrp_SelectedIndexChanged">
+                            <asp:ListItem Text="Qtr From" Value=""></asp:ListItem>
+                        </asp:DropDownList>
+                        <label for="QtrDrp">Qtr From</label>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
                         <asp:DropDownList ID="TypeDrp" runat="server" AutoPostBack="true" class="form-control" OnSelectedIndexChanged="TypeDrp_SelectedIndexChanged">
                             <asp:ListItem Text="Select Type" Value=""></asp:ListItem>
                             <asp:ListItem Text="Primary" Value="Primary"></asp:ListItem>
@@ -460,9 +469,9 @@
                     </div>
                 </div>
 
-                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                <%--<div class="col-6 col-md-3 mb-2 mb-md-0">
                     <asp:Button ID="DistCountBtn" runat="server" CssClass="btn btn-outline-primary form-control" OnClick="DistCountBtn_Click" />
-                </div>
+                </div>--%>
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" OnClick="ExportBtn_Click" />
@@ -495,7 +504,7 @@
                                         ID="gvSalesLastYear"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -514,7 +523,7 @@
                                         ID="gvSalesPlan"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -533,7 +542,7 @@
                                         ID="gvSalesAchievement"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -608,7 +617,7 @@
                                         ID="gvBrandLastYear"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -627,7 +636,7 @@
                                         ID="gvBrandPlan"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -646,7 +655,7 @@
                                         ID="gvBrandAchievement"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
-                                        style="font-size:7px; padding: 3px 6px !important;"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
                                         AutoGenerateColumns="true"
                                         GridLines="Both">
                                     </asp:GridView>
@@ -707,6 +716,7 @@
 
                     <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
                         Distributors
+                        <label id="DstCountLbl" runat="server"></label>
                     </div>
 
                     <div class="row dashboard-row">

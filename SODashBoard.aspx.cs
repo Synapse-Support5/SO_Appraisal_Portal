@@ -123,7 +123,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Landing");
-                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
+                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@PcYearText", "");
                 cmd1.Parameters.AddWithValue("@PcYearVal", "");
                 cmd1.ExecuteNonQuery();
@@ -147,7 +147,7 @@ namespace SO_Appraisal
 
                     FYDrp.DataSource = dtFY;
                     FYDrp.DataTextField = "PcYear";   // Column name
-                    FYDrp.DataValueField = "Value";   // Column name
+                    FYDrp.DataValueField = "PcYear";   // Column name
                     FYDrp.DataBind();
 
                     FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
@@ -162,12 +162,12 @@ namespace SO_Appraisal
 
                         if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
                         {
-                            DistCountBtn.Text = "Dist. Count : " +
-                                resds.Tables[0].Rows[0]["DistCount"].ToString();
+                            var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
+                            DstCountLbl.InnerText = $" ({count})";
                         }
                         else
                         {
-                            DistCountBtn.Text = "Dist. Count : 0";
+                            DstCountLbl.InnerText = "";
                         }
                     }
 
@@ -190,6 +190,45 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region QuarterLoad
+        public void QuarterLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "QuarterLoad");
+                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
+                cmd1.ExecuteNonQuery();
+
+                cmd1.CommandTimeout = 6000;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd1);
+                resdt.Rows.Clear();
+                da.Fill(resdt);
+                QtrDrp.DataSource = resdt;
+                QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
+                QtrDrp.DataValueField = resdt.Columns["QNo"].ToString();
+                QtrDrp.DataBind();
+                QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
+                con.Close();
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Quarter load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+        #endregion
+
         #region FetchAllData
         public void FetchAllData()
         {
@@ -203,7 +242,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
-                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
+                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
                 cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
@@ -229,16 +268,21 @@ namespace SO_Appraisal
         #region SelectedIndexChanged
         protected void FYDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
+            QuarterLoad();
+        }
+
+        protected void QtrDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
             FetchAllData();
 
             if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
             {
-                DistCountBtn.Text = "Dist. Count : " +
-                    resds.Tables[0].Rows[0]["DistCount"].ToString();
+                var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
+                DstCountLbl.InnerText = $" ({count})";
             }
             else
             {
-                DistCountBtn.Text = "Dist. Count : 0";
+                DstCountLbl.InnerText = "";
             }
         }
 
@@ -439,9 +483,23 @@ namespace SO_Appraisal
         {
             try
             {
-                if (Session["DashData"] == null) return;
+                if (Session["DashData"] == null)
+                {
+                    showToast("No data available to export.", "toast-danger");
+                    return;
+                }
 
                 DataSet ds = (DataSet)Session["DashData"];
+
+                // 🔴 Check if any table is empty
+                bool hasBlankTable = ds.Tables.Count == 0 ||
+                                     ds.Tables.Cast<DataTable>().Any(t => t.Rows.Count == 0);
+
+                if (hasBlankTable)
+                {
+                    showToast("Export not allowed. Some dashboard tables are empty.", "toast-danger");
+                    return;
+                }
 
                 using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
                 {
@@ -462,7 +520,7 @@ namespace SO_Appraisal
                     Response.ContentType =
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     Response.AddHeader("content-disposition",
-                        "attachment;filename=Dashboard_Report_" + remoteUser + ".xlsx");
+                        "attachment;filename=Dashboard_Report_" + Session["name"].ToString() + ".xlsx");
 
                     using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
                     {
@@ -501,7 +559,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", remoteUser);
+                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                 cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
                 cmd1.CommandTimeout = 6000;
@@ -632,6 +690,7 @@ namespace SO_Appraisal
 
         public void ButtonVisibilityHelper()
         {
+            
             btn_Proceed.Visible = false;
             btn_Common.Visible = true;
             btn_Common.Text = Session["Button"].ToString();
@@ -653,6 +712,15 @@ namespace SO_Appraisal
             {
                 btn_Common.CssClass = "btn btn-outline-danger form-control";
             }
+
+            DataSet ds = Session["DashData"] as DataSet;
+
+            bool hideButtons = ds == null ||
+                               ds.Tables.Cast<DataTable>().Any(t => t.Rows.Count == 0);
+
+            btn_Proceed.Visible = !hideButtons;
+            btn_Common.Visible = !hideButtons;
+
         }
         #endregion
 
@@ -661,6 +729,8 @@ namespace SO_Appraisal
         {
             ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
         }
+
+       
 
         #endregion
 

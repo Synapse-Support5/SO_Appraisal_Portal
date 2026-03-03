@@ -51,6 +51,15 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlInputText FYSearch;
 
         /// <summary>
+        /// QtrDrp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList QtrDrp;
+
+        /// <summary>
         /// TypeDrp control.
         /// </summary>
         /// <remarks>
@@ -58,15 +67,6 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList TypeDrp;
-
-        /// <summary>
-        /// DistCountBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DistCountBtn;
 
         /// <summary>
         /// ExportBtn control.
@@ -184,6 +184,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl distDiv;
+
+        /// <summary>
+        /// DstCountLbl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DstCountLbl;
 
         /// <summary>
         /// gvDistributors control.
