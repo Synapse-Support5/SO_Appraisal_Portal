@@ -127,6 +127,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@State", "");
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -169,6 +170,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@State", StateDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -211,6 +213,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@State", StateDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Zone", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -236,48 +239,6 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region SOLoad
-        public void SOLoad()
-        {
-            try
-            {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SOTrackByHR", con))
-                {
-                    cmd1.CommandType = CommandType.StoredProcedure;
-                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                    cmd1.Parameters.AddWithValue("@ActionType", "SOLoad");
-                    cmd1.Parameters.AddWithValue("@State", StateDrp.SelectedValue);
-                    cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
-                    cmd1.Parameters.AddWithValue("@Zone", ZoneDrp.SelectedValue);
-                    cmd1.CommandTimeout = 6000;
-
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
-                    {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-
-                        SODrp.DataSource = dt;
-                        SODrp.DataTextField = "SOName";
-                        SODrp.DataValueField = "SOCode";
-                        SODrp.DataBind();
-                        SODrp.Items.Insert(0, new ListItem("SO", ""));
-                    }
-                }
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                LogError("SO Load Error", ex);
-                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
-            }
-        }
-        #endregion
-
         #region BindFYDropdown
         public void BindFYDropdown()
         {
@@ -290,19 +251,38 @@ namespace SO_Appraisal
 
                 DataSet ds = new DataSet();
 
-                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SOTrackByHR", con))
                 {
                     cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                    cmd1.Parameters.AddWithValue("@ActionType", "Landing");
-                    cmd1.Parameters.AddWithValue("@SOCode", SODrp.SelectedValue);
-                    cmd1.Parameters.AddWithValue("@PcYearText", "");
-                    cmd1.Parameters.AddWithValue("@PcYearVal", "");
+                    cmd1.Parameters.AddWithValue("@ActionType", "FYLoad");
+                    cmd1.Parameters.AddWithValue("@State", "");
+                    cmd1.Parameters.AddWithValue("@Area", "");
+                    cmd1.Parameters.AddWithValue("@Zone", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
                     {
-                        da.Fill(ds);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        FYDrp.DataSource = dt;
+                        FYDrp.DataTextField = "PcYear";   // Column name
+                        FYDrp.DataValueField = "PcYear";   // Column name
+                        FYDrp.DataBind();
+
+                        FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
+
+                        // ✅ Auto select where IsCurrent = 1
+                        DataRow[] currentRow = dt.Select("IsCurrent = 1");
+                        if (currentRow.Length > 0)
+                        {
+                            FYDrp.SelectedValue = currentRow[0]["PcYear"].ToString();
+
+                            QuarterLoad();
+                        }
+
                     }
                 }
 
@@ -313,50 +293,95 @@ namespace SO_Appraisal
                 //}
 
                 // ✅ Second Result Set → FY
-                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
-                {
-                    DataTable dtFY = ds.Tables[1];
+                //if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                //{
+                //    DataTable dtFY = ds.Tables[1];
 
-                    FYDrp.DataSource = dtFY;
-                    FYDrp.DataTextField = "PcYear";   // Column name
-                    FYDrp.DataValueField = "Value";   // Column name
-                    FYDrp.DataBind();
+                //    FYDrp.DataSource = dtFY;
+                //    FYDrp.DataTextField = "PcYear";   // Column name
+                //    FYDrp.DataValueField = "PcYear";   // Column name
+                //    FYDrp.DataBind();
 
-                    FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
+                //    FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
 
-                    // ✅ Auto select where IsCurrent = 1
-                    DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
-                    if (currentRow.Length > 0)
-                    {
-                        FYDrp.SelectedValue = currentRow[0]["Value"].ToString();
+                //    // ✅ Auto select where IsCurrent = 1
+                //    DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
+                //    if (currentRow.Length > 0)
+                //    {
+                //        FYDrp.SelectedValue = currentRow[0]["Value"].ToString();
 
-                        FetchAllData();
+                //        QuarterLoad();
+                //        //FetchAllData();
 
-                        //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-                        //{
-                        //    DistCountBtn.Text = "Dist. Count : " +
-                        //        resds.Tables[0].Rows[0]["DistCount"].ToString();
-                        //}
-                        //else
-                        //{
-                        //    DistCountBtn.Text = "Dist. Count : 0";
-                        //}
-                    }
+                //        //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+                //        //{
+                //        //    DistCountBtn.Text = "Dist. Count : " +
+                //        //        resds.Tables[0].Rows[0]["DistCount"].ToString();
+                //        //}
+                //        //else
+                //        //{
+                //        //    DistCountBtn.Text = "Dist. Count : 0";
+                //        //}
+                //    }
 
-                }
+                //}
 
                 // ✅ Third Result Set → Button status
-                if (ds.Tables.Count > 1 && ds.Tables[2].Rows.Count > 0)
-                {
-                    Button = ds.Tables[2].Rows[0]["Status"].ToString();
-                    Session["Button"] = Button;
-                }
+                //if (ds.Tables.Count > 1 && ds.Tables[2].Rows.Count > 0)
+                //{
+                //    Button = ds.Tables[2].Rows[0]["Status"].ToString();
+                //    Session["Button"] = Button;
+                //}
 
                 con.Close();
             }
             catch (Exception ex)
             {
                 LogError("FY and Geo Load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+        #endregion
+
+        #region QuarterLoad
+        public void QuarterLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SOTrackByHR", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "QuarterLoad");
+                    cmd1.Parameters.AddWithValue("@State", "");
+                    cmd1.Parameters.AddWithValue("@Area", "");
+                    cmd1.Parameters.AddWithValue("@Zone", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                    cmd1.CommandTimeout = 6000;
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
+                    {
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
+                        QtrDrp.DataSource = resdt;
+                        QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
+                        QtrDrp.DataValueField = resdt.Columns["QNo"].ToString();
+                        QtrDrp.DataBind();
+                        QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
+                    }
+                }
+
+                con.Close();
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Quarter load Error", ex);
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
         }
@@ -376,7 +401,7 @@ namespace SO_Appraisal
                     cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
-                    cmd1.Parameters.AddWithValue("@SOCode", SODrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@SOCode", "");
                     cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
                     cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
                     cmd1.CommandTimeout = 6000;
@@ -401,10 +426,30 @@ namespace SO_Appraisal
         #endregion
 
         #region SelectedIndexChanged
+
+        protected void StateDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AreaLoad();
+        }
+
+        protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ZoneLoad();
+        }
+
+        protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindFYDropdown();
+        }
+
         protected void FYDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FetchAllData();
+            QuarterLoad();
+        }
 
+        protected void QtrDrp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FetchAllData();
         }
 
         protected void TypeDrp_SelectedIndexChanged(object sender, EventArgs e)
@@ -427,26 +472,6 @@ namespace SO_Appraisal
                 PriSecDiv.Visible = false;
             }
 
-        }
-
-        protected void SODrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BindFYDropdown();
-        }
-
-        protected void StateDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AreaLoad();
-        }
-
-        protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ZoneLoad();
-        }
-
-        protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SOLoad();
         }
         #endregion
 
@@ -651,18 +676,19 @@ namespace SO_Appraisal
                         wsDist.Columns().AdjustToContents();
                     }
 
-                    Response.Clear();
-                    Response.ContentType =
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition",
-                        "attachment;filename=Dashboard_Report_" + SODrp.SelectedValue + ".xlsx");
+                    //Response.Clear();
+                    //Response.ContentType =
+                    //    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition",
+                    //    "attachment;filename=Dashboard_Report_" + SODrp.SelectedValue + ".xlsx");
 
-                    using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
-                    {
-                        wb.SaveAs(memoryStream);
-                        memoryStream.WriteTo(Response.OutputStream);
-                        Response.End();
-                    }
+                    //using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
+                    //{
+                    //    wb.SaveAs(memoryStream);
+                    //    memoryStream.WriteTo(Response.OutputStream);
+                    //    Response.End();
+                    //}
+                    showToast("Working in Progress", "toast-success");
                 }
             }
             catch (Exception ex)
@@ -853,8 +879,9 @@ namespace SO_Appraisal
 
 
 
+
         #endregion
 
-
+        
     }
 }

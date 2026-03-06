@@ -18,7 +18,6 @@ namespace SO_Appraisal
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
         public DataSet resds = new DataSet();
-        //string SOCode = "4076L2";
         string Button, remoteUser;
 
         protected void Page_Load(object sender, EventArgs e)
