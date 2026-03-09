@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />--%>
 
@@ -363,6 +364,21 @@
         .dashboard-row > div {
             margin-bottom: 20px;
         }
+
+        .rating-stars {
+            display: flex;
+            gap: 6px;
+        }
+
+            .rating-stars i {
+                font-size: 26px;
+                cursor: pointer;
+                position: relative;
+            }
+
+                .rating-stars i:hover {
+                    transform: scale(1.2);
+                }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -372,6 +388,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <%--<script src="https://cdn.tailwindcss.com"></script>--%>
     <!-- Lucide icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
@@ -763,7 +780,7 @@
 
         <%-- Modal for Proceed --%>
         <div class="modal fade" id="proceedModalCenter" tabindex="-1" role="dialog" aria-labelledby="proceedModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="proceedModalLongTitle">Confirmation Dialog</h5>
@@ -774,13 +791,67 @@
                     <div class="modal-body py-2 px-0">
                         <div class="px-3">
 
+                            <!-- Objectives Section -->
+                            <div class="">
+                                <div class="dashboard-card">
+
+                                    <h6 class="dashboard-card-title">Objectives</h6>
+
+                                    <div class="row">
+
+                                        <!-- Training -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Training</label>
+                                            <asp:TextBox ID="txtTraining" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter training objective" />
+                                        </div>
+
+                                        <!-- Career -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Career</label>
+                                            <asp:TextBox ID="txtCareer" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter career objective" />
+                                        </div>
+
+                                        <!-- Wipro Rating -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold d-block">Wipro Rating (Out of 5)</label>
+
+                                            <div class="rating-stars" id="ratingContainer">
+                                                <i class="bi bi-star rating-star" data-value="1"></i>
+                                                <i class="bi bi-star rating-star" data-value="2"></i>
+                                                <i class="bi bi-star rating-star" data-value="3"></i>
+                                                <i class="bi bi-star rating-star" data-value="4"></i>
+                                                <i class="bi bi-star rating-star" data-value="5"></i>
+                                            </div>
+
+                                            <small id="ratingValue" class="text-muted"></small>
+
+                                            <asp:HiddenField ID="hdnRating" runat="server" />
+                                        </div>
+
+                                        <!-- Sign In -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Sign In</label>
+                                            <asp:TextBox ID="txtSignIn" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter your name or ID" />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
                             <!-- Remarks -->
-                            <div class="form-group mb-0">
+                            <div class="form-group mb-0 mt-3">
                                 <asp:TextBox ID="txtRemarks" runat="server"
                                     CssClass="form-control text-left"
                                     TextMode="MultiLine"
                                     Rows="1"
-                                    placeholder="Write a valid reason here..." />
+                                    placeholder="Write a valid reason/feedback here..." />
                             </div>
 
                             <!-- Confirmation Checkbox -->
@@ -792,19 +863,13 @@
                                         CssClass="" />
 
                                     <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
-                                        I have reviewed the data carefully and request to freeze it for appraisal.
+                                        I have reviewed the data carefully and request to <b>freeze it for appraisal.</b>
+                                        <i class="bi bi-info-circle text-danger"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Check this option only if you are submitting the request for appraisal. If you are providing feedback, this is not required."></i>
                                     </label>
                                 </div>
-                                <%--<div class="form-check">
-                                    <asp:CheckBox
-                                        ID="CheckBox1"
-                                        runat="server"
-                                        CssClass="" />
-
-                                    <label class="form-check-label" for="<%= chkConfirm.ClientID %>">
-                                        I have checked the data carefully before confirming.
-                                    </label>
-                                </div>--%>
                             </div>
 
                         </div>
@@ -826,6 +891,73 @@
 
     </div>
 
+    <script>
+
+        $(document).ready(function () {
+
+            $('.rating-star').on('mousemove', function (e) {
+
+                var star = $(this);
+                var offset = star.offset();
+                var width = star.width();
+                var x = e.pageX - offset.left;
+
+                var value = star.data('value');
+
+                if (x < width / 2)
+                    highlightStars(value - 0.5);
+                else
+                    highlightStars(value);
+
+            });
+
+            $('.rating-star').on('click', function (e) {
+
+                var star = $(this);
+                var offset = star.offset();
+                var width = star.width();
+                var x = e.pageX - offset.left;
+
+                var value = star.data('value');
+
+                if (x < width / 2)
+                    value = value - 0.5;
+
+                $('#<%= hdnRating.ClientID %>').val(value);
+
+               $('#ratingValue').text("Rating: " + value + " / 5");
+
+           });
+
+       });
+
+        function highlightStars(rating) {
+
+            $('.rating-star').each(function () {
+
+                var starValue = $(this).data('value');
+
+                if (rating >= starValue) {
+                    $(this)
+                        .removeClass('bi-star bi-star-half')
+                        .addClass('bi-star-fill text-warning');
+                }
+                else if (rating >= starValue - 0.5) {
+                    $(this)
+                        .removeClass('bi-star bi-star-fill')
+                        .addClass('bi-star-half text-warning');
+                }
+                else {
+                    $(this)
+                        .removeClass('bi-star-fill bi-star-half text-warning')
+                        .addClass('bi-star');
+                }
+
+            });
+
+        }
+
+    </script>
 
     <script>
         // --- FYDrp autocomplete ---

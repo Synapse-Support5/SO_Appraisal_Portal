@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SODashBoard : BasePage
+    public partial class SODashBoard : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
@@ -39,7 +39,8 @@ namespace SO_Appraisal
             {
                 //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                remoteUser = Session["UserId"].ToString();
+                //remoteUser = Session["UserId"].ToString();
+                remoteUser = "4076L2";
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {
@@ -542,31 +543,46 @@ namespace SO_Appraisal
         {
             try
             {
-                if (txtRemarks.Text == string.Empty)
+                string training = txtTraining.Text;
+                string career = txtCareer.Text;
+                string signIn = txtSignIn.Text;
+                string remarks = txtRemarks.Text;
+                decimal rating = 0;
+
+                if (!string.IsNullOrEmpty(hdnRating.Value))
                 {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
-                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
-                        "$('#proceedModalCenter').modal('show');", true);
-                    return;
+                    rating = Convert.ToDecimal(hdnRating.Value);
                 }
 
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
-                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
+                showToast("Rating : " + rating, "toast-success");
 
-                con.Close();
+                //if (txtRemarks.Text == string.Empty)
+                //{
+                //    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                //        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
+                //        "$('#proceedModalCenter').modal('show');", true);
+                //    return;
+                //}
 
-                showToast("Data Submitted!", "toast-success");
+                //if (con.State == ConnectionState.Closed)
+                //{
+                //    con.Open();
+                //}
+                //SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
+                //cmd1.CommandType = CommandType.StoredProcedure;
+                //cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                //cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
+                //cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                //cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
+                //cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
+                //cmd1.CommandTimeout = 6000;
+                //cmd1.ExecuteNonQuery();
+
+                //con.Close();
+
+
+
+                //showToast("Data Submitted!", "toast-success");
             }
             catch (Exception ex)
             {
@@ -714,11 +730,11 @@ namespace SO_Appraisal
 
             DataSet ds = Session["DashData"] as DataSet;
 
-            bool hideButtons = ds == null ||
-                               ds.Tables.Cast<DataTable>().Any(t => t.Rows.Count == 0);
+            //bool hideButtons = ds == null ||
+            //                   ds.Tables.Cast<DataTable>().Any(t => t.Rows.Count == 0);
 
-            btn_Proceed.Visible = !hideButtons;
-            btn_Common.Visible = !hideButtons;
+            //btn_Proceed.Visible = !hideButtons;
+            //btn_Common.Visible = !hideButtons;
 
         }
         #endregion

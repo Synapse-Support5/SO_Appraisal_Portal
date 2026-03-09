@@ -222,6 +222,42 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Button btn_Common;
 
         /// <summary>
+        /// txtTraining control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTraining;
+
+        /// <summary>
+        /// txtCareer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCareer;
+
+        /// <summary>
+        /// hdnRating control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnRating;
+
+        /// <summary>
+        /// txtSignIn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSignIn;
+
+        /// <summary>
         /// txtRemarks control.
         /// </summary>
         /// <remarks>
