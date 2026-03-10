@@ -81,7 +81,7 @@ namespace SO_Appraisal
                         if (resdt.Rows.Count > 0)
                         {
                             //lblUserName.Text = "User Name > " + resdt.Rows[0][0].ToString() + ": User ID > " + Session["name"].ToString();
-                            lblUserName.Text = "Welcome, " + resdt.Rows[0][1].ToString();
+                            lblUserName.Text = "Welcome, " + resdt.Rows[0][1].ToString() + "_" + resdt.Rows[0][0].ToString();
                             Session["Username"] = resdt.Rows[0][1].ToString();
                             hdnBusinessType.Value = resdt.Rows[0][2].ToString();
                             hdnRole.Value = resdt.Rows[0][3].ToString();
@@ -124,8 +124,8 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Landing");
                 cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYearText", "");
-                cmd1.Parameters.AddWithValue("@PcYearVal", "");
+                cmd1.Parameters.AddWithValue("@PcYear", "");
+                cmd1.Parameters.AddWithValue("@Quarter", "");
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -156,19 +156,21 @@ namespace SO_Appraisal
                     DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
                     if (currentRow.Length > 0)
                     {
-                        FYDrp.SelectedValue = currentRow[0]["Value"].ToString();
+                        FYDrp.SelectedValue = currentRow[0]["PcYear"].ToString();
 
-                        FetchAllData();
+                        QuarterLoad();
 
-                        if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-                        {
-                            var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
-                            DstCountLbl.InnerText = $" ({count})";
-                        }
-                        else
-                        {
-                            DstCountLbl.InnerText = "";
-                        }
+                        //FetchAllData();
+
+                        //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+                        //{
+                        //    var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
+                        //    DstCountLbl.InnerText = $" ({count})";
+                        //}
+                        //else
+                        //{
+                        //    DstCountLbl.InnerText = "";
+                        //}
                     }
 
                 }
@@ -204,8 +206,8 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "QuarterLoad");
                 cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Quarter", "");
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -215,7 +217,7 @@ namespace SO_Appraisal
                 da.Fill(resdt);
                 QtrDrp.DataSource = resdt;
                 QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
-                QtrDrp.DataValueField = resdt.Columns["QNo"].ToString();
+                QtrDrp.DataValueField = resdt.Columns["QuarterText"].ToString();
                 QtrDrp.DataBind();
                 QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
                 con.Close();
@@ -243,8 +245,8 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
                 cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
-                cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                 cmd1.ExecuteNonQuery();
 
                 cmd1.CommandTimeout = 6000;
@@ -275,15 +277,15 @@ namespace SO_Appraisal
         {
             FetchAllData();
 
-            if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-            {
-                var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
-                DstCountLbl.InnerText = $" ({count})";
-            }
-            else
-            {
-                DstCountLbl.InnerText = "";
-            }
+            //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+            //{
+            //    var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
+            //    DstCountLbl.InnerText = $" ({count})";
+            //}
+            //else
+            //{
+            //    DstCountLbl.InnerText = "";
+            //}
         }
 
         protected void TypeDrp_SelectedIndexChanged(object sender, EventArgs e)
@@ -328,36 +330,36 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    gvSalesLastYear.DataSource = resds.Tables[1];
+                    gvSalesLastYear.DataSource = resds.Tables[0];
                     gvSalesLastYear.DataBind();
 
-                    gvSalesPlan.DataSource = resds.Tables[2];
+                    gvSalesPlan.DataSource = resds.Tables[1];
                     gvSalesPlan.DataBind();
 
-                    gvSalesAchievement.DataSource = resds.Tables[3];
+                    gvSalesAchievement.DataSource = resds.Tables[2];
                     gvSalesAchievement.DataBind();
 
-                    gvSalesPerAchievement.DataSource = resds.Tables[4];
+                    gvSalesPerAchievement.DataSource = resds.Tables[3];
                     gvSalesPerAchievement.DataBind();
 
-                    gvSalesGoly.DataSource = resds.Tables[5];
+                    gvSalesGoly.DataSource = resds.Tables[4];
                     gvSalesGoly.DataBind();
                     //------------------------
 
                     //Brand Volume -----------
-                    gvBrandLastYear.DataSource = resds.Tables[6];
+                    gvBrandLastYear.DataSource = resds.Tables[5];
                     gvBrandLastYear.DataBind();
 
-                    gvBrandPlan.DataSource = resds.Tables[7];
+                    gvBrandPlan.DataSource = resds.Tables[6];
                     gvBrandPlan.DataBind();
 
-                    gvBrandAchievement.DataSource = resds.Tables[8];
+                    gvBrandAchievement.DataSource = resds.Tables[7];
                     gvBrandAchievement.DataBind();
 
-                    gvBrandPerAchievement.DataSource = resds.Tables[9];
+                    gvBrandPerAchievement.DataSource = resds.Tables[8];
                     gvBrandPerAchievement.DataBind();
 
-                    gvBrandGoly.DataSource = resds.Tables[10];
+                    gvBrandGoly.DataSource = resds.Tables[9];
                     gvBrandGoly.DataBind();
                     //------------------------
                 }
@@ -390,36 +392,36 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    gvSalesLastYear.DataSource = resds.Tables[11];
+                    gvSalesLastYear.DataSource = resds.Tables[10];
                     gvSalesLastYear.DataBind();
 
-                    gvSalesPlan.DataSource = resds.Tables[12];
+                    gvSalesPlan.DataSource = resds.Tables[11];
                     gvSalesPlan.DataBind();
 
-                    gvSalesAchievement.DataSource = resds.Tables[13];
+                    gvSalesAchievement.DataSource = resds.Tables[12];
                     gvSalesAchievement.DataBind();
 
-                    gvSalesPerAchievement.DataSource = resds.Tables[14];
+                    gvSalesPerAchievement.DataSource = resds.Tables[13];
                     gvSalesPerAchievement.DataBind();
 
-                    gvSalesGoly.DataSource = resds.Tables[15];
+                    gvSalesGoly.DataSource = resds.Tables[14];
                     gvSalesGoly.DataBind();
                     //------------------------
 
                     //Brand Volume -----------
-                    gvBrandLastYear.DataSource = resds.Tables[16];
+                    gvBrandLastYear.DataSource = resds.Tables[15];
                     gvBrandLastYear.DataBind();
 
-                    gvBrandPlan.DataSource = resds.Tables[17];
+                    gvBrandPlan.DataSource = resds.Tables[16];
                     gvBrandPlan.DataBind();
 
-                    gvBrandAchievement.DataSource = resds.Tables[18];
+                    gvBrandAchievement.DataSource = resds.Tables[17];
                     gvBrandAchievement.DataBind();
 
-                    gvBrandPerAchievement.DataSource = resds.Tables[19];
+                    gvBrandPerAchievement.DataSource = resds.Tables[18];
                     gvBrandPerAchievement.DataBind();
 
-                    gvBrandGoly.DataSource = resds.Tables[20];
+                    gvBrandGoly.DataSource = resds.Tables[19];
                     gvBrandGoly.DataBind();
                     //------------------------
                 }
@@ -451,10 +453,13 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    if (resds.Tables[21] != null)
+                    if (resds.Tables[20] != null)
                     {
-                        gvDistributors.DataSource = resds.Tables[21];
+                        gvDistributors.DataSource = resds.Tables[20];
                         gvDistributors.DataBind();
+
+                        var count = resds.Tables[20].Rows.Count;
+                        DstCountLbl.InnerText = $" ({count})";
 
                         //statusBtnDiv.Visible = true;
                     }
@@ -503,14 +508,14 @@ namespace SO_Appraisal
 
                 using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
                 {
-                    CreateCustomSheet(wb, ds, 1, 10, "Primary", primaryNames);
-                    CreateCustomSheet(wb, ds, 11, 20, "Secondary", secondaryNames);
+                    CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
 
                     // ================= Distributor Sheet =================
-                    if (ds.Tables.Count > 21)
+                    if (ds.Tables.Count > 20)
                     {
                         var wsDist = wb.Worksheets.Add("Distributors");
-                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[21], false);
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
 
                         FormatTable(table);
                         wsDist.Columns().AdjustToContents();

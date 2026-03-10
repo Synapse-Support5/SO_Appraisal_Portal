@@ -402,8 +402,8 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
                     cmd1.Parameters.AddWithValue("@SOCode", "");
-                    cmd1.Parameters.AddWithValue("@PcYearText", FYDrp.SelectedItem.Text.ToString());
-                    cmd1.Parameters.AddWithValue("@PcYearVal", FYDrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
