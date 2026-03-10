@@ -150,15 +150,6 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView gvSalesLastYear;
 
         /// <summary>
-        /// gvSalesPlan control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSalesPlan;
-
-        /// <summary>
         /// gvSalesAchievement control.
         /// </summary>
         /// <remarks>
@@ -166,15 +157,6 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvSalesAchievement;
-
-        /// <summary>
-        /// gvSalesPerAchievement control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSalesPerAchievement;
 
         /// <summary>
         /// gvSalesGoly control.
@@ -195,15 +177,6 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView gvBrandLastYear;
 
         /// <summary>
-        /// gvBrandPlan control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvBrandPlan;
-
-        /// <summary>
         /// gvBrandAchievement control.
         /// </summary>
         /// <remarks>
@@ -211,15 +184,6 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvBrandAchievement;
-
-        /// <summary>
-        /// gvBrandPerAchievement control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvBrandPerAchievement;
 
         /// <summary>
         /// gvBrandGoly control.
@@ -238,6 +202,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl distDiv;
+
+        /// <summary>
+        /// DstCountLbl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DstCountLbl;
 
         /// <summary>
         /// gvDistributors control.

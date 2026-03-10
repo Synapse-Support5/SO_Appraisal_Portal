@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SO_TrackbyHR : BasePage
+    public partial class SO_TrackbyHR : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
@@ -128,6 +128,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
                     cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -171,6 +172,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
                     cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -214,6 +216,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Zone", "");
                     cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -260,6 +263,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
                     cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -362,6 +366,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@Area", "");
                     cmd1.Parameters.AddWithValue("@Zone", "");
                     cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -370,7 +375,7 @@ namespace SO_Appraisal
                         da.Fill(resdt);
                         QtrDrp.DataSource = resdt;
                         QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
-                        QtrDrp.DataValueField = resdt.Columns["QNo"].ToString();
+                        QtrDrp.DataValueField = resdt.Columns["QuarterText"].ToString();
                         QtrDrp.DataBind();
                         QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
                     }
@@ -396,12 +401,15 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SOTrackByHR", con))
                 {
+                    cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
-                    cmd1.Parameters.AddWithValue("@SOCode", "");
+                    cmd1.Parameters.AddWithValue("@State", "");
+                    cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
+                    cmd1.Parameters.AddWithValue("@Zone", ZoneDrp.SelectedItem.ToString());
                     cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                     cmd1.CommandTimeout = 6000;
@@ -435,6 +443,7 @@ namespace SO_Appraisal
         protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
             ZoneLoad();
+            BindFYDropdown();
         }
 
         protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
@@ -489,36 +498,24 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    gvSalesLastYear.DataSource = resds.Tables[1];
+                    gvSalesLastYear.DataSource = resds.Tables[0];
                     gvSalesLastYear.DataBind();
 
-                    gvSalesPlan.DataSource = resds.Tables[2];
-                    gvSalesPlan.DataBind();
-
-                    gvSalesAchievement.DataSource = resds.Tables[3];
+                    gvSalesAchievement.DataSource = resds.Tables[1];
                     gvSalesAchievement.DataBind();
 
-                    gvSalesPerAchievement.DataSource = resds.Tables[4];
-                    gvSalesPerAchievement.DataBind();
-
-                    gvSalesGoly.DataSource = resds.Tables[5];
+                    gvSalesGoly.DataSource = resds.Tables[2];
                     gvSalesGoly.DataBind();
                     //------------------------
 
                     //Brand Volume -----------
-                    gvBrandLastYear.DataSource = resds.Tables[6];
+                    gvBrandLastYear.DataSource = resds.Tables[3];
                     gvBrandLastYear.DataBind();
 
-                    gvBrandPlan.DataSource = resds.Tables[7];
-                    gvBrandPlan.DataBind();
-
-                    gvBrandAchievement.DataSource = resds.Tables[8];
+                    gvBrandAchievement.DataSource = resds.Tables[4];
                     gvBrandAchievement.DataBind();
 
-                    gvBrandPerAchievement.DataSource = resds.Tables[9];
-                    gvBrandPerAchievement.DataBind();
-
-                    gvBrandGoly.DataSource = resds.Tables[10];
+                    gvBrandGoly.DataSource = resds.Tables[5];
                     gvBrandGoly.DataBind();
                     //------------------------
                 }
@@ -551,36 +548,24 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    gvSalesLastYear.DataSource = resds.Tables[11];
+                    gvSalesLastYear.DataSource = resds.Tables[6];
                     gvSalesLastYear.DataBind();
 
-                    gvSalesPlan.DataSource = resds.Tables[12];
-                    gvSalesPlan.DataBind();
-
-                    gvSalesAchievement.DataSource = resds.Tables[13];
+                    gvSalesAchievement.DataSource = resds.Tables[7];
                     gvSalesAchievement.DataBind();
 
-                    gvSalesPerAchievement.DataSource = resds.Tables[14];
-                    gvSalesPerAchievement.DataBind();
-
-                    gvSalesGoly.DataSource = resds.Tables[15];
+                    gvSalesGoly.DataSource = resds.Tables[8];
                     gvSalesGoly.DataBind();
                     //------------------------
 
                     //Brand Volume -----------
-                    gvBrandLastYear.DataSource = resds.Tables[16];
+                    gvBrandLastYear.DataSource = resds.Tables[9];
                     gvBrandLastYear.DataBind();
 
-                    gvBrandPlan.DataSource = resds.Tables[17];
-                    gvBrandPlan.DataBind();
-
-                    gvBrandAchievement.DataSource = resds.Tables[18];
+                    gvBrandAchievement.DataSource = resds.Tables[10];
                     gvBrandAchievement.DataBind();
 
-                    gvBrandPerAchievement.DataSource = resds.Tables[19];
-                    gvBrandPerAchievement.DataBind();
-
-                    gvBrandGoly.DataSource = resds.Tables[20];
+                    gvBrandGoly.DataSource = resds.Tables[11];
                     gvBrandGoly.DataBind();
                     //------------------------
                 }
@@ -612,10 +597,13 @@ namespace SO_Appraisal
                     resds = (DataSet)Session["DashData"];
 
                     //Sales Value ------------
-                    if (resds.Tables[21] != null)
+                    if (resds.Tables[12] != null)
                     {
-                        gvDistributors.DataSource = resds.Tables[21];
+                        gvDistributors.DataSource = resds.Tables[12];
                         gvDistributors.DataBind();
+
+                        var count = resds.Tables[12].Rows.Count;
+                        DstCountLbl.InnerText = $" ({count})";
 
                         //statusBtnDiv.Visible = true;
                     }
