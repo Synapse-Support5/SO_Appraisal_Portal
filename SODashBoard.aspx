@@ -373,7 +373,7 @@
             .rating-stars i {
                 font-size: 26px;
                 cursor: pointer;
-                position: relative;
+                transition: transform 0.15s ease;
             }
 
                 .rating-stars i:hover {
@@ -893,6 +893,8 @@
 
     <script>
 
+        var selectedRating = 0;
+
         $(document).ready(function () {
 
             $('.rating-star').on('mousemove', function (e) {
@@ -923,13 +925,25 @@
                 if (x < width / 2)
                     value = value - 0.5;
 
+                selectedRating = value; // store selected rating
+
                 $('#<%= hdnRating.ClientID %>').val(value);
 
-               $('#ratingValue').text("Rating: " + value + " / 5");
+                $('#ratingValue').text("Rating: " + value + " / 5");
 
-           });
+                highlightStars(value);
 
-       });
+            });
+
+            // restore selected rating when leaving stars
+            $('#ratingContainer').on('mouseleave', function () {
+
+                highlightStars(selectedRating);
+
+            });
+
+        });
+
 
         function highlightStars(rating) {
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office.Word;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -121,12 +122,14 @@ namespace SO_Appraisal
                     cmd1.CommandType = CommandType.StoredProcedure;
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "PendingApprovals");
+                    cmd1.Parameters.AddWithValue("@RequestId", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
                     {
                         resdt.Rows.Clear();
                         da.Fill(resdt);
+
                         if (resdt.Rows.Count > 0)
                         {
                             GridStatusLabel.Text = string.Empty;
@@ -202,6 +205,73 @@ namespace SO_Appraisal
                 }
             }
         }
+
+        private void LoadRequestDetails(int requestId, int status)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@ActionType", "GetRequestDetails");
+                    cmd.Parameters.AddWithValue("@RequestId", requestId);
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            DataRow row = dt.Rows[0];
+
+                            if (status == 4)
+                            {
+                                // Show Remarks section
+                                RemarksDiv.Visible = true;
+                                ObjectivesDiv.Visible = false;
+                                UpdateBtn.Visible = false;
+
+                                exampleModalLongTitle.InnerText = "Remarks/Feedback";
+
+                                txtRemarks.Text = row["Remarks"].ToString();
+                            }
+                            else
+                            {
+                                // Show Objectives section
+                                ObjectivesDiv.Visible = true;
+                                RemarksDiv.Visible = false;
+                                UpdateBtn.Visible = true;
+
+                                exampleModalLongTitle.InnerText = "Objectives";
+
+                                txtTraining.Text = row["Training"].ToString();
+                                txtCareer.Text = row["Career"].ToString();
+                                txtSignIn.Text = row["UserName"].ToString();
+
+                                string rating = row["Rating"].ToString();
+                                hdnRating.Value = rating;
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(),
+                                    "setRating", $"setRating({rating});", true);
+                            }
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("LoadRequestDetails Error", ex);
+                showToast("Error loading request details", "toast-danger");
+            }
+        }
         #endregion
 
         #region btnViewThisRequest_Click
@@ -210,43 +280,19 @@ namespace SO_Appraisal
             try
             {
                 LinkButton btn = (LinkButton)sender;
-                string[] CommandArgument = btn.CommandArgument.Split(',');
-                int CommandCPRequestId = Convert.ToInt32(CommandArgument[0]);
 
-                showToast("Working in progress. RequestId is : " + CommandCPRequestId, "toast-success");
+                string[] args = btn.CommandArgument.Split(',');
 
-                //if (con.State == ConnectionState.Closed)
-                //{
-                //    con.Open();
-                //}
-                //SqlCommand cmd1 = new SqlCommand("SP_SOApp_PendingApprovals", con);
-                //cmd1.CommandType = CommandType.StoredProcedure;
-                //cmd1.Parameters.AddWithValue("@ActionType", "ViewGridLoad");
-                //cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                //cmd1.Parameters.AddWithValue("@RequestId", CommandCPRequestId);
+                int requestId = Convert.ToInt32(args[0]);
+                int status = Convert.ToInt32(args[1]);
 
-                //cmd1.ExecuteNonQuery();
+                // store request id
+                hdnRequestId.Value = requestId.ToString();
 
-                //cmd1.CommandTimeout = 6000;
+                LoadRequestDetails(requestId, status);
 
-                //SqlDataAdapter da = new SqlDataAdapter(cmd1);
-                //resdt.Rows.Clear();
-                //da.Fill(resdt);
-
-                //if (resdt.Rows.Count > 0)
-                //{
-                //    DistModal.DataSource = resdt;
-                //    DistModal.DataBind();
-                //}
-                //else
-                //{
-                //    DistModal.DataSource = null;
-                //    DistModal.DataBind();
-                //}
-
-                //con.Close();
-
-                //ScriptManager.RegisterStartupScript(this, this.GetType(), "showModal", "openTransferModal();", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(),
+                    "showModal", "$('#exampleModalCenter').modal('show');", true);
             }
             catch (Exception ex)
             {
@@ -709,8 +755,34 @@ namespace SO_Appraisal
             }
         }
 
+
         #endregion
 
+        protected void UpdateBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int requestId = Convert.ToInt32(hdnRequestId.Value);
 
+                string training = txtTraining.Text.Trim();
+                string career = txtCareer.Text.Trim();
+                string signIn = txtSignIn.Text.Trim();
+
+                decimal rating = 0;
+
+                if (!string.IsNullOrEmpty(hdnRating.Value))
+                    rating = Convert.ToDecimal(hdnRating.Value);
+
+                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
+
+                // Now you can use these values for DB update
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Update Button Error", ex);
+                showToast("Something went wrong while updating.", "toast-danger");
+            }
+        }
     }
 }

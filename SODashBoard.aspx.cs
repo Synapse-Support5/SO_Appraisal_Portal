@@ -750,7 +750,12 @@ namespace SO_Appraisal
             ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
         }
 
-       
+        protected void UpdateBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
 
         #endregion
 

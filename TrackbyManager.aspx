@@ -365,6 +365,21 @@
         .dashboard-row > div {
             margin-bottom: 20px;
         }
+
+        .rating-stars {
+            display: flex;
+            gap: 6px;
+        }
+
+            .rating-stars i {
+                font-size: 26px;
+                cursor: pointer;
+                transition: transform 0.15s ease;
+            }
+
+                .rating-stars i:hover {
+                    transform: scale(1.2);
+                }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -480,7 +495,7 @@
                                     <ItemTemplate>
                                         <asp:LinkButton ID="btnViewThisRequest" runat="server"
                                             CssClass="btn btn-outline-info ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
+                                            CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
                                             OnClick="btnViewThisRequest_Click"
                                             OnClientClick="showLoader()"
                                             ToolTip="View this request">
@@ -528,35 +543,89 @@
             </div>
         </div>
 
-        <%-- Modal for Distributor(s) --%>
+        <%-- Modal for View --%>
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Distributors(s)</h5>
+                        <h5 class="modal-title" id="exampleModalLongTitle" runat="server"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                        <%--<div class="form-group d-flex justify-content-center align-items-center">
-                        <input type="text" id="txtSearch" class="form-control" placeholder="Search..." />
-                    </div>--%>
-                        <div class="form-group">
-                            <%-- <asp:GridView ID="DistModal" runat="server" AutoPostBack="True" CssClass="table table-bordered form-group"
-                                    AutoGenerateColumns="false" DataKeyNames="distcode" Style="margin-bottom: -18px; text-align: center">
-                                    <Columns>
-                                        <asp:BoundField DataField="DistCode" HeaderText="Dist. Code" />
-                                        <asp:BoundField DataField="DistNm" HeaderText="Distibutor Name" />
-                                    </Columns>
-                                    <HeaderStyle CssClass="header-hidden" />
-                                    <RowStyle CssClass="fixed-height-row" BackColor="#FFFFFF" />
-                                </asp:GridView>--%>
+                    <div class="modal-body py-2 px-0">
+                        <div class="px-3">
+
+                            <!-- Objectives Section -->
+                            <div id="ObjectivesDiv" runat="server" visible="false">
+                                <div class="">
+
+                                    <%--<h6 class="dashboard-card-title">Objectives</h6>--%>
+
+                                    <div class="row">
+
+                                        <!-- Training -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Training</label>
+                                            <asp:TextBox ID="txtTraining" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter training objective" />
+                                        </div>
+
+                                        <!-- Career -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Career</label>
+                                            <asp:TextBox ID="txtCareer" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter career objective" />
+                                        </div>
+
+                                        <!-- Wipro Rating -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold d-block">Wipro Rating (Out of 5)</label>
+
+                                            <div class="rating-stars" id="ratingContainer">
+                                                <i class="bi bi-star rating-star" data-value="1"></i>
+                                                <i class="bi bi-star rating-star" data-value="2"></i>
+                                                <i class="bi bi-star rating-star" data-value="3"></i>
+                                                <i class="bi bi-star rating-star" data-value="4"></i>
+                                                <i class="bi bi-star rating-star" data-value="5"></i>
+                                            </div>
+
+                                            <small id="ratingValue" class="text-muted"></small>
+
+                                            <asp:HiddenField ID="hdnRating" runat="server" />
+                                        </div>
+
+                                        <!-- Sign In -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="font-weight-semibold">Sign In</label>
+                                            <asp:TextBox ID="txtSignIn" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter your name or ID" />
+                                        </div>
+
+                                        <asp:HiddenField ID="hdnRequestId" runat="server" />
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Remarks -->
+                            <div class="form-group mb-0" id="RemarksDiv" runat="server" visible="false">
+                                <asp:TextBox ID="txtRemarks" runat="server"
+                                    CssClass="form-control text-left"
+                                    TextMode="MultiLine"
+                                    Rows="1"
+                                    placeholder="Write a valid reason/feedback here..." />
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <%--<asp:Button ID="SelectBtn" runat="server" Text="Select" CssClass="btn btn-primary" OnClick="SelectBtn_Click" />--%>
+                        <asp:Button ID="UpdateBtn" runat="server" Text="Update" CssClass="btn btn-success" OnClick="UpdateBtn_Click" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -702,6 +771,78 @@
             document.getElementById("ApproveSelectedAlert").style.display = "none";
             document.getElementById("ApproveRejectedAlert").style.display = "none";
         }
+    </script>
+
+    <%--script to bind stars--%>
+    <script>
+
+        var selectedRating = 0;
+
+        $(document).ready(function () {
+            $('.rating-star').on('mousemove', function (e) {
+                var star = $(this);
+                var offset = star.offset();
+                var width = star.width();
+                var x = e.pageX - offset.left;
+                var value = star.data('value');
+                if (x < width / 2)
+                    highlightStars(value - 0.5);
+                else
+                    highlightStars(value);
+            });
+
+            $('.rating-star').on('click', function (e) {
+                var star = $(this);
+                var offset = star.offset();
+                var width = star.width();
+                var x = e.pageX - offset.left;
+                var value = star.data('value');
+                if (x < width / 2)
+                    value = value - 0.5;
+                selectedRating = value;
+                $('#<%= hdnRating.ClientID %>').val(value);
+                $('#ratingValue').text("Rating: " + value + " / 5");
+                highlightStars(value);
+            });
+
+            // Restore selected rating when leaving rating area
+            $('#ratingContainer').on('mouseleave', function () {
+                highlightStars(selectedRating);
+            });
+
+        });
+
+
+        function highlightStars(rating) {
+            $('.rating-star').each(function () {
+                var starValue = $(this).data('value');
+                if (rating >= starValue) {
+                    $(this)
+                        .removeClass('bi-star bi-star-half')
+                        .addClass('bi-star-fill text-warning');
+                }
+                else if (rating >= starValue - 0.5) {
+                    $(this)
+                        .removeClass('bi-star bi-star-fill')
+                        .addClass('bi-star-half text-warning');
+                }
+                else {
+                    $(this)
+                        .removeClass('bi-star-fill bi-star-half text-warning')
+                        .addClass('bi-star');
+                }
+            });
+
+        }
+
+
+        function setRating(rating) {
+            selectedRating = rating;
+            $('#<%= hdnRating.ClientID %>').val(rating);
+            highlightStars(rating);
+            $('#ratingValue').text("Rating: " + rating + " / 5");
+        }
+
     </script>
 
     <script>
