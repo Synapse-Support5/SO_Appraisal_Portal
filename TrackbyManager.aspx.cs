@@ -166,111 +166,87 @@ namespace SO_Appraisal
         }
         #endregion
 
-        #region Helpers
-        protected void PendingApprovalsBtn_Click(object sender, EventArgs e)
-        {
-            PendingApprovalsBtn.CssClass = "btn btn-primary form-control";
-            ViewAllBtn.CssClass = "btn btn-outline-primary form-control";
-            PendingsLoad();
-        }
-
-        protected void PendingApprovalsGrid_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                string status = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
-
-                if (status != "1")
-                {
-                    HtmlInputCheckBox chk = (HtmlInputCheckBox)e.Row.FindControl("CheckBox1");
-
-                    if (chk != null)
-                    {
-                        chk.Visible = false;
-                    }
-
-                    // Hide Approve button
-                    LinkButton btnApprove = (LinkButton)e.Row.FindControl("btnRowApprove");
-                    if (btnApprove != null)
-                    {
-                        btnApprove.Visible = false;
-                    }
-
-                    // Hide Reject button
-                    LinkButton btnReject = (LinkButton)e.Row.FindControl("btnRowReject");
-                    if (btnReject != null)
-                    {
-                        btnReject.Visible = false;
-                    }
-                }
-            }
-        }
-
-        private void LoadRequestDetails(int requestId, int status)
+        #region ViewAllLoad
+        public void ViewAllLoad()
         {
             try
             {
                 if (con.State == ConnectionState.Closed)
-                    con.Open();
-
-                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "ViewAll");
+                    cmd1.Parameters.AddWithValue("@RequestId", "");
+                    cmd1.CommandTimeout = 6000;
 
-                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                    cmd.Parameters.AddWithValue("@ActionType", "GetRequestDetails");
-                    cmd.Parameters.AddWithValue("@RequestId", requestId);
-
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
                     {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
 
-                        if (dt.Rows.Count > 0)
+                        if (resdt.Rows.Count > 0)
                         {
-                            DataRow row = dt.Rows[0];
+                            GridStatusLabelViewAll.Text = string.Empty;
 
-                            if (status == 4)
-                            {
-                                // Show Remarks section
-                                RemarksDiv.Visible = true;
-                                ObjectivesDiv.Visible = false;
-                                UpdateBtn.Visible = false;
+                            ViewAllGrid.DataSource = resdt;
+                            ViewAllGrid.DataBind();
 
-                                exampleModalLongTitle.InnerText = "Remarks/Feedback";
-
-                                txtRemarks.Text = row["Remarks"].ToString();
-                            }
-                            else
-                            {
-                                // Show Objectives section
-                                ObjectivesDiv.Visible = true;
-                                RemarksDiv.Visible = false;
-                                UpdateBtn.Visible = true;
-
-                                exampleModalLongTitle.InnerText = "Objectives";
-
-                                txtTraining.Text = row["Training"].ToString();
-                                txtCareer.Text = row["Career"].ToString();
-                                txtSignIn.Text = row["UserName"].ToString();
-
-                                string rating = row["Rating"].ToString();
-                                hdnRating.Value = rating;
-
-                                ScriptManager.RegisterStartupScript(this, this.GetType(),
-                                    "setRating", $"setRating({rating});", true);
-                            }
                         }
+                        else
+                        {
+                            GridStatusLabelViewAll.Text = "No pendind requests found!";
+                        }
+
                     }
                 }
 
                 con.Close();
+
             }
             catch (Exception ex)
             {
-                LogError("LoadRequestDetails Error", ex);
-                showToast("Error loading request details", "toast-danger");
+                LogError("ViewAll load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
+        }
+        #endregion
+
+        #region PendingApprovalsBtn_Click
+        protected void PendingApprovalsBtn_Click(object sender, EventArgs e)
+        {
+            PendingApprovalsBtn.CssClass = "btn btn-primary form-control";
+            ViewAllBtn.CssClass = "btn btn-outline-primary form-control";
+            PendApprovalsSec.Visible = true;
+            ViewAllSec.Visible = false;
+            PendingsLoad();
+        }
+        #endregion
+
+        #region ViewAllBtn_Click
+        protected void ViewAllBtn_Click(object sender, EventArgs e)
+        {
+            PendingApprovalsBtn.CssClass = "btn btn-outline-primary form-control";
+            ViewAllBtn.CssClass = "btn btn-primary form-control";
+
+            PendingApprovalsGrid.DataSource = null;
+            PendingApprovalsGrid.DataBind();
+
+            ButtonsDiv.Visible = false;
+
+            PendApprovalsSec.Visible = false;
+            ViewAllSec.Visible = true;
+
+            ViewAllLoad();
+
+            txtTraining.ReadOnly = true;
+            txtCareer.ReadOnly = true;
+            txtSignIn.ReadOnly = true;
+            UpdateBtn.Visible = false;
         }
         #endregion
 
@@ -709,16 +685,108 @@ namespace SO_Appraisal
         }
         #endregion
 
-        protected void ViewAllBtn_Click(object sender, EventArgs e)
+        #region Helpers
+        protected void PendingApprovalsGrid_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            PendingApprovalsBtn.CssClass = "btn btn-outline-primary form-control";
-            ViewAllBtn.CssClass = "btn btn-primary form-control";
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string status = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
 
-            PendingApprovalsGrid.DataSource = null;
-            PendingApprovalsGrid.DataBind();
+                if (status != "1")
+                {
+                    HtmlInputCheckBox chk = (HtmlInputCheckBox)e.Row.FindControl("CheckBox1");
 
-            ButtonsDiv.Visible = false;
+                    if (chk != null)
+                    {
+                        chk.Visible = false;
+                    }
+
+                    // Hide Approve button
+                    LinkButton btnApprove = (LinkButton)e.Row.FindControl("btnRowApprove");
+                    if (btnApprove != null)
+                    {
+                        btnApprove.Visible = false;
+                    }
+
+                    // Hide Reject button
+                    LinkButton btnReject = (LinkButton)e.Row.FindControl("btnRowReject");
+                    if (btnReject != null)
+                    {
+                        btnReject.Visible = false;
+                    }
+                }
+            }
         }
+
+        private void LoadRequestDetails(int requestId, int status)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@ActionType", "GetRequestDetails");
+                    cmd.Parameters.AddWithValue("@RequestId", requestId);
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            DataRow row = dt.Rows[0];
+
+                            if (status == 4)
+                            {
+                                // Show Remarks section
+                                RemarksDiv.Visible = true;
+                                ObjectivesDiv.Visible = false;
+                                UpdateBtn.Visible = false;
+
+                                exampleModalLongTitle.InnerText = "Remarks/Feedback";
+
+                                txtRemarks.Text = row["Remarks"].ToString();
+                            }
+                            else
+                            {
+                                // Show Objectives section
+                                ObjectivesDiv.Visible = true;
+                                RemarksDiv.Visible = false;
+                                UpdateBtn.Visible = true;
+
+                                exampleModalLongTitle.InnerText = "Objectives";
+
+                                txtTraining.Text = row["Training"].ToString();
+                                txtCareer.Text = row["Career"].ToString();
+                                txtSignIn.Text = row["UserName"].ToString();
+
+                                string rating = row["Rating"].ToString();
+                                hdnRating.Value = rating;
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(),
+                                    "setRating", $"setRating({rating});", true);
+                            }
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("LoadRequestDetails Error", ex);
+                showToast("Error loading request details", "toast-danger");
+            }
+        }
+        #endregion
+
+
 
 
         #region ToastNotification
@@ -784,5 +852,9 @@ namespace SO_Appraisal
                 showToast("Something went wrong while updating.", "toast-danger");
             }
         }
+
+
+
+
     }
 }

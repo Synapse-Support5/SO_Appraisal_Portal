@@ -42,6 +42,15 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.Button ViewAllBtn;
 
         /// <summary>
+        /// PendApprovalsSec control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PendApprovalsSec;
+
+        /// <summary>
         /// GridStatusLabel control.
         /// </summary>
         /// <remarks>
@@ -85,6 +94,33 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button RejectSelectedBtn;
+
+        /// <summary>
+        /// ViewAllSec control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ViewAllSec;
+
+        /// <summary>
+        /// GridStatusLabelViewAll control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label GridStatusLabelViewAll;
+
+        /// <summary>
+        /// ViewAllGrid control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView ViewAllGrid;
 
         /// <summary>
         /// exampleModalLongTitle control.

@@ -463,83 +463,121 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="grid-wrapper">
-                        <asp:Label ID="GridStatusLabel" runat="server"></asp:Label>
-                        <asp:GridView ID="PendingApprovalsGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
-                            Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId" OnRowDataBound="PendingApprovalsGrid_RowDataBound">
-                            <Columns>
-                                <asp:TemplateField HeaderText="Select All">
-                                    <HeaderTemplate>
-                                        <div style="margin-right: 14px; position: relative; align-items: center; align-content: center;">
-                                            <input type="checkbox" id="parentCheckbox" style="margin-left: 0px;" class="form-check-input" />
-                                        </div>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <div style="margin-right: 14px; position: relative;">
-                                            <input type="checkbox" id="CheckBox1" runat="server" class="child-checkbox form-check-input rowCheckbox" style="margin-left: 0px;" />
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
+            <div id="PendApprovalsSec" runat="server" visible="false">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="grid-wrapper">
+                            <asp:Label ID="GridStatusLabel" runat="server"></asp:Label>
+                            <asp:GridView ID="PendingApprovalsGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
+                                Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId" OnRowDataBound="PendingApprovalsGrid_RowDataBound">
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Select All">
+                                        <HeaderTemplate>
+                                            <div style="margin-right: 14px; position: relative; align-items: center; align-content: center;">
+                                                <input type="checkbox" id="parentCheckbox" style="margin-left: 0px;" class="form-check-input" />
+                                            </div>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <div style="margin-right: 14px; position: relative;">
+                                                <input type="checkbox" id="CheckBox1" runat="server" class="child-checkbox form-check-input rowCheckbox" style="margin-left: 0px;" />
+                                            </div>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
-                                <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
-                                <asp:BoundField DataField="SOCode" HeaderText="SOCode" />
-                                <asp:BoundField DataField="Remarks" HeaderText="Remarks" />
-                                <asp:BoundField DataField="Status" HeaderText="Status" Visible="false" />
-                                <asp:BoundField DataField="Description" HeaderText="Description" />
-                                <asp:BoundField DataField="CreatedOn" HeaderText="CreatedOn" DataFormatString="{0:dd-MMM-yyyy}" HtmlEncode="false" />
-                                <asp:BoundField DataField="CreatedBy" HeaderText="RequestedBy" />
+                                    <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
+                                    <asp:BoundField DataField="SOCode" HeaderText="SOCode" />
+                                    <asp:BoundField DataField="Remarks" HeaderText="Remarks" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" Visible="false" />
+                                    <asp:BoundField DataField="Description" HeaderText="Description" />
+                                    <asp:BoundField DataField="CreatedOn" HeaderText="CreatedOn" DataFormatString="{0:dd-MMM-yyyy}" HtmlEncode="false" />
+                                    <asp:BoundField DataField="CreatedBy" HeaderText="RequestedBy" />
 
-                                <asp:TemplateField HeaderText="Objectives">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnViewThisRequest" runat="server"
-                                            CssClass="btn btn-outline-info ml-1"
-                                            CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
-                                            OnClick="btnViewThisRequest_Click"
-                                            OnClientClick="showLoader()"
-                                            ToolTip="View this request">
+                                    <asp:TemplateField HeaderText="Objectives">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnViewThisRequest" runat="server"
+                                                CssClass="btn btn-outline-info ml-1"
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
+                                                OnClick="btnViewThisRequest_Click"
+                                                OnClientClick="showLoader()"
+                                                ToolTip="View this request">
                                         <i class="bi bi-eye"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Approve">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnRowApprove" runat="server"
-                                            CssClass="btn btn-outline-success ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
-                                            OnClientClick='<%# "showApproveAlert(" + Eval("RequestId") + "); return false;" %>'
-                                            ToolTip="Approve">
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Approve">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnRowApprove" runat="server"
+                                                CssClass="btn btn-outline-success ml-1"
+                                                CommandArgument='<%# Eval("RequestId")%>'
+                                                OnClientClick='<%# "showApproveAlert(" + Eval("RequestId") + "); return false;" %>'
+                                                ToolTip="Approve">
                                         <i class="bi bi-check2-square"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Reject">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="btnRowReject" runat="server"
-                                            CssClass="btn btn-outline-danger ml-1"
-                                            CommandArgument='<%# Eval("RequestId")%>'
-                                            OnClientClick='<%# "showRejectAlert(" + Eval("RequestId") + "); return false;" %>'
-                                            ToolTip="Reject">
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Reject">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnRowReject" runat="server"
+                                                CssClass="btn btn-outline-danger ml-1"
+                                                CommandArgument='<%# Eval("RequestId")%>'
+                                                OnClientClick='<%# "showRejectAlert(" + Eval("RequestId") + "); return false;" %>'
+                                                ToolTip="Reject">
                                            <i class="bi bi-x-lg"></i>
-                                        </asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3 justify-content-end" id="ButtonsDiv" runat="server" visible="false">
+                    <div class="col-md-2 col-6 mb-2">
+                        <asp:Button ID="ApproveSelectedBtn" runat="server" Text="Approve Selected" CssClass="btn btn-outline-success form-control"
+                            OnClientClick="approveSelectedAlert(); return false;" />
+                    </div>
+                    <div class="col-md-2 col-6 mb-2">
+                        <asp:Button ID="RejectSelectedBtn" runat="server" Text="Reject Selected" CssClass="btn btn-outline-danger form-control"
+                            OnClientClick="approveRejectedAlert(); return false;" />
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-3 justify-content-end" id="ButtonsDiv" runat="server" visible="false">
-                <div class="col-md-2 col-6 mb-2">
-                    <asp:Button ID="ApproveSelectedBtn" runat="server" Text="Approve Selected" CssClass="btn btn-outline-success form-control"
-                        OnClientClick="approveSelectedAlert(); return false;" />
+            <div id="ViewAllSec" runat="server" visible="false">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="grid-wrapper">
+                            <asp:Label ID="GridStatusLabelViewAll" runat="server"></asp:Label>
+                            <asp:GridView ID="ViewAllGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
+                                Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId">
+                                <Columns>
+                                    <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
+                                    <asp:BoundField DataField="SOCode" HeaderText="SOCode" />
+                                    <asp:BoundField DataField="Remarks" HeaderText="Remarks" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" Visible="false" />
+                                    <asp:BoundField DataField="Description" HeaderText="Description" />
+                                    <asp:BoundField DataField="CreatedOn" HeaderText="CreatedOn" DataFormatString="{0:dd-MMM-yyyy}" HtmlEncode="false" />
+                                    <asp:BoundField DataField="CreatedBy" HeaderText="RequestedBy" />
+
+                                    <asp:TemplateField HeaderText="Objectives">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnViewThisRequest" runat="server"
+                                                CssClass="btn btn-outline-info ml-1"
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
+                                                OnClick="btnViewThisRequest_Click"
+                                                OnClientClick="showLoader()"
+                                                ToolTip="View this request">
+                                                    <i class="bi bi-eye"></i>
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 col-6 mb-2">
-                    <asp:Button ID="RejectSelectedBtn" runat="server" Text="Reject Selected" CssClass="btn btn-outline-danger form-control"
-                        OnClientClick="approveRejectedAlert(); return false;" />
-                </div>
+
             </div>
         </div>
 
@@ -618,7 +656,8 @@
                                     CssClass="form-control text-left"
                                     TextMode="MultiLine"
                                     Rows="1"
-                                    placeholder="Write a valid reason/feedback here..." />
+                                    placeholder="Write a valid reason/feedback here..."
+                                    ReadOnly="true" />
                             </div>
 
                         </div>
