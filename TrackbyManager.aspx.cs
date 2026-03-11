@@ -1,9 +1,11 @@
-﻿using DocumentFormat.OpenXml.Office.Word;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office.Word;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -247,6 +249,64 @@ namespace SO_Appraisal
             txtCareer.ReadOnly = true;
             txtSignIn.ReadOnly = true;
             UpdateBtn.Visible = false;
+        }
+        #endregion
+
+        #region btnDownloadThisRequest_Click
+        protected void btnDownloadThisRequest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LinkButton btn = (LinkButton)sender;
+
+                string[] args = btn.CommandArgument.Split(',');
+
+                string requestId = (args[0]).ToString();
+                string soCode = (args[1]).ToString();
+                string pcYear = (args[2]).ToString();
+                string quarter = (args[3]).ToString();
+
+                DataSet ds = LoadRequestAchivements(soCode, pcYear, quarter);
+
+                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
+                {
+                    CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
+
+                    // ================= Distributor Sheet =================
+                    if (ds.Tables.Count > 20)
+                    {
+                        var wsDist = wb.Worksheets.Add("Distributors");
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
+
+                        FormatTable(table);
+                        wsDist.Columns().AdjustToContents();
+                    }
+
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition",
+                        "attachment;filename=Request_Report_" + soCode + "_" + requestId + ".xlsx");
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        wb.SaveAs(memoryStream);
+                        memoryStream.WriteTo(Response.OutputStream);
+                    }
+
+                    Response.Flush();
+                    Response.SuppressContent = true;
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError("View this request Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
         }
         #endregion
 
@@ -784,6 +844,152 @@ namespace SO_Appraisal
                 showToast("Error loading request details", "toast-danger");
             }
         }
+
+        private DataSet LoadRequestAchivements(string SOCode, string PCYear, string Quarter)
+        {
+            DataSet ds = new DataSet();   
+
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@ActionType", "Fetch");
+                    cmd.Parameters.AddWithValue("@SOCode", SOCode);
+                    cmd.Parameters.AddWithValue("@PcYear", PCYear);
+                    cmd.Parameters.AddWithValue("@Quarter", Quarter);
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds);
+                    }
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("LoadRequestDetails Error", ex);
+                showToast("Error loading request details", "toast-danger");
+            }
+
+            return ds;
+        }
+
+        private void CreateCustomSheet(XLWorkbook wb, DataSet ds,
+                               int startIndex, int endIndex,
+                               string sheetName,
+                               string[] tableNames)
+        {
+            var ws = wb.Worksheets.Add(sheetName);
+
+            int currentRow = 1;
+            int currentCol;
+            int maxHeightTop = 0;
+
+            // ===== TOP 5 TABLES =====
+            currentCol = 1;
+
+            for (int i = startIndex; i < startIndex + 5 && i < ds.Tables.Count; i++)
+            {
+                DataTable dt = ds.Tables[i];
+
+                ws.Cell(currentRow, currentCol).Value =
+                    tableNames[i - startIndex];
+
+                ws.Cell(currentRow, currentCol).Style.Font.Bold = true;
+                ws.Cell(currentRow, currentCol).Style.Font.FontSize = 10;
+
+                var table = ws.Cell(currentRow + 1, currentCol)
+                              .InsertTable(dt, false);
+
+                FormatTable(table);
+
+                int tableWidth = dt.Columns.Count;
+                int tableHeight = dt.Rows.Count + 1;
+
+                maxHeightTop = Math.Max(maxHeightTop, tableHeight);
+
+                currentCol += tableWidth + 1;
+            }
+
+            currentRow += maxHeightTop + 3;
+            currentCol = 1;
+
+            // ===== NEXT 5 TABLES =====
+            for (int i = startIndex + 5; i <= endIndex && i < ds.Tables.Count; i++)
+            {
+                DataTable dt = ds.Tables[i];
+
+                ws.Cell(currentRow, currentCol).Value =
+                    tableNames[i - startIndex];
+
+                ws.Cell(currentRow, currentCol).Style.Font.Bold = true;
+                ws.Cell(currentRow, currentCol).Style.Font.FontSize = 10;
+
+                var table = ws.Cell(currentRow + 1, currentCol)
+                              .InsertTable(dt, false);
+
+                FormatTable(table);
+
+                int tableWidth = dt.Columns.Count;
+
+                currentCol += tableWidth + 1;
+            }
+
+            ws.Columns().AdjustToContents();
+        }
+
+        private void FormatTable(IXLTable table)
+        {
+            table.ShowAutoFilter = false;        // Remove filter
+            table.Theme = XLTableTheme.None;     // Remove color theme
+
+            var range = table.AsRange();
+
+            range.Style.Font.FontSize = 10;
+            range.Style.Font.Bold = false;
+
+            // Header bold
+            range.FirstRow().Style.Font.Bold = true;
+
+            // Borders
+            range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            range.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+        }
+
+        string[] primaryNames = new string[]
+        {
+            "Last Year",
+            "Plan",
+            "Achievement(PresentYear)",
+            "% Achievement",
+            "GOLY",
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY"
+        };
+
+        string[] secondaryNames = new string[]
+        {
+            "Last Year",
+            "Plan",
+            "Achievement(PresentYear)",
+            "% Achievement",
+            "GOLY",
+            "Last Year",
+            "Plan",
+            "Achievement",
+            "% Achievement",
+            "GOLY"
+        };
         #endregion
 
 

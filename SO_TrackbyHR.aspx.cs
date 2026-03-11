@@ -784,7 +784,7 @@ namespace SO_Appraisal
         {
             "Last Year",
             "Plan",
-            "Achievement",
+            "Achievement(PresentYear)",
             "% Achievement",
             "GOLY",
             "Last Year",
@@ -798,7 +798,7 @@ namespace SO_Appraisal
         {
             "Last Year",
             "Plan",
-            "Achievement",
+            "Achievement(PresentYear)",
             "% Achievement",
             "GOLY",
             "Last Year",

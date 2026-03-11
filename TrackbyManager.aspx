@@ -486,11 +486,25 @@
 
                                     <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
                                     <asp:BoundField DataField="SOCode" HeaderText="SOCode" />
+                                    <asp:BoundField DataField="Quarter" HeaderText="Quarter" />
                                     <asp:BoundField DataField="Remarks" HeaderText="Remarks" />
                                     <asp:BoundField DataField="Status" HeaderText="Status" Visible="false" />
                                     <asp:BoundField DataField="Description" HeaderText="Description" />
                                     <asp:BoundField DataField="CreatedOn" HeaderText="CreatedOn" DataFormatString="{0:dd-MMM-yyyy}" HtmlEncode="false" />
                                     <asp:BoundField DataField="CreatedBy" HeaderText="RequestedBy" />
+                                    <asp:BoundField DataField="PCYear" HeaderText="PCYear" Visible="false" />
+
+                                    <asp:TemplateField HeaderText="Data">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnDownloadThisRequest" runat="server"
+                                                CssClass="btn btn-outline-primary ml-1"
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("SOCode") + "," + Eval("PCYear") + "," + Eval("Quarter") %>'
+                                                OnClick="btnDownloadThisRequest_Click"
+                                                ToolTip="Download SO requested achievements">
+                                                    <i class="bi bi-download"></i>
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
                                     <asp:TemplateField HeaderText="Objectives">
                                         <ItemTemplate>
@@ -554,11 +568,25 @@
                                 <Columns>
                                     <asp:BoundField DataField="RequestId" HeaderText="RequestId" />
                                     <asp:BoundField DataField="SOCode" HeaderText="SOCode" />
+                                    <asp:BoundField DataField="Quarter" HeaderText="Quarter" />
                                     <asp:BoundField DataField="Remarks" HeaderText="Remarks" />
                                     <asp:BoundField DataField="Status" HeaderText="Status" Visible="false" />
                                     <asp:BoundField DataField="Description" HeaderText="Description" />
                                     <asp:BoundField DataField="CreatedOn" HeaderText="CreatedOn" DataFormatString="{0:dd-MMM-yyyy}" HtmlEncode="false" />
                                     <asp:BoundField DataField="CreatedBy" HeaderText="RequestedBy" />
+                                    <asp:BoundField DataField="PCYear" HeaderText="PCYear" Visible ="false" />
+
+                                    <asp:TemplateField HeaderText="Data">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnDownloadThisRequest" runat="server"
+                                                CssClass="btn btn-outline-primary ml-1"
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("SOCode") + "," + Eval("PCYear") + "," + Eval("Quarter") %>'
+                                                OnClick="btnDownloadThisRequest_Click"
+                                                ToolTip="Download SO requested achievements">
+                                                    <i class="bi bi-download"></i>
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
                                     <asp:TemplateField HeaderText="Objectives">
                                         <ItemTemplate>
@@ -814,7 +842,6 @@
 
     <%--script to bind stars--%>
     <script>
-
         var selectedRating = 0;
 
         $(document).ready(function () {
@@ -851,7 +878,6 @@
 
         });
 
-
         function highlightStars(rating) {
             $('.rating-star').each(function () {
                 var starValue = $(this).data('value');
@@ -873,7 +899,6 @@
             });
 
         }
-
 
         function setRating(rating) {
             selectedRating = rating;

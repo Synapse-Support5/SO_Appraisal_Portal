@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -522,17 +523,23 @@ namespace SO_Appraisal
                     }
 
                     Response.Clear();
-                    Response.ContentType =
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.Buffer = true;
+                    Response.Charset = "";
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     Response.AddHeader("content-disposition",
                         "attachment;filename=Dashboard_Report_" + Session["name"].ToString() + ".xlsx");
 
-                    using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
+                    using (MemoryStream memoryStream = new MemoryStream())
                     {
                         wb.SaveAs(memoryStream);
                         memoryStream.WriteTo(Response.OutputStream);
-                        Response.End();
                     }
+
+                    Response.Flush();
+                    Response.SuppressContent = true;
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
+
                 }
             }
             catch (Exception ex)
@@ -684,7 +691,7 @@ namespace SO_Appraisal
         {
             "Last Year",
             "Plan",
-            "Achievement",
+            "Achievement(PresentYear)",
             "% Achievement",
             "GOLY",
             "Last Year",
@@ -698,7 +705,7 @@ namespace SO_Appraisal
         {
             "Last Year",
             "Plan",
-            "Achievement",
+            "Achievement(PresentYear)",
             "% Achievement",
             "GOLY",
             "Last Year",
