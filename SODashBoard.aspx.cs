@@ -561,33 +561,33 @@ namespace SO_Appraisal
 
                 showToast("Rating : " + rating, "toast-success");
 
-                //if (txtRemarks.Text == string.Empty)
-                //{
-                //    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
-                //        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
-                //        "$('#proceedModalCenter').modal('show');", true);
-                //    return;
-                //}
+                if (txtRemarks.Text == string.Empty)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "toast",
+                        "showToast('Please provide remarks before submitting the request', 'toast-danger');" +
+                        "$('#proceedModalCenter').modal('show');", true);
+                    return;
+                }
 
-                //if (con.State == ConnectionState.Closed)
-                //{
-                //    con.Open();
-                //}
-                //SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
-                //cmd1.CommandType = CommandType.StoredProcedure;
-                //cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                //cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                //cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                //cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
-                //cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
-                //cmd1.CommandTimeout = 6000;
-                //cmd1.ExecuteNonQuery();
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad_NewLogic", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
+                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
+                cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
 
-                //con.Close();
+                con.Close();
 
 
 
-                //showToast("Data Submitted!", "toast-success");
+                showToast("Data Submitted!", "toast-success");
             }
             catch (Exception ex)
             {

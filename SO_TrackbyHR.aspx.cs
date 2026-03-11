@@ -397,6 +397,16 @@ namespace SO_Appraisal
         {
             try
             {
+                string zone;
+                if(ZoneDrp.SelectedItem.ToString() == "Zone")
+                {
+                    zone = "";
+                }
+                else
+                {
+                    zone = ZoneDrp.SelectedItem.ToString();
+                }
+
                 if (con.State == ConnectionState.Closed)
                 {
                     con.Open();
@@ -409,7 +419,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
                     cmd1.Parameters.AddWithValue("@State", "");
                     cmd1.Parameters.AddWithValue("@Area", AreaDrp.SelectedItem.ToString());
-                    cmd1.Parameters.AddWithValue("@Zone", ZoneDrp.SelectedItem.ToString());
+                    cmd1.Parameters.AddWithValue("@Zone", zone);
                     cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                     cmd1.CommandTimeout = 6000;
