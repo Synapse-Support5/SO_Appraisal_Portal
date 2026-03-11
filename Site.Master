@@ -148,8 +148,8 @@
                     </a>
                     <a class="nav-link" runat="server" href="~/SO_DBR_Master">SO DBR Details</a>
                     <a class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
-                    <a class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements</a>
                     <a class="nav-link" runat="server" href="~/TrackbyManager">SO Achievements For Manager</a>
+                    <a class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements For HR</a>
                 </li>
             </ul>
         </aside>

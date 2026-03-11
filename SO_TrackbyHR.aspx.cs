@@ -452,12 +452,23 @@ namespace SO_Appraisal
 
         protected void AreaDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
+            QtrDrp.ClearSelection();
+            TypeDrp.ClearSelection();
+
+            PriSecDiv.Visible = false;
+            distDiv.Visible = false;
+
             ZoneLoad();
             BindFYDropdown();
         }
 
         protected void ZoneDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
+            QtrDrp.ClearSelection();
+            TypeDrp.ClearSelection();
+
+            PriSecDiv.Visible = false;
+            distDiv.Visible = false;
             BindFYDropdown();
         }
 
@@ -476,7 +487,6 @@ namespace SO_Appraisal
             if (TypeDrp.SelectedValue == "Primary")
             {
                 PrimaryLoad();
-
             }
             else if (TypeDrp.SelectedValue == "Secondary")
             {
