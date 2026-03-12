@@ -228,7 +228,7 @@ namespace SO_Appraisal
                         ZoneDrp.DataTextField = "Zone";
                         ZoneDrp.DataValueField = "Zone";
                         ZoneDrp.DataBind();
-                        ZoneDrp.Items.Insert(0, new ListItem("Zone", ""));
+                        ZoneDrp.Items.Insert(0, new ListItem("ALL Zone", ""));
                     }
                 }
 
@@ -398,7 +398,7 @@ namespace SO_Appraisal
             try
             {
                 string zone;
-                if(ZoneDrp.SelectedItem.ToString() == "Zone")
+                if(ZoneDrp.SelectedItem.ToString() == "ALL Zone")
                 {
                     zone = "";
                 }
