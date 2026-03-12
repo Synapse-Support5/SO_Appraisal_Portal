@@ -176,7 +176,6 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@PcYear", "");
                     cmd1.Parameters.AddWithValue("@Quarter", "");
-                    cmd1.ExecuteNonQuery();
 
                     cmd1.CommandTimeout = 6000;
 
@@ -271,7 +270,6 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Quarter", "");
-                    cmd1.ExecuteNonQuery();
 
                     cmd1.CommandTimeout = 6000;
 
@@ -314,7 +312,6 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@SOCode", SOCode);
                     cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
                     cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
-                    cmd1.ExecuteNonQuery();
 
                     cmd1.CommandTimeout = 6000;
 
@@ -345,7 +342,9 @@ namespace SO_Appraisal
 
         protected void QtrDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Session["Role"] == "SO")
+            string role = Convert.ToString(Session["Role"]).Trim().ToUpper();
+
+            if (role == "SO")
             {
                 SOCode = Session["name"].ToString();
             }
@@ -355,16 +354,6 @@ namespace SO_Appraisal
             }
 
             FetchAllData();
-
-            //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-            //{
-            //    var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
-            //    DstCountLbl.InnerText = $" ({count})";
-            //}
-            //else
-            //{
-            //    DstCountLbl.InnerText = "";
-            //}
         }
 
         protected void TypeDrp_SelectedIndexChanged(object sender, EventArgs e)
