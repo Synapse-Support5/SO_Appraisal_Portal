@@ -510,7 +510,7 @@
                                         <ItemTemplate>
                                             <asp:LinkButton ID="btnViewThisRequest" runat="server"
                                                 CssClass="btn btn-outline-info ml-1"
-                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") + "," + Eval("SOCode") + "," + Eval("PCYear") + "," + Eval("Quarter") %>'
                                                 OnClick="btnViewThisRequest_Click"
                                                 OnClientClick="showLoader()"
                                                 ToolTip="View this request">
@@ -592,7 +592,7 @@
                                         <ItemTemplate>
                                             <asp:LinkButton ID="btnViewThisRequest" runat="server"
                                                 CssClass="btn btn-outline-info ml-1"
-                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") %>'
+                                                CommandArgument='<%# Eval("RequestId") + "," + Eval("Status") + "," + Eval("SOCode") + "," + Eval("PCYear") + "," + Eval("Quarter") %>'
                                                 OnClick="btnViewThisRequest_Click"
                                                 OnClientClick="showLoader()"
                                                 ToolTip="View this request">

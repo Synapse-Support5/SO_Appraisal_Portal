@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office.Word;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,6 +8,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -14,7 +19,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class TrackbyManager : BasePage
+    public partial class TrackbyManager : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
@@ -84,6 +89,7 @@ namespace SO_Appraisal
                             Session["Username"] = resdt.Rows[0][1].ToString();
                             hdnBusinessType.Value = resdt.Rows[0][2].ToString();
                             hdnRole.Value = resdt.Rows[0][3].ToString();
+                            Session["SoCode"] = resdt.Rows[0][0].ToString();
                         }
                         else
                         {
@@ -321,6 +327,9 @@ namespace SO_Appraisal
 
                 int requestId = Convert.ToInt32(args[0]);
                 int status = Convert.ToInt32(args[1]);
+                Session["SO_Code"] = args[2].ToString();
+                Session["PC_Year"] = args[3].ToString();
+                Session["Quart"] = args[4].ToString();
 
                 // store request id
                 hdnRequestId.Value = requestId.ToString();
@@ -813,6 +822,7 @@ namespace SO_Appraisal
                                 exampleModalLongTitle.InnerText = "Remarks/Feedback";
 
                                 txtRemarks.Text = row["Remarks"].ToString();
+                                Session["Remarks"] = txtRemarks.Text;
                             }
                             else
                             {
@@ -1066,26 +1076,192 @@ namespace SO_Appraisal
             try
             {
                 int requestId = Convert.ToInt32(hdnRequestId.Value);
+                string soCode = Session["SO_Code"].ToString();
+                string pcYear = Session["PC_Year"].ToString();
+                string quart = Session["Quart"].ToString();
 
-                string training = txtTraining.Text.Trim();
-                string career = txtCareer.Text.Trim();
-                string signIn = txtSignIn.Text.Trim();
+                DataSet ds = FetchAllData(soCode, pcYear, quart);
 
-                decimal rating = 0;
+                MemoryStream memoryStream = new MemoryStream();
 
-                if (!string.IsNullOrEmpty(hdnRating.Value))
-                    rating = Convert.ToDecimal(hdnRating.Value);
+                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
+                {
+                    CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
 
-                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
+                    if (ds.Tables.Count > 20)
+                    {
+                        var wsDist = wb.Worksheets.Add("Distributors");
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
 
-                // Now you can use these values for DB update
+                        FormatTable(table);
+                        wsDist.Columns().AdjustToContents();
+                    }
 
+                    wb.SaveAs(memoryStream);
+                }
+
+                memoryStream.Position = 0;
+
+                string fileName = $"Request_Report_{soCode}_{requestId}.xlsx";
+
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@ActionType", "MailerDetails");
+                    cmd.Parameters.AddWithValue("@RequestId", "");
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
+
+                        if (resdt.Rows.Count > 0)
+                        {
+                            string pStrTo = resdt.Rows[0]["To"].ToString();
+                            string pCc = resdt.Rows[0]["CC"].ToString();
+                            string pBcc = resdt.Rows[0]["BCC"].ToString();
+                            string pstrSubject = resdt.Rows[0]["EMSubject"].ToString();
+                            string pstrBody = resdt.Rows[0]["EMBodyContent"].ToString();
+
+                            // Replace placeholders
+                            pstrBody = pstrBody
+                                .Replace("{SOCode}", Session["SO_Code"].ToString())
+                                .Replace("{Remarks}", Session["Remarks"].ToString());
+
+                            SendEmailMessage(
+                                pStrTo,
+                                pstrSubject,
+                                pCc,
+                                pBcc,
+                                pstrBody,
+                                memoryStream,
+                                fileName
+                            );
+
+                            showToast("Mail sent successfully.", "toast-success");
+                        }
+                        else
+                        {
+                            showToast("Invalid mailer details", "toast-danger");
+                        }
+                    }
+                }
+
+                con.Close();
             }
             catch (Exception ex)
             {
                 LogError("Forward Button Error", ex);
-                showToast("Something went wrong while updating.", "toast-danger");
+                showToast("Something went wrong while sending mail.", "toast-danger");
             }
         }
+
+        public DataSet FetchAllData(string SOCode, string FY, string Qtr)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
+                    cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                    cmd1.Parameters.AddWithValue("@PcYear", FY);
+                    cmd1.Parameters.AddWithValue("@Quarter", Qtr);
+
+                    cmd1.CommandTimeout = 6000;
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
+                    {
+                        //ds.Clear();
+                        da.Fill(ds);
+                    }
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("Fetch All Data Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+
+            return ds;
+        }
+
+        public void SendEmailMessage(string to, string subject, string cc, string bcc, string body, MemoryStream fileStream, string fileName)
+        {
+            try
+            {
+                string base64File = Convert.ToBase64String(fileStream.ToArray());
+
+                var payload = new
+                {
+                    credentialID = "4",
+                    emailTo = to,
+                    emailCC = cc,
+                    emailBCC = bcc,
+                    subject = subject,
+                    mailbody = body,
+                    attchmentFileData = base64File,
+                    attchFileName = fileName
+                };
+
+                string jsonPayload = JsonConvert.SerializeObject(payload);
+
+                string apiEndpoint = "https://apps.wcclg.com/wccmail/api/sendmail.php";
+                string headerToken = "688faf8b9f3334c111a1fea39c5926aa";
+
+                SendPostRequest(apiEndpoint, headerToken, jsonPayload);
+            }
+            catch (Exception ex)
+            {
+                LogError("SendEmailMessage Error", ex);
+            }
+        }
+
+        public string SendPostRequest(string url, string token, string jsonPayload)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    client.DefaultRequestHeaders.Add("token", token);
+
+                    HttpContent content = new StringContent(
+                        jsonPayload,
+                        Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+                    response.EnsureSuccessStatusCode();
+
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError("SendPostRequest Error", ex);
+                return ex.Message;
+            }
+        }
+
+
     }
 }
