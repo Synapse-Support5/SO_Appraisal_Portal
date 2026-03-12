@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
     <%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />--%>
 
@@ -387,11 +388,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
-    <%--<script src="https://cdn.tailwindcss.com"></script>--%>
-    <!-- Lucide icons -->
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
     <script>
         function showToast(message, styleClass) {
@@ -448,8 +445,34 @@
         <br />
         <br />
 
-        <div class="container">
+        <div class="container" id="SODrpDiv" runat="server" visible="false">
             <div class="row">
+                <div class="col-6 col-md-3 mb-2 mb-md-0">
+                    <div class="floating-label">
+
+                        <asp:DropDownList ID="SODrp"
+                            runat="server"
+                            AutoPostBack="true"
+                            Style="display: none;"
+                            class="form-control"
+                            ClientIDMode="Static">
+                        </asp:DropDownList>
+
+                        <input type="text"
+                            id="SODrpSearch"
+                            runat="server"
+                            class="form-control"
+                            placeholder="Enter SO" />
+
+                        <label for="SODrp">SO</label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row mt-3">
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <div class="floating-label">
                         <asp:DropDownList ID="FYDrp" runat="server" AutoPostBack="true" class="form-control" OnSelectedIndexChanged="FYDrp_SelectedIndexChanged">
@@ -485,10 +508,6 @@
                         <%--<asp:Label runat="server" Text="FY" AssociatedControlID="FYDrp" />--%>
                     </div>
                 </div>
-
-                <%--<div class="col-6 col-md-3 mb-2 mb-md-0">
-                    <asp:Button ID="DistCountBtn" runat="server" CssClass="btn btn-outline-primary form-control" OnClick="DistCountBtn_Click" />
-                </div>--%>
 
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <asp:Button ID="ExportBtn" runat="server" Text="Export" CssClass="btn btn-success form-control" OnClick="ExportBtn_Click" />
@@ -762,7 +781,7 @@
             </div>
         </div>
 
-        <div class="container mt-4">
+        <div class="container mt-4" id="BtnDiv" runat="server">
             <div class="row justify-content-end">
                 <div class="col-6 col-md-3 mb-2 mb-md-0">
                     <button type="button" style="text-align: center;" class="form-control btn btn-primary" id="btn_Proceed" runat="server" data-toggle="modal" data-target="#proceedModalCenter" visible="false">
@@ -896,9 +915,7 @@
         var selectedRating = 0;
 
         $(document).ready(function () {
-
             $('.rating-star').on('mousemove', function (e) {
-
                 var star = $(this);
                 var offset = star.offset();
                 var width = star.width();
@@ -910,11 +927,9 @@
                     highlightStars(value - 0.5);
                 else
                     highlightStars(value);
-
             });
 
             $('.rating-star').on('click', function (e) {
-
                 var star = $(this);
                 var offset = star.offset();
                 var width = star.width();
@@ -928,29 +943,21 @@
                 selectedRating = value; // store selected rating
 
                 $('#<%= hdnRating.ClientID %>').val(value);
-
                 $('#ratingValue').text("Rating: " + value + " / 5");
-
                 highlightStars(value);
-
             });
 
             // restore selected rating when leaving stars
             $('#ratingContainer').on('mouseleave', function () {
-
                 highlightStars(selectedRating);
-
             });
 
         });
 
 
         function highlightStars(rating) {
-
             $('.rating-star').each(function () {
-
                 var starValue = $(this).data('value');
-
                 if (rating >= starValue) {
                     $(this)
                         .removeClass('bi-star bi-star-half')
@@ -966,7 +973,6 @@
                         .removeClass('bi-star-fill bi-star-half text-warning')
                         .addClass('bi-star');
                 }
-
             });
 
         }
@@ -974,34 +980,52 @@
     </script>
 
     <script>
-        // --- FYDrp autocomplete ---
-        (function () {
-            var ddl = $('#<%= FYDrp.ClientID %>');
-            var searchBox = $('#<%= FYSearch.ClientID %>');
+        $(document).ready(function () {
+            // --- SO autocomplete ---
+            (function () {
 
-            var options = [];
-            ddl.find("option").each(function () {
-                var text = $(this).text();
-                var value = $(this).val();
-                if (value) {
-                    options.push({ label: text, value: value });
-                }
-            });
+                var ddl = $('#SODrp'); // static id used
+                var searchBox = $('#<%= SODrpSearch.ClientID %>');
 
-            searchBox.autocomplete({
-                source: options,
-                minLength: 1,
-                select: function (event, ui) {
-                    // set visible text
-                    searchBox.val(ui.item.label);
-                    // set hidden dropdown selected value
-                    ddl.val(ui.item.value);
-                    // 🔴 this is what fires ToSODrp_SelectedIndexChanged
-                    __doPostBack('<%= FYDrp.UniqueID %>', '');
-                    return false;
-                }
+    var options = [];
+
+    ddl.find("option").each(function () {
+
+        var text = $(this).text();
+        var value = $(this).val();
+
+        if (value) {
+            options.push({
+                label: text,
+                value: value
             });
-        })();
+        }
+
+    });
+
+    searchBox.autocomplete({
+
+        source: options,
+        minLength: 1,
+
+        select: function (event, ui) {
+
+            // show selected text
+            searchBox.val(ui.item.label);
+
+            // set dropdown value
+            ddl.val(ui.item.value);
+
+            // trigger server SelectedIndexChanged
+            __doPostBack('<%= SODrp.UniqueID %>', '');
+
+            return false;
+        }
+
+    });
+
+})();
+        });
     </script>
 
     <script>

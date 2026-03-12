@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SO_TrackbyHR : System.Web.UI.Page
+    public partial class SO_TrackbyHR : BasePage
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();

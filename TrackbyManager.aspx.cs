@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class TrackbyManager : System.Web.UI.Page
+    public partial class TrackbyManager : BasePage
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();

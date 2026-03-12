@@ -12,14 +12,14 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SODashBoard : System.Web.UI.Page
+    public partial class SODashBoard : BasePage
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
         public DataSet resds = new DataSet();
-        string Button, remoteUser;
+        string Button, remoteUser, SOCode;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -40,8 +40,8 @@ namespace SO_Appraisal
             {
                 //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                //remoteUser = Session["UserId"].ToString();
-                remoteUser = "4076L2";
+                remoteUser = Session["UserId"].ToString();
+                //remoteUser = "TA20414744";
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {
@@ -52,17 +52,6 @@ namespace SO_Appraisal
                     else
                     {
                         Session["name"] = remoteUser;
-                    }
-
-                    var name = Session["name"]?.ToString().Trim().ToUpper();
-                    if (name == "G116036" || name == "G112377" || name == "SY12108G" || name == "G115193")
-                    {
-                        //isDev = true;
-                        Session["isDev"] = true;
-                    }
-                    else
-                    {
-                        Session["isDev"] = false;
                     }
 
                     if (!string.IsNullOrEmpty(Session["name"]?.ToString()))
@@ -86,6 +75,21 @@ namespace SO_Appraisal
                             Session["Username"] = resdt.Rows[0][1].ToString();
                             hdnBusinessType.Value = resdt.Rows[0][2].ToString();
                             hdnRole.Value = resdt.Rows[0][3].ToString();
+
+                            Session["Role"] = hdnRole.Value;
+
+                            if (hdnRole.Value == "HR" || hdnRole.Value == "ADMIN")
+                            {
+                                SODrpDiv.Visible = true;
+                                SOLoad();
+
+                                BtnDiv.Visible = false;
+                            }
+                            else
+                            {
+                                SODrpDiv.Visible = false;
+                            }
+
                         }
                         else
                         {
@@ -111,6 +115,50 @@ namespace SO_Appraisal
         }
         #endregion
 
+        #region SOLoad
+        public void SOLoad()
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "SOLoad");
+                    cmd1.Parameters.AddWithValue("@SOCode", "");
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
+                    cmd1.CommandTimeout = 6000;
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
+                    {
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
+
+                        SODrp.DataSource = resdt;
+                        SODrp.DataTextField = resdt.Columns["SOName"].ToString();
+                        SODrp.DataValueField = resdt.Columns["SOCode"].ToString();
+                        SODrp.DataBind();
+                        SODrp.Items.Insert(0, new ListItem("Select SO", ""));
+
+                    }
+                }
+
+                con.Close();
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Quarter load Error", ex);
+                showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
+            }
+        }
+        #endregion
+
         #region BindFYDropdown
         public void BindFYDropdown()
         {
@@ -120,67 +168,79 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "Landing");
-                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYear", "");
-                cmd1.Parameters.AddWithValue("@Quarter", "");
-                cmd1.ExecuteNonQuery();
-
-                cmd1.CommandTimeout = 6000;
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd1);
-                ds.Clear();
-                da.Fill(ds);
-
-                // ✅ First Result Set → Geo
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
                 {
-                    lblGeo.Text = "Geo : " + ds.Tables[0].Rows[0]["Geo"].ToString();
-                }
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "Landing");
+                    cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@PcYear", "");
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
+                    cmd1.ExecuteNonQuery();
 
-                // ✅ Second Result Set → FY
-                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
-                {
-                    DataTable dtFY = ds.Tables[1];
+                    cmd1.CommandTimeout = 6000;
 
-                    FYDrp.DataSource = dtFY;
-                    FYDrp.DataTextField = "PcYear";   // Column name
-                    FYDrp.DataValueField = "PcYear";   // Column name
-                    FYDrp.DataBind();
-
-                    FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
-
-                    // ✅ Auto select where IsCurrent = 1
-                    DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
-                    if (currentRow.Length > 0)
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
                     {
-                        FYDrp.SelectedValue = currentRow[0]["PcYear"].ToString();
+                        ds.Clear();
+                        da.Fill(ds);
 
-                        QuarterLoad();
+                        // ✅ First Result Set → Geo
+                        if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                        {
+                            if (ds.Tables[0].Rows[0]["Geo"].ToString() != "")
+                            {
+                                lblGeo.Text = "Geo : " + ds.Tables[0].Rows[0]["Geo"].ToString();
+                            }
+                            else
+                            {
+                                lblGeo.Text = "";
+                            }
 
-                        //FetchAllData();
+                        }
 
-                        //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
-                        //{
-                        //    var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
-                        //    DstCountLbl.InnerText = $" ({count})";
-                        //}
-                        //else
-                        //{
-                        //    DstCountLbl.InnerText = "";
-                        //}
+                        // ✅ Second Result Set → FY
+                        if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                        {
+                            DataTable dtFY = ds.Tables[1];
+
+                            FYDrp.DataSource = dtFY;
+                            FYDrp.DataTextField = "PcYear";   // Column name
+                            FYDrp.DataValueField = "PcYear";   // Column name
+                            FYDrp.DataBind();
+
+                            FYDrp.Items.Insert(0, new ListItem("Select FY", ""));
+
+                            // ✅ Auto select where IsCurrent = 1
+                            DataRow[] currentRow = dtFY.Select("IsCurrent = 1");
+                            if (currentRow.Length > 0)
+                            {
+                                FYDrp.SelectedValue = currentRow[0]["PcYear"].ToString();
+
+                                QuarterLoad();
+
+                                //FetchAllData();
+
+                                //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
+                                //{
+                                //    var count = resds.Tables[0].Rows[0]["DistCount"].ToString();
+                                //    DstCountLbl.InnerText = $" ({count})";
+                                //}
+                                //else
+                                //{
+                                //    DstCountLbl.InnerText = "";
+                                //}
+                            }
+
+                        }
+
+                        // ✅ Third Result Set → Button status
+                        if (ds.Tables.Count > 1 && ds.Tables[2].Rows.Count > 0)
+                        {
+                            Button = ds.Tables[2].Rows[0]["Status"].ToString();
+                            Session["Button"] = Button;
+                        }
                     }
-
-                }
-
-                // ✅ Third Result Set → Button status
-                if (ds.Tables.Count > 1 && ds.Tables[2].Rows.Count > 0)
-                {
-                    Button = ds.Tables[2].Rows[0]["Status"].ToString();
-                    Session["Button"] = Button;
                 }
 
                 con.Close();
@@ -202,25 +262,30 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "QuarterLoad");
-                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@Quarter", "");
-                cmd1.ExecuteNonQuery();
 
-                cmd1.CommandTimeout = 6000;
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "QuarterLoad");
+                    cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@Quarter", "");
+                    cmd1.ExecuteNonQuery();
 
-                SqlDataAdapter da = new SqlDataAdapter(cmd1);
-                resdt.Rows.Clear();
-                da.Fill(resdt);
-                QtrDrp.DataSource = resdt;
-                QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
-                QtrDrp.DataValueField = resdt.Columns["QuarterText"].ToString();
-                QtrDrp.DataBind();
-                QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
+                    cmd1.CommandTimeout = 6000;
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
+                    {
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
+                        QtrDrp.DataSource = resdt;
+                        QtrDrp.DataTextField = resdt.Columns["QuarterText"].ToString();
+                        QtrDrp.DataValueField = resdt.Columns["QuarterText"].ToString();
+                        QtrDrp.DataBind();
+                        QtrDrp.Items.Insert(0, new ListItem("Qtr From", ""));
+                    }
+                }
                 con.Close();
 
             }
@@ -241,22 +306,26 @@ namespace SO_Appraisal
                 {
                     con.Open();
                 }
-                SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
-                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
-                cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
-                cmd1.ExecuteNonQuery();
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_SO_DashBoardLoad", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "Fetch");
+                    cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                    cmd1.Parameters.AddWithValue("@PcYear", FYDrp.SelectedValue);
+                    cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
+                    cmd1.ExecuteNonQuery();
 
-                cmd1.CommandTimeout = 6000;
+                    cmd1.CommandTimeout = 6000;
 
-                SqlDataAdapter da = new SqlDataAdapter(cmd1);
-                resds.Clear();
-                da.Fill(resds);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
+                    {
+                        resds.Clear();
+                        da.Fill(resds);
 
-                Session["DashData"] = resds;
+                        Session["DashData"] = resds;
+                    }
+                }
 
                 con.Close();
             }
@@ -276,6 +345,15 @@ namespace SO_Appraisal
 
         protected void QtrDrp_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (Session["Role"] == "SO")
+            {
+                SOCode = Session["name"].ToString();
+            }
+            else
+            {
+                SOCode = SODrp.SelectedValue;
+            }
+
             FetchAllData();
 
             //if (resds.Tables.Count > 0 && resds.Tables[0].Rows.Count > 0)
@@ -584,7 +662,7 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
                 cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                 cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
                 cmd1.CommandTimeout = 6000;
@@ -717,7 +795,7 @@ namespace SO_Appraisal
 
         public void ButtonVisibilityHelper()
         {
-            
+
             btn_Proceed.Visible = false;
             btn_Common.Visible = true;
             btn_Common.Text = Session["Button"].ToString();
@@ -798,7 +876,7 @@ namespace SO_Appraisal
 
         #endregion
 
-        
+
 
 
     }
