@@ -581,7 +581,6 @@
                         <div class="col-md-12">
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">GOLY</div>
-
                                 <div class="table-responsive">
                                     <asp:GridView
                                         ID="gvSalesGoly"

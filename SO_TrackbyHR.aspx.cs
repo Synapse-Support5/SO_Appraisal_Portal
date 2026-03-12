@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -671,32 +672,38 @@ namespace SO_Appraisal
 
                 using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
                 {
-                    CreateCustomSheet(wb, ds, 1, 10, "Primary", primaryNames);
-                    CreateCustomSheet(wb, ds, 11, 20, "Secondary", secondaryNames);
+                    CreateCustomSheet(wb, ds, 0, 5, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 6, 11, "Secondary", secondaryNames);
 
                     // ================= Distributor Sheet =================
-                    if (ds.Tables.Count > 21)
+                    if (ds.Tables.Count > 12)
                     {
                         var wsDist = wb.Worksheets.Add("Distributors");
-                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[21], false);
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[12], false);
 
                         FormatTable(table);
                         wsDist.Columns().AdjustToContents();
                     }
 
-                    //Response.Clear();
-                    //Response.ContentType =
-                    //    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    //Response.AddHeader("content-disposition",
-                    //    "attachment;filename=Dashboard_Report_" + SODrp.SelectedValue + ".xlsx");
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
 
-                    //using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
-                    //{
-                    //    wb.SaveAs(memoryStream);
-                    //    memoryStream.WriteTo(Response.OutputStream);
-                    //    Response.End();
-                    //}
-                    showToast("Working in Progress", "toast-success");
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition",
+                        "attachment;filename=Dashboard_Report_" + AreaDrp.SelectedValue + ".xlsx");
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        wb.SaveAs(memoryStream);
+                        memoryStream.WriteTo(Response.OutputStream);
+                    }
+
+                    Response.Flush();
+                    Response.SuppressContent = true;
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
+
+
                 }
             }
             catch (Exception ex)
@@ -722,7 +729,7 @@ namespace SO_Appraisal
             // ===== TOP 5 TABLES =====
             currentCol = 1;
 
-            for (int i = startIndex; i < startIndex + 5 && i < ds.Tables.Count; i++)
+            for (int i = startIndex; i < startIndex + 3 && i < ds.Tables.Count; i++)
             {
                 DataTable dt = ds.Tables[i];
 
@@ -749,7 +756,7 @@ namespace SO_Appraisal
             currentCol = 1;
 
             // ===== NEXT 5 TABLES =====
-            for (int i = startIndex + 5; i <= endIndex && i < ds.Tables.Count; i++)
+            for (int i = startIndex + 3; i <= endIndex && i < ds.Tables.Count; i++)
             {
                 DataTable dt = ds.Tables[i];
 
@@ -793,55 +800,22 @@ namespace SO_Appraisal
         string[] primaryNames = new string[]
         {
             "Last Year",
-            "Plan",
             "Achievement(PresentYear)",
-            "% Achievement",
             "GOLY",
             "Last Year",
-            "Plan",
-            "Achievement",
-            "% Achievement",
+            "Achievement(PresentYear)",
             "GOLY"
         };
 
         string[] secondaryNames = new string[]
         {
             "Last Year",
-            "Plan",
             "Achievement(PresentYear)",
-            "% Achievement",
             "GOLY",
             "Last Year",
-            "Plan",
-            "Achievement",
-            "% Achievement",
+            "Achievement(PresentYear)",
             "GOLY"
         };
-
-        //public void ButtonVisibilityHelper()
-        //{
-        //    btn_Proceed.Visible = false;
-        //    btn_Common.Visible = true;
-        //    btn_Common.Text = Session["Button"].ToString();
-
-        //    if (Session["Button"].ToString() == "NewRequest")
-        //    {
-        //        btn_Proceed.Visible = true;
-        //        btn_Common.Visible = false;
-        //    }
-        //    else if (Session["Button"].ToString() == "Pending approval")
-        //    {
-        //        btn_Common.CssClass = "btn btn-outline-primary form-control";
-        //    }
-        //    else if (Session["Button"].ToString() == "Approved")
-        //    {
-        //        btn_Common.CssClass = "btn btn-outline-success form-control";
-        //    }
-        //    else if (Session["Button"].ToString() == "Rejected")
-        //    {
-        //        btn_Common.CssClass = "btn btn-outline-danger form-control";
-        //    }
-        //}
         #endregion
 
         #region ToastNotification

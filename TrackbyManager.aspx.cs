@@ -808,6 +808,7 @@ namespace SO_Appraisal
                                 RemarksDiv.Visible = true;
                                 ObjectivesDiv.Visible = false;
                                 UpdateBtn.Visible = false;
+                                ForwardBtn.Visible = true;
 
                                 exampleModalLongTitle.InnerText = "Remarks/Feedback";
 
@@ -819,6 +820,7 @@ namespace SO_Appraisal
                                 ObjectivesDiv.Visible = true;
                                 RemarksDiv.Visible = false;
                                 UpdateBtn.Visible = true;
+                                ForwardBtn.Visible = false;
 
                                 exampleModalLongTitle.InnerText = "Objectives";
 
@@ -1059,8 +1061,31 @@ namespace SO_Appraisal
             }
         }
 
+        protected void Forward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int requestId = Convert.ToInt32(hdnRequestId.Value);
 
+                string training = txtTraining.Text.Trim();
+                string career = txtCareer.Text.Trim();
+                string signIn = txtSignIn.Text.Trim();
 
+                decimal rating = 0;
 
+                if (!string.IsNullOrEmpty(hdnRating.Value))
+                    rating = Convert.ToDecimal(hdnRating.Value);
+
+                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
+
+                // Now you can use these values for DB update
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Forward Button Error", ex);
+                showToast("Something went wrong while updating.", "toast-danger");
+            }
+        }
     }
 }
