@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SODashBoard : BasePage
+    public partial class SODashBoard : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
@@ -40,8 +40,8 @@ namespace SO_Appraisal
             {
                 //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                remoteUser = Session["UserId"].ToString();
-                //remoteUser = "TA20414744";
+                //remoteUser = Session["UserId"].ToString();
+                remoteUser = "8474RU";
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {
@@ -347,10 +347,12 @@ namespace SO_Appraisal
             if (role == "SO")
             {
                 SOCode = Session["name"].ToString();
+                Session["SO_Code"] = SOCode;
             }
             else
             {
                 SOCode = SODrp.SelectedValue;
+                Session["SO_Code"] = SOCode;
             }
 
             FetchAllData();
@@ -651,15 +653,15 @@ namespace SO_Appraisal
                 cmd1.CommandType = CommandType.StoredProcedure;
                 cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                 cmd1.Parameters.AddWithValue("@ActionType", "CreateRequest");
-                cmd1.Parameters.AddWithValue("@SOCode", SOCode);
+                cmd1.Parameters.AddWithValue("@SOCode", Session["SO_Code"]);
+                cmd1.Parameters.AddWithValue("@PCYear", FYDrp.SelectedValue);
+                cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                 cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
                 cmd1.CommandTimeout = 6000;
                 cmd1.ExecuteNonQuery();
 
                 con.Close();
-
-
 
                 showToast("Data Submitted!", "toast-success");
             }

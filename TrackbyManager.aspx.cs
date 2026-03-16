@@ -131,6 +131,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "PendingApprovals");
                     cmd1.Parameters.AddWithValue("@RequestId", "");
+                    cmd1.Parameters.AddWithValue("@Status", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -190,6 +191,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd1.Parameters.AddWithValue("@ActionType", "ViewAll");
                     cmd1.Parameters.AddWithValue("@RequestId", "");
+                    cmd1.Parameters.AddWithValue("@Status", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -352,61 +354,11 @@ namespace SO_Appraisal
         {
             try
             {
-                //LinkButton btn = (LinkButton)sender;
-                //string[] CommandArgument = btn.CommandArgument.Split(',');
-                //int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
-
                 int requestId = Convert.ToInt32(hfApproveRequestId.Value);
+                
+                ApproveReject(requestId, 2);
 
-                DataSet ds = ApproveReject(requestId, "Approved");
-
-                // If dataset is empty -> SP/DB failure
-                if (ds == null || ds.Tables.Count == 0)
-                {
-                    LogError("ApproveReject returned no resultset", null);
-                    showToast("Something went wrong while processing. Please try again later.", "toast-danger");
-                    return;
-                }
-
-                // First resultset = per-dist details
-                DataTable details = ds.Tables[0];
-
-                // Optionally second resultset = summary counts
-                DataTable summary = ds.Tables.Count > 1 ? ds.Tables[1] : null;
-
-                // Check for any errors in the detailed results
-                var errorRows = details.AsEnumerable()
-                                       .Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase))
-                                       .ToList();
-
-                if (errorRows.Any())
-                {
-                    // Build a compact error message: show first N errors + count
-                    int showMax = 3;
-                    var firstErrors = errorRows.Take(showMax)
-                                              .Select(r => $"{r.Field<string>("DistCode")}: {r.Field<string>("ResultMsg")}");
-                    string msg = $"Errors for {errorRows.Count} distributor(s): {string.Join("; ", firstErrors)}";
-                    if (errorRows.Count > showMax) msg += $" ...(+{errorRows.Count - showMax} more)";
-
-                    showToast(msg, "toast-danger");
-                    return;
-                }
-
-                // Otherwise success (no errors). Summarize actions
-                int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
-                int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
-                int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
-                int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
-
-                // Compose a friendly success message
-                var parts = new List<string>();
-                if (inserted > 0) parts.Add($"{inserted} inserted");
-                if (activated > 0) parts.Add($"{activated} activated");
-                if (updated > 0) parts.Add($"{updated} updated");
-                if (noInsert > 0) parts.Add($"{noInsert} marked");
-
-                string successMsg = parts.Count > 0 ? $"Success: {string.Join(", ", parts)}." : "Request processed successfully.";
-                showToast(successMsg, "toast-success");
+                showToast("Request processed successfully.", "toast-success");
 
                 PendingsLoad();
             }
@@ -423,61 +375,11 @@ namespace SO_Appraisal
         {
             try
             {
-                //LinkButton btn = (LinkButton)sender;
-                //string[] CommandArgument = btn.CommandArgument.Split(',');
-                //int CommandRequestId = Convert.ToInt32(CommandArgument[0]);
-
                 int requestId = Convert.ToInt32(hfRejectRequestId.Value);
 
-                DataSet ds = ApproveReject(requestId, "Rejected");
+                ApproveReject(requestId, 3);
 
-                // If dataset is empty -> SP/DB failure
-                if (ds == null || ds.Tables.Count == 0)
-                {
-                    LogError("ApproveReject returned no resultset", null);
-                    showToast("Something went wrong while processing. Please try again later.", "toast-danger");
-                    return;
-                }
-
-                // First resultset = per-dist details
-                DataTable details = ds.Tables[0];
-
-                // Optionally second resultset = summary counts
-                DataTable summary = ds.Tables.Count > 1 ? ds.Tables[1] : null;
-
-                // Check for any errors in the detailed results
-                var errorRows = details.AsEnumerable()
-                                       .Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase))
-                                       .ToList();
-
-                if (errorRows.Any())
-                {
-                    // Build a compact error message: show first N errors + count
-                    int showMax = 3;
-                    var firstErrors = errorRows.Take(showMax)
-                                              .Select(r => $"{r.Field<string>("DistCode")}: {r.Field<string>("ResultMsg")}");
-                    string msg = $"Errors for {errorRows.Count} distributor(s): {string.Join("; ", firstErrors)}";
-                    if (errorRows.Count > showMax) msg += $" ...(+{errorRows.Count - showMax} more)";
-
-                    showToast(msg, "toast-danger");
-                    return;
-                }
-
-                // Otherwise success (no errors). Summarize actions
-                int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
-                int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
-                int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
-                int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
-
-                // Compose a friendly success message
-                var parts = new List<string>();
-                if (inserted > 0) parts.Add($"{inserted} inserted");
-                if (activated > 0) parts.Add($"{activated} activated");
-                if (updated > 0) parts.Add($"{updated} updated");
-                if (noInsert > 0) parts.Add($"{noInsert} marked");
-
-                string successMsg = parts.Count > 0 ? $"Success: {string.Join(", ", parts)}." : "Request processed successfully.";
-                showToast(successMsg, "toast-success");
+                showToast("Request processed successfully.", "toast-success");
 
                 PendingsLoad();
             }
@@ -494,17 +396,6 @@ namespace SO_Appraisal
         {
             try
             {
-                // Totals across all processed requests
-                int totalRequests = 0;
-                int totalInserted = 0;
-                int totalActivated = 0;
-                int totalUpdated = 0;
-                int totalNoInsert = 0;
-                int totalErrors = 0;
-
-                // Collect error details (limit to avoid massive text)
-                var errorDetails = new List<string>();
-
                 foreach (GridViewRow row in PendingApprovalsGrid.Rows)
                 {
                     var chkBox = row.FindControl("CheckBox1") as HtmlInputCheckBox;
@@ -524,45 +415,8 @@ namespace SO_Appraisal
                             anyCheckboxSelected = true;
                         }
 
-                        totalRequests++;
-
-                        // Call SP for this request (returns DataSet with details + summary)
-                        DataSet ds = ApproveReject(requestId, "Approved");
-
-                        if (ds == null || ds.Tables.Count == 0)
-                        {
-                            // SP failed to return anything
-                            totalErrors++;
-                            errorDetails.Add($"Req {requestId}: no response from server");
-                            continue;
-                        }
-
-                        DataTable details = ds.Tables[0];
-
-                        // Count action types in this request
-                        int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
-                        int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
-                        int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
-                        int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
-                        int errors = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase));
-
-                        totalInserted += inserted;
-                        totalActivated += activated;
-                        totalUpdated += updated;
-                        totalNoInsert += noInsert;
-                        totalErrors += errors;
-
-                        // Collect sample error messages (limit to first 5 overall)
-                        if (errors > 0 && errorDetails.Count < 10)
-                        {
-                            foreach (var rowErr in details.AsEnumerable().Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase)))
-                            {
-                                string dist = rowErr.Field<string>("DistCode");
-                                string msg = rowErr.Field<string>("ResultMsg");
-                                errorDetails.Add($"Req {requestId} - {dist}: {msg}");
-                                if (errorDetails.Count >= 10) break;
-                            }
-                        }
+                        ApproveReject(requestId, 2);
+                        
                     }
                 }
 
@@ -572,27 +426,7 @@ namespace SO_Appraisal
                     return;
                 }
 
-                // Build final toast message
-                if (totalErrors > 0)
-                {
-                    // Error toast: show error count + few samples
-                    string sample = errorDetails.Count > 0 ? string.Join("; ", errorDetails.Take(3)) : "";
-                    string msg = $"Processed {totalRequests} request(s). Errors: {totalErrors}. {(sample == "" ? "" : "Sample: " + sample)}";
-                    showToast(msg, "toast-danger");
-                }
-                else
-                {
-                    // Success toast: summarize actions performed
-                    var parts = new List<string>();
-                    if (totalInserted > 0) parts.Add($"{totalInserted} inserted");
-                    if (totalActivated > 0) parts.Add($"{totalActivated} activated");
-                    if (totalUpdated > 0) parts.Add($"{totalUpdated} updated");
-                    if (totalNoInsert > 0) parts.Add($"{totalNoInsert} marked");
-
-                    string summary = parts.Count > 0 ? string.Join(", ", parts) : "No changes needed";
-                    string msg = $"Processed {totalRequests} request(s). Success: {summary}.";
-                    showToast(msg, "toast-success");
-                }
+                showToast("Request processed successfully.", "toast-success");
 
                 PendingsLoad();
             }
@@ -609,17 +443,6 @@ namespace SO_Appraisal
         {
             try
             {
-                // Totals across all processed requests
-                int totalRequests = 0;
-                int totalInserted = 0;
-                int totalActivated = 0;
-                int totalUpdated = 0;
-                int totalNoInsert = 0;
-                int totalErrors = 0;
-
-                // Collect error details (limit to avoid massive text)
-                var errorDetails = new List<string>();
-
                 foreach (GridViewRow row in PendingApprovalsGrid.Rows)
                 {
                     var chkBox = row.FindControl("CheckBox1") as HtmlInputCheckBox;
@@ -639,45 +462,8 @@ namespace SO_Appraisal
                             anyCheckboxSelected = true;
                         }
 
-                        totalRequests++;
+                        ApproveReject(requestId, 3);
 
-                        // Call SP for this request (returns DataSet with details + summary)
-                        DataSet ds = ApproveReject(requestId, "Rejected");
-
-                        if (ds == null || ds.Tables.Count == 0)
-                        {
-                            // SP failed to return anything
-                            totalErrors++;
-                            errorDetails.Add($"Req {requestId}: no response from server");
-                            continue;
-                        }
-
-                        DataTable details = ds.Tables[0];
-
-                        // Count action types in this request
-                        int inserted = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Inserted", StringComparison.OrdinalIgnoreCase));
-                        int activated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Activated", StringComparison.OrdinalIgnoreCase));
-                        int updated = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("UpdatedPending", StringComparison.OrdinalIgnoreCase));
-                        int noInsert = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("NoInsert", StringComparison.OrdinalIgnoreCase));
-                        int errors = details.AsEnumerable().Count(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase));
-
-                        totalInserted += inserted;
-                        totalActivated += activated;
-                        totalUpdated += updated;
-                        totalNoInsert += noInsert;
-                        totalErrors += errors;
-
-                        // Collect sample error messages (limit to first 5 overall)
-                        if (errors > 0 && errorDetails.Count < 10)
-                        {
-                            foreach (var rowErr in details.AsEnumerable().Where(r => r.Field<string>("ActionTaken").Equals("Error", StringComparison.OrdinalIgnoreCase)))
-                            {
-                                string dist = rowErr.Field<string>("DistCode");
-                                string msg = rowErr.Field<string>("ResultMsg");
-                                errorDetails.Add($"Req {requestId} - {dist}: {msg}");
-                                if (errorDetails.Count >= 10) break;
-                            }
-                        }
                     }
                 }
 
@@ -687,27 +473,7 @@ namespace SO_Appraisal
                     return;
                 }
 
-                // Build final toast message
-                if (totalErrors > 0)
-                {
-                    // Error toast: show error count + few samples
-                    string sample = errorDetails.Count > 0 ? string.Join("; ", errorDetails.Take(3)) : "";
-                    string msg = $"Processed {totalRequests} request(s). Errors: {totalErrors}. {(sample == "" ? "" : "Sample: " + sample)}";
-                    showToast(msg, "toast-danger");
-                }
-                else
-                {
-                    // Success toast: summarize actions performed
-                    var parts = new List<string>();
-                    if (totalInserted > 0) parts.Add($"{totalInserted} inserted");
-                    if (totalActivated > 0) parts.Add($"{totalActivated} activated");
-                    if (totalUpdated > 0) parts.Add($"{totalUpdated} updated");
-                    if (totalNoInsert > 0) parts.Add($"{totalNoInsert} marked");
-
-                    string summary = parts.Count > 0 ? string.Join(", ", parts) : "No changes needed";
-                    string msg = $"Processed {totalRequests} request(s). Success: {summary}.";
-                    showToast(msg, "toast-success");
-                }
+                showToast("Request processed successfully.", "toast-success");
 
                 PendingsLoad();
             }
@@ -720,28 +486,26 @@ namespace SO_Appraisal
         #endregion
 
         #region ApproveReject
-        public DataSet ApproveReject(int requestId, string approveRejected)
+        public void ApproveReject(int requestId, int status)
         {
             try
             {
-                showToast("Working in progress. RequestId is : " + requestId, "toast-success");
-                //if (con.State == ConnectionState.Closed)
-                //{
-                //    con.Open();
-                //}
-                //SqlCommand cmd1 = new SqlCommand("SP_SOApp_ApproveReject_Newlogic", con);
-                //cmd1.CommandType = CommandType.StoredProcedure;
-                //cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                //cmd1.Parameters.AddWithValue("@RequestId", requestId);
-                //cmd1.Parameters.AddWithValue("@ApproveReject", approveRejected);
-                //cmd1.CommandTimeout = 6000;
-                //cmd1.ExecuteNonQuery();
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "ApproveReject");
+                    cmd1.Parameters.AddWithValue("@RequestId", requestId);
+                    cmd1.Parameters.AddWithValue("@Status", status);
+                    cmd1.CommandTimeout = 6000;
+                    cmd1.ExecuteNonQuery();
+                }
 
-                //SqlDataAdapter da = new SqlDataAdapter(cmd1);
-                //ds.Clear();
-                //da.Fill(ds);
-
-                //con.Close();
+                con.Close();
 
             }
             catch (Exception ex)
@@ -750,7 +514,148 @@ namespace SO_Appraisal
                 showToast("Something went wrong. Please try again later or contact the SYNAPSE team", "toast-danger");
             }
 
-            return ds;
+        }
+        #endregion
+
+        #region UpdateBtn_Click
+        protected void UpdateBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int requestId = Convert.ToInt32(hdnRequestId.Value);
+
+                string training = txtTraining.Text.Trim();
+                string career = txtCareer.Text.Trim();
+                string signIn = txtSignIn.Text.Trim();
+
+                decimal rating = 0;
+
+                if (!string.IsNullOrEmpty(hdnRating.Value))
+                    rating = Convert.ToDecimal(hdnRating.Value);
+
+                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
+
+                // Now you can use these values for DB update
+
+            }
+            catch (Exception ex)
+            {
+                LogError("Update Button Error", ex);
+                showToast("Something went wrong while updating.", "toast-danger");
+            }
+        }
+        #endregion
+
+        #region Forward_Click
+        protected void Forward_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int requestId = Convert.ToInt32(hdnRequestId.Value);
+                string soCode = Session["SO_Code"].ToString();
+                string pcYear = Session["PC_Year"].ToString();
+                string quart = Session["Quart"].ToString();
+
+                DataSet ds = FetchAllData(soCode, pcYear, quart);
+
+                MemoryStream memoryStream = new MemoryStream();
+
+                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
+                {
+                    CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
+                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
+
+                    if (ds.Tables.Count > 20)
+                    {
+                        var wsDist = wb.Worksheets.Add("Distributors");
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
+
+                        FormatTable(table);
+                        wsDist.Columns().AdjustToContents();
+                    }
+
+                    wb.SaveAs(memoryStream);
+                }
+
+                memoryStream.Position = 0;
+
+                string fileName = $"Request_Report_{soCode}_{requestId}.xlsx";
+
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+
+                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@ActionType", "MailerDetails");
+                    cmd.Parameters.AddWithValue("@RequestId", "");
+                    cmd.Parameters.AddWithValue("@Status", "");
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        resdt.Rows.Clear();
+                        da.Fill(resdt);
+
+                        if (resdt.Rows.Count > 0)
+                        {
+                            string pStrTo = resdt.Rows[0]["To"].ToString();
+                            string pCc = resdt.Rows[0]["CC"].ToString();
+                            string pBcc = resdt.Rows[0]["BCC"].ToString();
+                            string pstrSubject = resdt.Rows[0]["EMSubject"].ToString();
+                            string pstrBody = resdt.Rows[0]["EMBodyContent"].ToString();
+
+                            // Replace placeholders
+                            pstrBody = pstrBody
+                                .Replace("{SOCode}", Session["SO_Code"].ToString())
+                                .Replace("{Remarks}", Session["Remarks"].ToString());
+
+                            bool mailSent = SendEmailMessage(
+                                pStrTo,
+                                pstrSubject,
+                                pCc,
+                                pBcc,
+                                pstrBody,
+                                memoryStream,
+                                fileName
+                            );
+
+                            if (mailSent)
+                            {
+                                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_TrackByManager", con))
+                                {
+                                    cmd1.CommandType = CommandType.StoredProcedure;
+                                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                                    cmd1.Parameters.AddWithValue("@ActionType", "isMailSent");
+                                    cmd1.Parameters.AddWithValue("@RequestId", requestId);
+                                    cmd1.Parameters.AddWithValue("@Status", "");
+                                    cmd1.ExecuteNonQuery();
+                                }
+
+                                showToast("Mail sent successfully.", "toast-success");
+
+                                PendingsLoad();
+                            }
+                            else
+                            {
+                                // Save failure in DB
+                                showToast("Mail sending failed.", "toast-danger");
+                            }
+                        }
+                        else
+                        {
+                            showToast("Invalid mailer details", "toast-danger");
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                LogError("Forward Button Error", ex);
+                showToast("Something went wrong while sending mail.", "toast-danger");
+            }
         }
         #endregion
 
@@ -801,6 +706,7 @@ namespace SO_Appraisal
                     cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
                     cmd.Parameters.AddWithValue("@ActionType", "GetRequestDetails");
                     cmd.Parameters.AddWithValue("@RequestId", requestId);
+                    cmd.Parameters.AddWithValue("@Status", "");
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -859,7 +765,7 @@ namespace SO_Appraisal
 
         private DataSet LoadRequestAchivements(string SOCode, string PCYear, string Quarter)
         {
-            DataSet ds = new DataSet();   
+            DataSet ds = new DataSet();
 
             try
             {
@@ -1002,164 +908,6 @@ namespace SO_Appraisal
             "% Achievement",
             "GOLY"
         };
-        #endregion
-
-
-
-
-        #region ToastNotification
-        private void showToast(string message, string styleClass)
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
-        }
-
-        #endregion
-
-        #region LogError
-        private void LogError(string message, Exception ex)
-        {
-            try
-            {
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
-                cmd1.CommandType = CommandType.StoredProcedure;
-                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
-                cmd1.Parameters.AddWithValue("@Page", "TrackbyManager");
-                cmd1.Parameters.AddWithValue("@Message", message);
-                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
-                cmd1.CommandTimeout = 6000;
-                cmd1.ExecuteNonQuery();
-
-                con.Close();
-            }
-            catch
-            {
-            }
-        }
-
-
-        #endregion
-
-        protected void UpdateBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int requestId = Convert.ToInt32(hdnRequestId.Value);
-
-                string training = txtTraining.Text.Trim();
-                string career = txtCareer.Text.Trim();
-                string signIn = txtSignIn.Text.Trim();
-
-                decimal rating = 0;
-
-                if (!string.IsNullOrEmpty(hdnRating.Value))
-                    rating = Convert.ToDecimal(hdnRating.Value);
-
-                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
-
-                // Now you can use these values for DB update
-
-            }
-            catch (Exception ex)
-            {
-                LogError("Update Button Error", ex);
-                showToast("Something went wrong while updating.", "toast-danger");
-            }
-        }
-
-        protected void Forward_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int requestId = Convert.ToInt32(hdnRequestId.Value);
-                string soCode = Session["SO_Code"].ToString();
-                string pcYear = Session["PC_Year"].ToString();
-                string quart = Session["Quart"].ToString();
-
-                DataSet ds = FetchAllData(soCode, pcYear, quart);
-
-                MemoryStream memoryStream = new MemoryStream();
-
-                using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
-                {
-                    CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
-                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
-
-                    if (ds.Tables.Count > 20)
-                    {
-                        var wsDist = wb.Worksheets.Add("Distributors");
-                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
-
-                        FormatTable(table);
-                        wsDist.Columns().AdjustToContents();
-                    }
-
-                    wb.SaveAs(memoryStream);
-                }
-
-                memoryStream.Position = 0;
-
-                string fileName = $"Request_Report_{soCode}_{requestId}.xlsx";
-
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-
-                using (SqlCommand cmd = new SqlCommand("SP_SOApp_TrackByManager", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
-                    cmd.Parameters.AddWithValue("@ActionType", "MailerDetails");
-                    cmd.Parameters.AddWithValue("@RequestId", "");
-
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        resdt.Rows.Clear();
-                        da.Fill(resdt);
-
-                        if (resdt.Rows.Count > 0)
-                        {
-                            string pStrTo = resdt.Rows[0]["To"].ToString();
-                            string pCc = resdt.Rows[0]["CC"].ToString();
-                            string pBcc = resdt.Rows[0]["BCC"].ToString();
-                            string pstrSubject = resdt.Rows[0]["EMSubject"].ToString();
-                            string pstrBody = resdt.Rows[0]["EMBodyContent"].ToString();
-
-                            // Replace placeholders
-                            pstrBody = pstrBody
-                                .Replace("{SOCode}", Session["SO_Code"].ToString())
-                                .Replace("{Remarks}", Session["Remarks"].ToString());
-
-                            SendEmailMessage(
-                                pStrTo,
-                                pstrSubject,
-                                pCc,
-                                pBcc,
-                                pstrBody,
-                                memoryStream,
-                                fileName
-                            );
-
-                            showToast("Mail sent successfully.", "toast-success");
-                        }
-                        else
-                        {
-                            showToast("Invalid mailer details", "toast-danger");
-                        }
-                    }
-                }
-
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                LogError("Forward Button Error", ex);
-                showToast("Something went wrong while sending mail.", "toast-danger");
-            }
-        }
 
         public DataSet FetchAllData(string SOCode, string FY, string Qtr)
         {
@@ -1200,7 +948,7 @@ namespace SO_Appraisal
             return ds;
         }
 
-        public void SendEmailMessage(string to, string subject, string cc, string bcc, string body, MemoryStream fileStream, string fileName)
+        public bool SendEmailMessage(string to, string subject, string cc, string bcc, string body, MemoryStream fileStream, string fileName)
         {
             try
             {
@@ -1223,15 +971,16 @@ namespace SO_Appraisal
                 string apiEndpoint = "https://apps.wcclg.com/wccmail/api/sendmail.php";
                 string headerToken = "688faf8b9f3334c111a1fea39c5926aa";
 
-                SendPostRequest(apiEndpoint, headerToken, jsonPayload);
+                return SendPostRequest(apiEndpoint, headerToken, jsonPayload);
             }
             catch (Exception ex)
             {
                 LogError("SendEmailMessage Error", ex);
+                return false;
             }
         }
 
-        public string SendPostRequest(string url, string token, string jsonPayload)
+        public bool SendPostRequest(string url, string token, string jsonPayload)
         {
             try
             {
@@ -1250,17 +999,64 @@ namespace SO_Appraisal
 
                     HttpResponseMessage response = client.PostAsync(url, content).Result;
 
-                    response.EnsureSuccessStatusCode();
-
-                    return response.Content.ReadAsStringAsync().Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 LogError("SendPostRequest Error", ex);
-                return ex.Message;
+                return false;
             }
         }
+        #endregion
+
+
+
+        #region ToastNotification
+        private void showToast(string message, string styleClass)
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "showToast", $"showToast('{message}', '{styleClass}');", true);
+        }
+
+        #endregion
+
+        #region LogError
+        private void LogError(string message, Exception ex)
+        {
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd1 = new SqlCommand("SP_ErrorLog_SS5", con);
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                cmd1.Parameters.AddWithValue("@Portal", "SOApp");
+                cmd1.Parameters.AddWithValue("@Page", "TrackbyManager");
+                cmd1.Parameters.AddWithValue("@Message", message);
+                cmd1.Parameters.AddWithValue("@Exception", ex?.ToString() ?? string.Empty);
+                cmd1.CommandTimeout = 6000;
+                cmd1.ExecuteNonQuery();
+
+                con.Close();
+            }
+            catch
+            {
+            }
+        }
+
+
+        #endregion
+
+
 
 
     }

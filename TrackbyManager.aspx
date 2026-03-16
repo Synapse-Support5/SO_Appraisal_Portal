@@ -692,8 +692,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <asp:Button ID="ForwardBtn" runat="server" Text="Forward" CssClass="btn btn-success" OnClick="Forward_Click" />
-                        <asp:Button ID="UpdateBtn" runat="server" Text="Update" CssClass="btn btn-success" OnClick="UpdateBtn_Click" />
+                        <asp:Button ID="ForwardBtn" runat="server" Text="Forward" CssClass="btn btn-success" OnClick="Forward_Click" OnClientClick="showLoader()" />
+                        <asp:Button ID="UpdateBtn" runat="server" Text="Update" CssClass="btn btn-success" OnClick="UpdateBtn_Click" OnClientClick="showLoader()" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
