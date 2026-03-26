@@ -162,9 +162,8 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Images\pending.png" />
-    <Content Include="Images\so_dbr.png" />
-    <Content Include="Images\transfer.png" />
+    <Content Include="Images\DashBoard.png" />
+    <Content Include="Images\logo.png" />
     <Content Include="Login.aspx" />
     <Content Include="PendingApprovals.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />

@@ -91,68 +91,18 @@
             }
         }
 
-        /* Common bubble style */
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 0;
-            opacity: 0.3;
-        }
-
-        /* Top-left bubble - 70% visible */
-        .bubble-top-left {
-            width: 300px;
-            height: 300px;
-            background-color: #8e44ad; /* Purple */
-            top: -100px;
-            left: -100px;
-        }
-
-        /* Bottom-center bubble - half hidden, slightly larger */
-        .bubble-bottom-center {
-            width: 400px;
-            height: 400px;
-            background-color: #6c5ce7; /* Violet */
-            bottom: -200px;
-            left: 33%;
-            transform: translateX(-50%);
-            z-index: 2;
-            opacity: 0.5;
-        }
-
         .person-image-wrapper {
-            position: relative; /* Add this */
+            width: 100%;
             display: flex;
-            justify-content: flex-end;
-            margin-top: -7px;
-            margin-right: -92px;
-            z-index: 1; /* Lower than bubble */
+            justify-content: center;
         }
 
         .person-image {
-            max-width: 650px;
+            width: 117%;
             height: auto;
-            border-bottom-left-radius: 20%;
+            margin-bottom:-230px;
+            margin-top : -15px;
         }
-
-        .welcome-text-wrapper {
-            position: absolute;
-            top: 20%;
-            left: 5%;
-            width: 45%;
-            z-index: 3;
-            color: #333;
-        }
-
-            .welcome-text-wrapper h1 {
-                font-size: 4rem;
-                font-weight: bold;
-            }
-
-            .welcome-text-wrapper h6 {
-                font-size: 1rem;
-                margin-top: 10px;
-            }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -190,27 +140,15 @@
 </asp:Content>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
- <%--   <div class="bubble bubble-top-left"></div>
+    <%--   <div class="bubble bubble-top-left"></div>
     <div class="bubble bubble-bottom-center"></div>--%>
-
-
-
-
 
     <main aria-labelledby="title">
         <div class="container body-content">
 
             <div class="person-image-wrapper">
-                <img src="" alt="person" class="person-image" />
+                <img src="Images/DashBoard.png" alt="person" class="person-image" />
             </div>
-
-            <div class="welcome-text-wrapper">
-                <h1>Welcome to the SO Appraisal Portal</h1>
-                <br />
-                <hr />
-                <h6>Your gateway to streamlined operations, insights, and smarter decisions.</h6>
-            </div>
-
 
             <%-- Notification Label --%>
             <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
