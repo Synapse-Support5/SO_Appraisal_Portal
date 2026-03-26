@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 namespace SO_Appraisal
 {
-    public partial class SODashBoard : System.Web.UI.Page
+    public partial class SODashBoard : BasePage
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["SqlConn"].ToString());
         DataTable dt = new DataTable();
@@ -40,8 +40,8 @@ namespace SO_Appraisal
             {
                 //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                //remoteUser = Session["UserId"].ToString();
-                remoteUser = "8474RU";
+                remoteUser = Session["UserId"].ToString();
+                //remoteUser = "8474RU";
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {
