@@ -140,16 +140,16 @@
                     <a class="nav-link" runat="server" href="~/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" runat="server" href="~/Transfer">Transfer</a>
-                    <a class="nav-link" runat="server" href="~/PendingApprovals">Transfer Pending Approvals
+                    <a id="transfer" class="nav-link" runat="server" href="~/Transfer">Transfer</a>
+                    <a id="transferpendingapprovals" class="nav-link" runat="server" href="~/PendingApprovals">Transfer Pending Approvals
                         <span id="BadgeLabel" runat="server" class="badge badge-primary btn btn-outline-primary ml-1"
                             style="border-radius: 50%; display: none; width: 20px;">0
                         </span>
                     </a>
-                    <a class="nav-link" runat="server" href="~/SO_DBR_Master">SO DBR Details</a>
-                    <a class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
-                    <a class="nav-link" runat="server" href="~/TrackbyManager">SO Achievements For Manager</a>
-                    <a class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements For HR</a>
+                    <a id="sodbrdetails" class="nav-link" runat="server" href="~/SO_DBR_Master">SO DBR Details</a>
+                    <a id="sodashboard" class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
+                    <a id="trachbymanager" class="nav-link" runat="server" href="~/TrackbyManager">SO Achievements For Manager</a>
+                    <a id="trackbyhr" class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements For HR</a>
                 </li>
             </ul>
         </aside>

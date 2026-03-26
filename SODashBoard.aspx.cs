@@ -25,6 +25,12 @@ namespace SO_Appraisal
         {
             if (!IsPostBack)
             {
+                string role = Session["Role"]?.ToString();
+
+                if (role != "ADMIN" && role != "HR" && role != "SO")
+                {
+                    Response.Redirect("AccessDeniedPage.aspx");
+                }
 
                 AccessLoad();
                 BindFYDropdown();

@@ -26,6 +26,17 @@ namespace SO_Appraisal
         DataSet ds = new DataSet();
         public DataSet resds = new DataSet();
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                if (Request.QueryString["sessionExpired"] == "true")
+                {
+                    showToast("Session expired. Please login again.", "toast-danger");
+                }
+            }
+        }
+
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             string username = txtUsername.Text.Trim();

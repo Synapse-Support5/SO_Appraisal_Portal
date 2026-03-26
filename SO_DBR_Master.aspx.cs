@@ -23,6 +23,13 @@ namespace SO_Appraisal
 
             if (!IsPostBack)
             {
+                string role = Session["Role"]?.ToString();
+
+                if (role != "ADMIN" && role != "HR")
+                {
+                    Response.Redirect("AccessDeniedPage.aspx");
+                }
+
                 AccessLoad();
                 StateLoad();
             }
@@ -33,9 +40,9 @@ namespace SO_Appraisal
         {
             try
             {
-                string remoteUser = "G116036";
+                //string remoteUser = "G116036";
                 //string remoteUser = Request.ServerVariables["REMOTE_USER"];
-                //string remoteUser = Session["UserId"];
+                string remoteUser = Session["UserId"].ToString();
 
                 if (!string.IsNullOrEmpty(remoteUser))
                 {

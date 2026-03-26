@@ -9,9 +9,10 @@ namespace SO_Appraisal
     {
         protected override void OnLoad(EventArgs e)
         {
-            if (Session["UserId"] == null)
+            if (Session["UserId"] == null || Session["Role"] == null)
             {
-                Response.Redirect("Login.aspx");
+                Response.Redirect("~/Login.aspx?sessionExpired=true");
+                return;
             }
 
             base.OnLoad(e);

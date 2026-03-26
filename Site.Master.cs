@@ -20,6 +20,51 @@ namespace SO_Appraisal
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                string role = Session["Role"]?.ToString();
+
+                if (string.IsNullOrEmpty(role))
+                {
+                    Response.Redirect("Login.aspx");
+                    return;
+                }
+
+                // Hide all first
+                transfer.Visible = false;
+                transferpendingapprovals.Visible = false;
+                sodbrdetails.Visible = false;
+                sodashboard.Visible = false;
+                trachbymanager.Visible = false;
+                trackbyhr.Visible = false;
+
+                switch (role)
+                {
+                    case "ADMIN":
+                        transfer.Visible = true;
+                        transferpendingapprovals.Visible = true;
+                        sodbrdetails.Visible = true;
+                        sodashboard.Visible = true;
+                        trachbymanager.Visible = true;
+                        trackbyhr.Visible = true;
+                        break;
+
+                    case "SO":
+                        sodashboard.Visible = true;
+                        break;
+
+                    case "HR":
+                        transfer.Visible = true;
+                        transferpendingapprovals.Visible = true;
+                        sodbrdetails.Visible = true;
+                        sodashboard.Visible = true;
+                        trachbymanager.Visible = true;
+                        trackbyhr.Visible = true;
+                        break;
+
+                }
+            }
         }
+
     }
 }
