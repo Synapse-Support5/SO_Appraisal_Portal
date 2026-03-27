@@ -72,7 +72,15 @@ namespace SO_Appraisal
                                     Session["UserName"] = reader["UserName"].ToString();
                                     Session["Role"] = reader["Role"].ToString();
 
-                                    Response.Redirect("Default.aspx", false);
+                                    if (Session["Role"].ToString() == "SO")
+                                    {
+                                        Response.Redirect("SODashBoard.aspx", false);
+                                    }
+                                    else
+                                    {
+                                        Response.Redirect("Default.aspx", false);
+                                    }
+                                        
                                     Context.ApplicationInstance.CompleteRequest();
                                     break;
 

@@ -987,44 +987,44 @@
                 var ddl = $('#SODrp'); // static id used
                 var searchBox = $('#<%= SODrpSearch.ClientID %>');
 
-    var options = [];
+                var options = [];
 
-    ddl.find("option").each(function () {
+                ddl.find("option").each(function () {
 
-        var text = $(this).text();
-        var value = $(this).val();
+                    var text = $(this).text();
+                    var value = $(this).val();
 
-        if (value) {
-            options.push({
-                label: text,
-                value: value
-            });
-        }
+                    if (value) {
+                        options.push({
+                            label: text,
+                            value: value
+                        });
+                    }
 
-    });
+                });
 
-    searchBox.autocomplete({
+                searchBox.autocomplete({
 
-        source: options,
-        minLength: 1,
+                    source: options,
+                    minLength: 1,
 
-        select: function (event, ui) {
+                    select: function (event, ui) {
 
-            // show selected text
-            searchBox.val(ui.item.label);
+                        // show selected text
+                        searchBox.val(ui.item.label);
 
-            // set dropdown value
-            ddl.val(ui.item.value);
+                        // set dropdown value
+                        ddl.val(ui.item.value);
 
-            // trigger server SelectedIndexChanged
-            __doPostBack('<%= SODrp.UniqueID %>', '');
+                        // trigger server SelectedIndexChanged
+                        __doPostBack('<%= SODrp.UniqueID %>', '');
 
-            return false;
-        }
+                        return false;
+                    }
 
-    });
+                });
 
-})();
+            })();
         });
     </script>
 

@@ -11,12 +11,24 @@ namespace SO_Appraisal
         {
             if (Session["UserId"] == null || Session["Role"] == null)
             {
-                Response.Redirect("~/Login.aspx?sessionExpired=true");
+                // First time visit (no referrer OR direct open)
+                if (Request.UrlReferrer == null)
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
+                else
+                {
+                    // Session expired
+                    Response.Redirect("~/Login.aspx?sessionExpired=true");
+                }
+
                 return;
             }
 
             base.OnLoad(e);
         }
     }
+
+
 
 }

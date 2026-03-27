@@ -150,6 +150,12 @@
                     <a id="sodashboard" class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
                     <a id="trachbymanager" class="nav-link" runat="server" href="~/TrackbyManager">SO Achievements For Manager</a>
                     <a id="trackbyhr" class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements For HR</a>
+
+                    <asp:LinkButton ID="btnLogout" runat="server"
+                        CssClass="nav-link text-danger"
+                        OnClick="btnLogout_Click">
+                            Logout
+                    </asp:LinkButton>
                 </li>
             </ul>
         </aside>

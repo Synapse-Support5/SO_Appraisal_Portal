@@ -37,6 +37,7 @@ namespace SO_Appraisal
                 sodashboard.Visible = false;
                 trachbymanager.Visible = false;
                 trackbyhr.Visible = false;
+                btnLogout.Visible = false;
 
                 switch (role)
                 {
@@ -47,6 +48,7 @@ namespace SO_Appraisal
                         sodashboard.Visible = true;
                         trachbymanager.Visible = true;
                         trackbyhr.Visible = true;
+                        btnLogout.Visible = true;
                         break;
 
                     case "SO":
@@ -65,6 +67,24 @@ namespace SO_Appraisal
                 }
             }
         }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            // Clear all session data
+            Session.Clear();
+            Session.Abandon();
+
+            // Optional: Clear authentication cookie
+            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);
+            }
+
+            // Redirect to login
+            Response.Redirect("~/Login.aspx");
+        }
+
+
 
     }
 }

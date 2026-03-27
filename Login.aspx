@@ -14,6 +14,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
+        .toast-custom {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+
+        .toast-success {
+            border-left: 5px solid #28a745; /* Light green */
+        }
+
+        .toast-danger {
+            border-left: 5px solid #dc3545; /* Red */
+        }
+
         body {
             background-color: #ffffff;
             min-height: 100vh;
@@ -102,6 +121,49 @@
             height: auto;
         }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script>
+        function showToast(message, styleClass) {
+            var toast = $('<div class="toast-custom ' + styleClass + '">' + message + '</div>').appendTo('#toastContainer');
+
+            // Show the toast
+            toast.fadeIn();
+
+            // Move existing toasts down
+            $('.toast-custom').not(toast).each(function () {
+                $(this).animate({ top: "+=" + (toast.outerHeight() + 10) }, 'fast');
+            });
+
+            // Hide the toast after 3 seconds
+            setTimeout(function () {
+                toast.fadeOut(function () {
+                    // Remove the toast from DOM after fadeOut
+                    $(this).remove();
+
+                    // Move remaining toasts up
+                    $('.toast-custom').each(function (index) {
+                        $(this).animate({ top: "-=" + (toast.outerHeight() + 10) }, 'fast');
+                    });
+                });
+            }, 3000);
+        }
+
+        function showNoteAlert() {
+            $('#noteAlert').show();
+        }
+
+        function hideNoteAlert() {
+            $('#noteAlert').hide();
+        }
+    </script>
 </head>
 
 <body>
@@ -148,6 +210,8 @@
             </div>
 
         </div>
+
+         <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
     </form>
 </body>
 </html>
