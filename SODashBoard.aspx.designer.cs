@@ -204,6 +204,42 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.GridView gvBrandGoly;
 
         /// <summary>
+        /// smdiv control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl smdiv;
+
+        /// <summary>
+        /// gvSMLastYear control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvSMLastYear;
+
+        /// <summary>
+        /// gvSMAchievement control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvSMAchievement;
+
+        /// <summary>
+        /// gvSMEco control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvSMEco;
+
+        /// <summary>
         /// distDiv control.
         /// </summary>
         /// <remarks>

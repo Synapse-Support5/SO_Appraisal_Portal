@@ -438,6 +438,8 @@ namespace SO_Appraisal
                     gvBrandGoly.DataSource = resds.Tables[9];
                     gvBrandGoly.DataBind();
                     //------------------------
+
+                    smdiv.Visible = false;
                 }
                 else
                 {
@@ -488,11 +490,11 @@ namespace SO_Appraisal
                     gvBrandLastYear.DataSource = resds.Tables[15];
                     gvBrandLastYear.DataBind();
 
-                    gvBrandPlan.DataSource = resds.Tables[16];
-                    gvBrandPlan.DataBind();
-
-                    gvBrandAchievement.DataSource = resds.Tables[17];
+                    gvBrandAchievement.DataSource = resds.Tables[16];
                     gvBrandAchievement.DataBind();
+
+                    gvBrandPlan.DataSource = resds.Tables[17];      //ECO
+                    gvBrandPlan.DataBind();                         //ECO 
 
                     gvBrandPerAchievement.DataSource = resds.Tables[18];
                     gvBrandPerAchievement.DataBind();
@@ -500,6 +502,20 @@ namespace SO_Appraisal
                     gvBrandGoly.DataSource = resds.Tables[19];
                     gvBrandGoly.DataBind();
                     //------------------------
+
+                    //ECO -----------
+                    gvSMLastYear.DataSource = resds.Tables[20];
+                    gvSMLastYear.DataBind();
+
+                    gvSMAchievement.DataSource = resds.Tables[21];
+                    gvSMAchievement.DataBind();
+
+                    gvSMEco.DataSource = resds.Tables[22];
+                    gvSMEco.DataBind();
+
+                    //------------------------
+                    smdiv.Visible = true;
+
                 }
                 else
                 {
@@ -531,10 +547,10 @@ namespace SO_Appraisal
                     //Sales Value ------------
                     if (resds.Tables[20] != null)
                     {
-                        gvDistributors.DataSource = resds.Tables[20];
+                        gvDistributors.DataSource = resds.Tables[23];
                         gvDistributors.DataBind();
 
-                        var count = resds.Tables[20].Rows.Count;
+                        var count = resds.Tables[23].Rows.Count;
                         DstCountLbl.InnerText = $" ({count})";
 
                         //statusBtnDiv.Visible = true;
@@ -770,7 +786,7 @@ namespace SO_Appraisal
             "% Achievement",
             "GOLY",
             "Last Year",
-            "Plan",
+            "ECO",
             "Achievement",
             "% Achievement",
             "GOLY"
@@ -784,10 +800,13 @@ namespace SO_Appraisal
             "% Achievement",
             "GOLY",
             "Last Year",
-            "Plan",
             "Achievement",
+            "ECO",
             "% Achievement",
-            "GOLY"
+            "GOLY",
+            "Last Year",
+            "Achievement",
+            "ECO"
         };
 
         public void ButtonVisibilityHelper()

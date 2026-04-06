@@ -662,10 +662,10 @@
                             </div>
                         </div>
 
-                        <!-- Plan -->
+                        <!-- ECO -->
                         <div class="col-md-4">
                             <div class="dashboard-card">
-                                <div class="dashboard-card-title">Plan</div>
+                                <div class="dashboard-card-title">ECO</div>
 
                                 <div class="table-responsive">
                                     <asp:GridView
@@ -737,6 +737,81 @@
                             </div>
                         </div>
 
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="container mt-4" id="smdiv" runat="server" visible="false">
+
+                <!-- OUTER CARD (Super Market) -->
+                <div class="dashboard-wrapper">
+
+                    <div class="dashboard-card-title" style="text-align: left; font-size: 20px;">
+                        SuperMarket
+                    </div>
+
+                    <div class="row dashboard-row">
+
+                        <!-- Last Year -->
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-title">
+                                    Last Year
+                                </div>
+
+                                <div class="table-responsive">
+                                    <asp:GridView
+                                        ID="gvSMLastYear"
+                                        runat="server"
+                                        CssClass="table table-sm table-bordered text-center mb-0"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
+                                        AutoGenerateColumns="true"
+                                        GridLines="Both">
+                                    </asp:GridView>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Achievement -->
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-title">ECO</div>
+
+                                <div class="table-responsive">
+                                    <asp:GridView
+                                        ID="gvSMAchievement"
+                                        runat="server"
+                                        CssClass="table table-sm table-bordered text-center mb-0"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
+                                        AutoGenerateColumns="true"
+                                        GridLines="Both">
+                                    </asp:GridView>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ECO -->
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-title">Achievement(Present Year)</div>
+
+                                <div class="table-responsive">
+                                    <asp:GridView
+                                        ID="gvSMEco"
+                                        runat="server"
+                                        CssClass="table table-sm table-bordered text-center mb-0"
+                                        Style="font-size: 7px; padding: 3px 6px !important;"
+                                        AutoGenerateColumns="true"
+                                        GridLines="Both">
+                                    </asp:GridView>
+                                </div>
+
+                            </div>
+                        </div>
 
                     </div>
                 </div>
