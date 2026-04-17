@@ -601,13 +601,13 @@ namespace SO_Appraisal
                 using (ClosedXML.Excel.XLWorkbook wb = new ClosedXML.Excel.XLWorkbook())
                 {
                     CreateCustomSheet(wb, ds, 0, 9, "Primary", primaryNames);
-                    CreateCustomSheet(wb, ds, 10, 19, "Secondary", secondaryNames);
+                    CreateCustomSheet(wb, ds, 10, 22, "Secondary", secondaryNames);
 
                     // ================= Distributor Sheet =================
-                    if (ds.Tables.Count > 20)
+                    if (ds.Tables.Count > 23)
                     {
                         var wsDist = wb.Worksheets.Add("Distributors");
-                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[20], false);
+                        var table = wsDist.Cell(1, 1).InsertTable(ds.Tables[23], false);
 
                         FormatTable(table);
                         wsDist.Columns().AdjustToContents();

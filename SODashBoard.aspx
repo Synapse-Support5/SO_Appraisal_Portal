@@ -662,14 +662,15 @@
                             </div>
                         </div>
 
-                        <!-- ECO -->
+
+                        <!-- Achievement -->
                         <div class="col-md-4">
                             <div class="dashboard-card">
-                                <div class="dashboard-card-title">ECO</div>
+                                <div class="dashboard-card-title">Achievement(Present Year)</div>
 
                                 <div class="table-responsive">
                                     <asp:GridView
-                                        ID="gvBrandPlan"
+                                        ID="gvBrandAchievement"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
                                         Style="font-size: 7px; padding: 3px 6px !important;"
@@ -681,14 +682,14 @@
                             </div>
                         </div>
 
-                        <!-- Achievement -->
+                        <!-- ECO -->
                         <div class="col-md-4">
                             <div class="dashboard-card">
-                                <div class="dashboard-card-title">Achievement(Present Year)</div>
+                                <div class="dashboard-card-title">ECO</div>
 
                                 <div class="table-responsive">
                                     <asp:GridView
-                                        ID="gvBrandAchievement"
+                                        ID="gvBrandPlan"
                                         runat="server"
                                         CssClass="table table-sm table-bordered text-center mb-0"
                                         Style="font-size: 7px; padding: 3px 6px !important;"
@@ -778,7 +779,7 @@
                         <!-- Achievement -->
                         <div class="col-md-4">
                             <div class="dashboard-card">
-                                <div class="dashboard-card-title">ECO</div>
+                                <div class="dashboard-card-title">Achievement(Present Year)</div>
 
                                 <div class="table-responsive">
                                     <asp:GridView
@@ -797,7 +798,7 @@
                         <!-- ECO -->
                         <div class="col-md-4">
                             <div class="dashboard-card">
-                                <div class="dashboard-card-title">Achievement(Present Year)</div>
+                                <div class="dashboard-card-title">ECO</div>
 
                                 <div class="table-responsive">
                                     <asp:GridView
