@@ -646,18 +646,17 @@ namespace SO_Appraisal
         {
             try
             {
-                string training = txtTraining.Text;
-                string career = txtCareer.Text;
-                string signIn = txtSignIn.Text;
-                string remarks = txtRemarks.Text;
-                decimal rating = 0;
+                string significantAchievement = txtSigAchi.Text;
+                string personalDevelopment = txtPerDev.Text;
+                string txtCareerDevelopmentAmbitions = txtCarDevAmb.Text;
+                decimal wiproValues = string.IsNullOrEmpty(hdnWiproValues.Value) ? 0 : Convert.ToDecimal(hdnWiproValues.Value);
+                decimal leadingPeople = string.IsNullOrEmpty(hdnLeadingPeople.Value) ? 0 : Convert.ToDecimal(hdnLeadingPeople.Value);
+                decimal execution = string.IsNullOrEmpty(hdnExecution.Value) ? 0 : Convert.ToDecimal(hdnExecution.Value);
+                decimal passion = string.IsNullOrEmpty(hdnPassion.Value) ? 0 : Convert.ToDecimal(hdnPassion.Value);
+                decimal collab = string.IsNullOrEmpty(hdnCollab.Value) ? 0 : Convert.ToDecimal(hdnCollab.Value);
+                decimal customer = string.IsNullOrEmpty(hdnCustomer.Value) ? 0 : Convert.ToDecimal(hdnCustomer.Value);
 
-                if (!string.IsNullOrEmpty(hdnRating.Value))
-                {
-                    rating = Convert.ToDecimal(hdnRating.Value);
-                }
-
-                showToast("Rating : " + rating, "toast-success");
+                //showToast("Rating : " + rating, "toast-success");
 
                 if (txtRemarks.Text == string.Empty)
                 {

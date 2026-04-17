@@ -380,6 +380,14 @@
                 .rating-stars i:hover {
                     transform: scale(1.2);
                 }
+
+        .rating-group.form-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: auto;
+            padding: 6px 10px;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -890,49 +898,117 @@
                             <div class="">
                                 <div class="dashboard-card">
 
-                                    <h6 class="dashboard-card-title">Objectives</h6>
+                                    <%--<h6 class="dashboard-card-title">Objectives</h6>--%>
+                                    <label class="font-weight-bold d-block mb-2">Objectives</label>
 
                                     <div class="row">
 
-                                        <!-- Training -->
+                                        <!-- Significant Achievement -->
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="font-weight-semibold">Training</label>
-                                            <asp:TextBox ID="txtTraining" runat="server"
+                                            <label class="font-weight-semibold">Significant Achievement</label>
+                                            <asp:TextBox ID="txtSigAchi" runat="server"
                                                 CssClass="form-control"
-                                                placeholder="Enter training objective" />
+                                                placeholder="Enter Significant Achievement" />
                                         </div>
 
-                                        <!-- Career -->
+                                        <!-- JOB & Personal Development -->
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="font-weight-semibold">Career</label>
-                                            <asp:TextBox ID="txtCareer" runat="server"
+                                            <label class="font-weight-semibold">JOB & Personal Development</label>
+                                            <asp:TextBox ID="txtPerDev" runat="server"
                                                 CssClass="form-control"
-                                                placeholder="Enter career objective" />
+                                                placeholder="Enter JOB & Personal Development" />
                                         </div>
 
-                                        <!-- Wipro Rating -->
+                                        <!-- Career Development and Ambitions -->
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="font-weight-semibold d-block">Wipro Rating (Out of 5)</label>
+                                            <label class="font-weight-semibold">Career Development and Ambitions</label>
+                                            <asp:TextBox ID="txtCarDevAmb" runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Enter Career Development and Ambitions" />
+                                        </div>
 
-                                            <div class="rating-stars" id="ratingContainer">
-                                                <i class="bi bi-star rating-star" data-value="1"></i>
-                                                <i class="bi bi-star rating-star" data-value="2"></i>
-                                                <i class="bi bi-star rating-star" data-value="3"></i>
-                                                <i class="bi bi-star rating-star" data-value="4"></i>
-                                                <i class="bi bi-star rating-star" data-value="5"></i>
+                                        <!-- KCA Section -->
+                                        <div class="col-12 mb-3">
+                                            <label class="font-weight-bold d-block mb-2">KCA</label>
+
+                                            <div class="row">
+
+                                                <!-- Row 1 -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Wipro Values (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnWiproValues">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnWiproValues" runat="server" />
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Leading People (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnLeadingPeople">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnLeadingPeople" runat="server" />
+                                                </div>
+
+                                                <!-- Row 2 -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Execution Excellence (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnExecution">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnExecution" runat="server" />
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Passion for Result (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnPassion">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnPassion" runat="server" />
+                                                </div>
+
+                                                <!-- Row 3 -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Collaborative Working (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnCollab">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnCollab" runat="server" />
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label>Customer Orientation (Out of 4)</label>
+                                                    <div class="rating-stars rating-group form-control" data-target="hdnCustomer">
+                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                        <small class="text-muted rating-text ml-2"></small>
+                                                    </div>
+                                                    <asp:HiddenField ID="hdnCustomer" runat="server" />
+                                                </div>
+
                                             </div>
-
-                                            <small id="ratingValue" class="text-muted"></small>
-
-                                            <asp:HiddenField ID="hdnRating" runat="server" />
-                                        </div>
-
-                                        <!-- Sign In -->
-                                        <div class="col-12 col-md-6 mb-3">
-                                            <label class="font-weight-semibold">Sign In</label>
-                                            <asp:TextBox ID="txtSignIn" runat="server"
-                                                CssClass="form-control"
-                                                placeholder="Enter your name or ID" />
                                         </div>
 
                                     </div>
@@ -991,42 +1067,73 @@
         var selectedRating = 0;
 
         $(document).ready(function () {
-            $('.rating-star').on('mousemove', function (e) {
-                var star = $(this);
-                var offset = star.offset();
-                var width = star.width();
-                var x = e.pageX - offset.left;
+            $(document).ready(function () {
 
-                var value = star.data('value');
+                $('.rating-group .rating-star').on('mousemove', function (e) {
+                    var star = $(this);
+                    var container = star.closest('.rating-group');
 
-                if (x < width / 2)
-                    highlightStars(value - 0.5);
-                else
-                    highlightStars(value);
+                    var offset = star.offset();
+                    var width = star.width();
+                    var x = e.pageX - offset.left;
+
+                    var value = star.data('value');
+
+                    if (x < width / 2)
+                        highlightStars(container, value - 0.5);
+                    else
+                        highlightStars(container, value);
+                });
+
+                $('.rating-group .rating-star').on('click', function (e) {
+                    var star = $(this);
+                    var container = star.closest('.rating-group');
+
+                    var offset = star.offset();
+                    var width = star.width();
+                    var x = e.pageX - offset.left;
+
+                    var value = star.data('value');
+
+                    if (x < width / 2)
+                        value = value - 0.5;
+
+                    var target = container.data('target');
+
+                    $('#' + target).val(value);
+                    container.find('.rating-text').text("Rating: " + value + " / 4");
+
+                    container.data('selected', value);
+
+                    highlightStars(container, value);
+                });
+
+                $('.rating-group').on('mouseleave', function () {
+                    var selected = $(this).data('selected') || 0;
+                    highlightStars($(this), selected);
+                });
+
             });
 
-            $('.rating-star').on('click', function (e) {
-                var star = $(this);
-                var offset = star.offset();
-                var width = star.width();
-                var x = e.pageX - offset.left;
 
-                var value = star.data('value');
+            function highlightStars(container, rating) {
+                container.find('.rating-star').each(function () {
+                    var starValue = $(this).data('value');
 
-                if (x < width / 2)
-                    value = value - 0.5;
-
-                selectedRating = value; // store selected rating
-
-                $('#<%= hdnRating.ClientID %>').val(value);
-                $('#ratingValue').text("Rating: " + value + " / 5");
-                highlightStars(value);
-            });
-
-            // restore selected rating when leaving stars
-            $('#ratingContainer').on('mouseleave', function () {
-                highlightStars(selectedRating);
-            });
+                    if (rating >= starValue) {
+                        $(this).removeClass('bi-star bi-star-half')
+                            .addClass('bi-star-fill text-warning');
+                    }
+                    else if (rating >= starValue - 0.5) {
+                        $(this).removeClass('bi-star bi-star-fill')
+                            .addClass('bi-star-half text-warning');
+                    }
+                    else {
+                        $(this).removeClass('bi-star-fill bi-star-half text-warning')
+                            .addClass('bi-star');
+                    }
+                });
+            }
 
         });
 
