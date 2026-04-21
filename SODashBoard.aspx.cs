@@ -679,10 +679,21 @@ namespace SO_Appraisal
                 cmd1.Parameters.AddWithValue("@Quarter", QtrDrp.SelectedValue);
                 cmd1.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                 cmd1.Parameters.AddWithValue("@Checked", chkConfirm.Checked);
+                cmd1.Parameters.AddWithValue("@SignificantAchievement", significantAchievement);
+                cmd1.Parameters.AddWithValue("@JOB_PersonalDevelopment", personalDevelopment);
+                cmd1.Parameters.AddWithValue("@CareerDevelopment_Ambitions", txtCareerDevelopmentAmbitions);
+                cmd1.Parameters.AddWithValue("@WiproValues", wiproValues);
+                cmd1.Parameters.AddWithValue("@LeadingPeople", leadingPeople);
+                cmd1.Parameters.AddWithValue("@ExecutionExcellence", execution);
+                cmd1.Parameters.AddWithValue("@PassionforResult", passion);
+                cmd1.Parameters.AddWithValue("@CollaborativeWorking", collab);
+                cmd1.Parameters.AddWithValue("@CustomerOrientation", customer);
                 cmd1.CommandTimeout = 6000;
                 cmd1.ExecuteNonQuery();
 
                 con.Close();
+
+                ClearForm();
 
                 showToast("Data Submitted!", "toast-success");
             }
@@ -891,6 +902,27 @@ namespace SO_Appraisal
 
         #endregion
 
+        #region ClearForm
+
+        public void ClearForm()
+        {
+            PriSecDiv.Visible = false;
+            distDiv.Visible = false;
+            btn_Common.Visible = false;
+
+            SODrp.ClearSelection();
+            FYDrp.ClearSelection();
+            QtrDrp.ClearSelection();
+            TypeDrp.ClearSelection();
+
+            txtSigAchi.Text = string.Empty;
+            txtPerDev.Text = string.Empty;
+            txtCarDevAmb.Text = string.Empty;
+            txtRemarks.Text = string.Empty;
+            chkConfirm.Checked = false;
+        }
+
+        #endregion
 
 
 

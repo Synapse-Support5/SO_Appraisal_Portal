@@ -943,7 +943,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnWiproValues" runat="server" />
+                                                    <asp:HiddenField ID="hdnWiproValues" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                                 <div class="col-md-6 mb-3">
@@ -955,7 +955,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnLeadingPeople" runat="server" />
+                                                    <asp:HiddenField ID="hdnLeadingPeople" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                                 <!-- Row 2 -->
@@ -968,7 +968,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnExecution" runat="server" />
+                                                    <asp:HiddenField ID="hdnExecution" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                                 <div class="col-md-6 mb-3">
@@ -980,7 +980,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnPassion" runat="server" />
+                                                    <asp:HiddenField ID="hdnPassion" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                                 <!-- Row 3 -->
@@ -993,7 +993,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnCollab" runat="server" />
+                                                    <asp:HiddenField ID="hdnCollab" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                                 <div class="col-md-6 mb-3">
@@ -1005,7 +1005,7 @@
                                                         <i class="bi bi-star rating-star" data-value="4"></i>
                                                         <small class="text-muted rating-text ml-2"></small>
                                                     </div>
-                                                    <asp:HiddenField ID="hdnCustomer" runat="server" />
+                                                    <asp:HiddenField ID="hdnCustomer" runat="server" ClientIDMode="Static" />
                                                 </div>
 
                                             </div>
