@@ -141,49 +141,85 @@ namespace SO_Appraisal
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ObjectivesDiv;
 
         /// <summary>
-        /// txtTraining control.
+        /// txtSigAchi control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTraining;
+        protected global::System.Web.UI.WebControls.TextBox txtSigAchi;
 
         /// <summary>
-        /// txtCareer control.
+        /// txtPerDev control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCareer;
+        protected global::System.Web.UI.WebControls.TextBox txtPerDev;
 
         /// <summary>
-        /// hdnRating control.
+        /// txtCarDevAmb control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnRating;
+        protected global::System.Web.UI.WebControls.TextBox txtCarDevAmb;
 
         /// <summary>
-        /// txtSignIn control.
+        /// hdnWiproValues control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSignIn;
+        protected global::System.Web.UI.WebControls.HiddenField hdnWiproValues;
 
         /// <summary>
-        /// hdnRequestId control.
+        /// hdnLeadingPeople control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnRequestId;
+        protected global::System.Web.UI.WebControls.HiddenField hdnLeadingPeople;
+
+        /// <summary>
+        /// hdnExecution control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnExecution;
+
+        /// <summary>
+        /// hdnPassion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnPassion;
+
+        /// <summary>
+        /// hdnCollab control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCollab;
+
+        /// <summary>
+        /// hdnCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCustomer;
 
         /// <summary>
         /// RemarksDiv control.
@@ -301,5 +337,14 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfRejectRequestId;
+
+        /// <summary>
+        /// hdnRequestId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnRequestId;
     }
 }

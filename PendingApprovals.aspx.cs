@@ -142,7 +142,7 @@ namespace SO_Appraisal
                 }
                 else
                 {
-                    GridStatusLabel.Text = "No pendind requests found!";
+                    GridStatusLabel.Text = "No pending requests found!";
                     ButtonsDiv.Visible = false;
                     PendingApprovalsGrid.DataSource = null;
                     PendingApprovalsGrid.DataBind();

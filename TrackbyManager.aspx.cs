@@ -165,7 +165,7 @@ namespace SO_Appraisal
                         else
                         {
                             ButtonsDiv.Visible = false;
-                            GridStatusLabel.Text = "No pendind requests found!";
+                            GridStatusLabel.Text = "No pending requests found!";
                         }
 
                     }
@@ -216,7 +216,7 @@ namespace SO_Appraisal
                         }
                         else
                         {
-                            GridStatusLabelViewAll.Text = "No pendind requests found!";
+                            GridStatusLabelViewAll.Text = "No pending requests found!";
                         }
 
                     }
@@ -260,9 +260,9 @@ namespace SO_Appraisal
 
             ViewAllLoad();
 
-            txtTraining.ReadOnly = true;
-            txtCareer.ReadOnly = true;
-            txtSignIn.ReadOnly = true;
+            txtSigAchi.ReadOnly = true;
+            txtPerDev.ReadOnly = true;
+            txtCarDevAmb.ReadOnly = true;
             UpdateBtn.Visible = false;
         }
         #endregion
@@ -362,7 +362,7 @@ namespace SO_Appraisal
             try
             {
                 int requestId = Convert.ToInt32(hfApproveRequestId.Value);
-                
+
                 ApproveReject(requestId, 2);
 
                 showToast("Request processed successfully.", "toast-success");
@@ -423,7 +423,7 @@ namespace SO_Appraisal
                         }
 
                         ApproveReject(requestId, 2);
-                        
+
                     }
                 }
 
@@ -531,16 +531,22 @@ namespace SO_Appraisal
             {
                 int requestId = Convert.ToInt32(hdnRequestId.Value);
 
-                string training = txtTraining.Text.Trim();
-                string career = txtCareer.Text.Trim();
-                string signIn = txtSignIn.Text.Trim();
+                string significantAchievement = txtSigAchi.Text;
+                string personalDevelopment = txtPerDev.Text;
+                string txtCareerDevelopmentAmbitions = txtCarDevAmb.Text;
+                decimal wiproValues = string.IsNullOrEmpty(hdnWiproValues.Value) ? 0 : Convert.ToDecimal(hdnWiproValues.Value);
+                decimal leadingPeople = string.IsNullOrEmpty(hdnLeadingPeople.Value) ? 0 : Convert.ToDecimal(hdnLeadingPeople.Value);
+                decimal execution = string.IsNullOrEmpty(hdnExecution.Value) ? 0 : Convert.ToDecimal(hdnExecution.Value);
+                decimal passion = string.IsNullOrEmpty(hdnPassion.Value) ? 0 : Convert.ToDecimal(hdnPassion.Value);
+                decimal collab = string.IsNullOrEmpty(hdnCollab.Value) ? 0 : Convert.ToDecimal(hdnCollab.Value);
+                decimal customer = string.IsNullOrEmpty(hdnCustomer.Value) ? 0 : Convert.ToDecimal(hdnCustomer.Value);
 
-                decimal rating = 0;
+                //decimal rating = 0;
 
-                if (!string.IsNullOrEmpty(hdnRating.Value))
-                    rating = Convert.ToDecimal(hdnRating.Value);
+                //if (!string.IsNullOrEmpty(hdnRating.Value))
+                //    rating = Convert.ToDecimal(hdnRating.Value);
 
-                showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
+                //showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
 
                 // Now you can use these values for DB update
 
@@ -747,15 +753,34 @@ namespace SO_Appraisal
 
                                 exampleModalLongTitle.InnerText = "Objectives";
 
-                                txtTraining.Text = row["Training"].ToString();
-                                txtCareer.Text = row["Career"].ToString();
-                                txtSignIn.Text = row["UserName"].ToString();
+                                txtSigAchi.Text = row["SignificantAchievement"].ToString();
+                                txtPerDev.Text = row["JOB_PersonalDevelopment"].ToString();
+                                txtCarDevAmb.Text = row["CareerDevelopment_Ambitions"].ToString();
 
-                                string rating = row["Rating"].ToString();
-                                hdnRating.Value = rating;
+                                string wiproValues = row["WiproValues"].ToString();
+                                string leadingPeople = row["LeadingPeople"].ToString();
+                                string execution = row["ExecutionExcellence"].ToString();
+                                string passion = row["PassionforResult"].ToString();
+                                string collab = row["CollaborativeWorking"].ToString();
+                                string customer = row["CustomerOrientation"].ToString();
 
-                                ScriptManager.RegisterStartupScript(this, this.GetType(),
-                                    "setRating", $"setRating({rating});", true);
+                                hdnWiproValues.Value = wiproValues;
+                                hdnLeadingPeople.Value = leadingPeople;
+                                hdnExecution.Value = execution;
+                                hdnPassion.Value = passion;
+                                hdnCollab.Value = collab;
+                                hdnCustomer.Value = customer;
+
+                                string script = $@"
+                                    setRatingGroup('hdnWiproValues', {wiproValues});
+                                    setRatingGroup('hdnLeadingPeople', {leadingPeople});
+                                    setRatingGroup('hdnExecution', {execution});
+                                    setRatingGroup('hdnPassion', {passion});
+                                    setRatingGroup('hdnCollab', {collab});
+                                    setRatingGroup('hdnCustomer', {customer});
+                                ";
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "setRatings", script, true);
                             }
                         }
                     }
