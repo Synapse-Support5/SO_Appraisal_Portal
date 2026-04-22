@@ -168,6 +168,24 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.TextBox txtCarDevAmb;
 
         /// <summary>
+        /// lblOldWipro control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldWipro;
+
+        /// <summary>
+        /// lblDiffWipro control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDiffWipro;
+
+        /// <summary>
         /// hdnWiproValues control.
         /// </summary>
         /// <remarks>
@@ -175,6 +193,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnWiproValues;
+
+        /// <summary>
+        /// lblOldLeading control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldLeading;
 
         /// <summary>
         /// hdnLeadingPeople control.
@@ -186,6 +213,15 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.HiddenField hdnLeadingPeople;
 
         /// <summary>
+        /// lblOldExecution control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldExecution;
+
+        /// <summary>
         /// hdnExecution control.
         /// </summary>
         /// <remarks>
@@ -193,6 +229,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnExecution;
+
+        /// <summary>
+        /// lblOldPassion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldPassion;
 
         /// <summary>
         /// hdnPassion control.
@@ -204,6 +249,15 @@ namespace SO_Appraisal
         protected global::System.Web.UI.WebControls.HiddenField hdnPassion;
 
         /// <summary>
+        /// lblOldCollab control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldCollab;
+
+        /// <summary>
         /// hdnCollab control.
         /// </summary>
         /// <remarks>
@@ -211,6 +265,15 @@ namespace SO_Appraisal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnCollab;
+
+        /// <summary>
+        /// lblOldCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOldCustomer;
 
         /// <summary>
         /// hdnCustomer control.

@@ -388,6 +388,54 @@
             height: auto;
             padding: 6px 10px;
         }
+
+        .kca-card {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            /*transition: all 0.2s ease;*/
+        }
+
+            .kca-card:hover {
+                /*transform: translateY(-2px);*/
+                /*box-shadow: 0 6px 14px rgba(0,0,0,0.1);*/
+            }
+
+        /* Old rating (grey) */
+        .old-stars i {
+            color: #adb5bd;
+        }
+
+        /* New rating highlight */
+        .new-rating .rating-stars i {
+            font-size: 22px;
+        }
+
+        /* Difference colors */
+        .text-improved {
+            color: #28a745;
+        }
+
+        .text-reduced {
+            color: #dc3545;
+        }
+
+        .text-same {
+            color: #6c757d;
+        }
+
+        .rating-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .old-value {
+            color: #6c757d;
+        }
+
+        .new-rating .rating-value {
+            color: #28a745;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -671,77 +719,247 @@
                                                 <div class="row">
 
                                                     <!-- Row 1 -->
+                                                    <!-- WIPRO Values-->
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Wipro Values (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnWiproValues">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+
+                                                            <!-- Title -->
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <label class="mb-0 font-weight-bold">Wipro Values</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+
+                                                                <!-- OLD (SO Given) -->
+                                                                <div class="col-5 text-center old-rating">
+                                                                    <small class="text-muted d-block">SO Given</small>
+
+                                                                    <div class="rating-stars old-stars" id="oldWiproStars"></div>
+
+                                                                    <!-- ⭐ VALUE -->
+                                                                    <asp:Label ID="lblOldWipro"
+                                                                        runat="server"
+                                                                        CssClass="rating-value old-value d-block"></asp:Label>
+                                                                </div>
+
+                                                                <!-- Arrow -->
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary" style="font-size: 18px;"></i>
+                                                                </div>
+
+                                                                <!-- NEW (Manager Rating) -->
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+
+                                                                    <div class="rating-stars rating-group form-control border-0 justify-content-center"
+                                                                        data-target="hdnWiproValues">
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+
+                                                                    <!-- ⭐ VALUE -->
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <!-- Difference Indicator -->
+                                                            <div class="text-center mt-2">
+                                                                <asp:Label ID="lblDiffWipro" runat="server" CssClass="small font-weight-bold"></asp:Label>
+                                                            </div>
+
                                                         </div>
+
                                                         <asp:HiddenField ID="hdnWiproValues" runat="server" ClientIDMode="Static" />
                                                     </div>
 
+                                                    <!-- 🔹 LEADING PEOPLE -->
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Leading People (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnLeadingPeople">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <label class="font-weight-bold">Leading People</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+                                                                <div class="col-5 text-center old-rating">
+                                                                    <small>SO Given</small>
+                                                                    <div class="rating-stars old-stars" id="oldLeadingStars"></div>
+                                                                    <asp:Label ID="lblOldLeading" runat="server" CssClass="rating-value old-value"></asp:Label>
+                                                                </div>
+
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary"></i>
+                                                                </div>
+
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+                                                                    <div class="rating-stars rating-group form-control border-0"
+                                                                        data-target="hdnLeadingPeople">
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <asp:HiddenField ID="hdnLeadingPeople" runat="server" ClientIDMode="Static" />
                                                     </div>
 
                                                     <!-- Row 2 -->
+                                                    <!-- 🔹 EXECUTION -->
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Execution Excellence (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnExecution">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <label class="font-weight-bold">Execution Excellence</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+                                                                <div class="col-5 text-center">
+                                                                    <small>SO Given</small>
+                                                                    <div class="rating-stars old-stars" id="oldExecutionStars"></div>
+                                                                    <asp:Label ID="lblOldExecution" runat="server" CssClass="rating-value old-value"></asp:Label>
+                                                                </div>
+
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary"></i>
+                                                                </div>
+
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+                                                                    <div class="rating-stars rating-group form-control border-0"
+                                                                        data-target="hdnExecution">
+
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <asp:HiddenField ID="hdnExecution" runat="server" ClientIDMode="Static" />
                                                     </div>
 
+                                                    <%--PASSION FOR RESULT--%>
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Passion for Result (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnPassion">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <label class="font-weight-bold">Passion for Result</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+
+                                                                <div class="col-5 text-center old-rating">
+                                                                    <small>SO Given</small>
+                                                                    <div class="rating-stars old-stars" id="oldPassionStars"></div>
+                                                                    <asp:Label ID="lblOldPassion" runat="server" CssClass="rating-value old-value"></asp:Label>
+                                                                </div>
+
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary"></i>
+                                                                </div>
+
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+                                                                    <div class="rating-stars rating-group form-control border-0"
+                                                                        data-target="hdnPassion">
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+
+                                                            </div>
                                                         </div>
+
                                                         <asp:HiddenField ID="hdnPassion" runat="server" ClientIDMode="Static" />
                                                     </div>
 
                                                     <!-- Row 3 -->
+                                                    <%--COLLABORATIVE WORKING--%>
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Collaborative Working (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnCollab">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <label class="font-weight-bold">Collaborative Working</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+
+                                                                <div class="col-5 text-center">
+                                                                    <small>SO Given</small>
+                                                                    <div class="rating-stars old-stars" id="oldCollabStars"></div>
+                                                                    <asp:Label ID="lblOldCollab" runat="server" CssClass="rating-value old-value"></asp:Label>
+                                                                </div>
+
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary"></i>
+                                                                </div>
+
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+                                                                    <div class="rating-stars rating-group form-control border-0"
+                                                                        data-target="hdnCollab">
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+
+                                                            </div>
                                                         </div>
+
                                                         <asp:HiddenField ID="hdnCollab" runat="server" ClientIDMode="Static" />
                                                     </div>
 
+                                                    <%--CUSTOMER ORIENTATION--%>
                                                     <div class="col-md-6 mb-3">
-                                                        <label>Customer Orientation (Out of 4)</label>
-                                                        <div class="rating-stars rating-group form-control" data-target="hdnCustomer">
-                                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                                            <small class="text-muted rating-text ml-2"></small>
+                                                        <div class="kca-card p-3">
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <label class="font-weight-bold">Customer Orientation</label>
+                                                                <span class="badge badge-light">Out of 4</span>
+                                                            </div>
+
+                                                            <div class="row align-items-center">
+
+                                                                <div class="col-5 text-center">
+                                                                    <small>SO Given</small>
+                                                                    <div class="rating-stars old-stars" id="oldCustomerStars"></div>
+                                                                    <asp:Label ID="lblOldCustomer" runat="server" CssClass="rating-value old-value"></asp:Label>
+                                                                </div>
+
+                                                                <div class="col-2 text-center">
+                                                                    <i class="bi bi-arrow-right text-primary"></i>
+                                                                </div>
+
+                                                                <div class="col-5 text-center new-rating">
+                                                                    <small class="text-success d-block">Your Rating</small>
+                                                                    <div class="rating-stars rating-group form-control border-0"
+                                                                        data-target="hdnCustomer">
+                                                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                                                    </div>
+                                                                    <small class="rating-text rating-value d-block mt-1"></small>
+                                                                </div>
+
+                                                            </div>
                                                         </div>
+
                                                         <asp:HiddenField ID="hdnCustomer" runat="server" ClientIDMode="Static" />
                                                     </div>
 
@@ -918,6 +1136,27 @@
         }
     </script>
 
+    <script>
+        function renderOldStars(containerId, rating) {
+            var container = $('#' + containerId);
+            container.empty();
+
+            rating = parseFloat(rating) || 0;
+
+            for (let i = 1; i <= 4; i++) {
+                if (rating >= i) {
+                    container.append('<i class="bi bi-star-fill"></i>');
+                }
+                else if (rating >= i - 0.5) {
+                    container.append('<i class="bi bi-star-half"></i>');
+                }
+                else {
+                    container.append('<i class="bi bi-star"></i>');
+                }
+            }
+        }
+    </script>
+
     <%--script to bind stars--%>
     <script>
         $(document).ready(function () {
@@ -962,7 +1201,8 @@
                 container.data('selected', value);
 
                 // ✅ update text
-                container.find('.rating-text').text("Rating: " + value + " / 4");
+                container.closest('.new-rating').find('.rating-text')
+                    .text(value + " / 4");
 
                 // ✅ highlight stars
                 highlightStars(container, value);
@@ -1014,7 +1254,8 @@
             container.data('selected', rating);
 
             // update label
-            container.find('.rating-text').text("Rating: " + rating + " / 4");
+            container.closest('.new-rating').find('.rating-text')
+                .text(rating + " / 4");
 
             // highlight
             highlightStars(container, rating);

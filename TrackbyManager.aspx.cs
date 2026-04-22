@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office.Word;
+using DocumentFormat.OpenXml.Vml;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -821,6 +822,29 @@ namespace SO_Appraisal
                                 string collab_M = row["CollaborativeWorking_M"].ToString();
                                 string customer_M = row["CustomerOrientation_M"].ToString();
 
+                                double ParseVal(string val)
+                                {
+                                    double d = 0;
+                                    double.TryParse(val, out d);
+                                    return d;
+                                }
+
+                                // OLD VALUES
+                                double oldWipro = ParseVal(wiproValues);
+                                double oldLeading = ParseVal(leadingPeople);
+                                double oldExecution = ParseVal(execution);
+                                double oldPassion = ParseVal(passion);
+                                double oldCollab = ParseVal(collab);
+                                double oldCustomer = ParseVal(customer);
+
+                                // LABELS
+                                lblOldWipro.Text = oldWipro.ToString("0.0") + " / 4";
+                                lblOldLeading.Text = oldLeading.ToString("0.0") + " / 4";
+                                lblOldExecution.Text = oldExecution.ToString("0.0") + " / 4";
+                                lblOldPassion.Text = ParseVal(passion).ToString("0.0") + " / 4";
+                                lblOldCollab.Text = ParseVal(collab).ToString("0.0") + " / 4";
+                                lblOldCustomer.Text = ParseVal(customer).ToString("0.0") + " / 4";
+
                                 hdnWiproValues.Value = wiproValues_M;
                                 hdnLeadingPeople.Value = leadingPeople_M;
                                 hdnExecution.Value = execution_M;
@@ -835,6 +859,13 @@ namespace SO_Appraisal
                                     setRatingGroup('hdnPassion', {passion_M});
                                     setRatingGroup('hdnCollab', {collab_M});
                                     setRatingGroup('hdnCustomer', {customer_M});
+
+                                    renderOldStars('oldWiproStars', {oldWipro});
+                                    renderOldStars('oldLeadingStars', {oldLeading});
+                                    renderOldStars('oldExecutionStars', {oldExecution});
+                                    renderOldStars('oldPassionStars', {oldPassion});
+                                    renderOldStars('oldCollabStars', {oldCollab});
+                                    renderOldStars('oldCustomerStars', {oldCustomer});
                                 ";
 
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "setRatings", script, true);
