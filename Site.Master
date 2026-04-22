@@ -148,7 +148,7 @@
                     </a>
                     <a id="sodbrdetails" class="nav-link" runat="server" href="~/SO_DBR_Master">SO DBR Details</a>
                     <a id="sodashboard" class="nav-link" runat="server" href="~/SODashBoard">SO DashBoard</a>
-                    <a id="trachbymanager" class="nav-link" runat="server" href="~/TrackbyManager">SO Achievements For Manager</a>
+                    <a id="trachbymanager" class="nav-link" runat="server" href="~/TrackbyManager">Achievements Pending Approval</a>
                     <a id="trackbyhr" class="nav-link" runat="server" href="~/SO_TrackbyHR">SO Achievements For HR</a>
 
                     <asp:LinkButton ID="btnLogout" runat="server"

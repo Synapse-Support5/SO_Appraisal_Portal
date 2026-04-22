@@ -645,7 +645,7 @@
                                                 <label class="font-weight-semibold">Significant Achievement</label>
                                                 <asp:TextBox ID="txtSigAchi" runat="server"
                                                     CssClass="form-control"
-                                                    placeholder="Enter Significant Achievement" />
+                                                    placeholder="Enter Significant Achievement" ReadOnly="true" />
                                             </div>
 
                                             <!-- JOB & Personal Development -->
@@ -653,7 +653,7 @@
                                                 <label class="font-weight-semibold">JOB & Personal Development</label>
                                                 <asp:TextBox ID="txtPerDev" runat="server"
                                                     CssClass="form-control"
-                                                    placeholder="Enter JOB & Personal Development" />
+                                                    placeholder="Enter JOB & Personal Development" ReadOnly="true" />
                                             </div>
 
                                             <!-- Career Development and Ambitions -->
@@ -661,7 +661,7 @@
                                                 <label class="font-weight-semibold">Career Development and Ambitions</label>
                                                 <asp:TextBox ID="txtCarDevAmb" runat="server"
                                                     CssClass="form-control"
-                                                    placeholder="Enter Career Development and Ambitions" />
+                                                    placeholder="Enter Career Development and Ambitions" ReadOnly="true" />
                                             </div>
 
                                             <!-- KCA Section -->

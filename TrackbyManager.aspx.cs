@@ -139,6 +139,12 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@ActionType", "PendingApprovals");
                     cmd1.Parameters.AddWithValue("@RequestId", "");
                     cmd1.Parameters.AddWithValue("@Status", "");
+                    cmd1.Parameters.AddWithValue("@WiproValues", "");
+                    cmd1.Parameters.AddWithValue("@LeadingPeople", "");
+                    cmd1.Parameters.AddWithValue("@ExecutionExcellence", "");
+                    cmd1.Parameters.AddWithValue("@PassionforResult", "");
+                    cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
+                    cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -199,6 +205,12 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@ActionType", "ViewAll");
                     cmd1.Parameters.AddWithValue("@RequestId", "");
                     cmd1.Parameters.AddWithValue("@Status", "");
+                    cmd1.Parameters.AddWithValue("@WiproValues", "");
+                    cmd1.Parameters.AddWithValue("@LeadingPeople", "");
+                    cmd1.Parameters.AddWithValue("@ExecutionExcellence", "");
+                    cmd1.Parameters.AddWithValue("@PassionforResult", "");
+                    cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
+                    cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -508,6 +520,12 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@ActionType", "ApproveReject");
                     cmd1.Parameters.AddWithValue("@RequestId", requestId);
                     cmd1.Parameters.AddWithValue("@Status", status);
+                    cmd1.Parameters.AddWithValue("@WiproValues", "");
+                    cmd1.Parameters.AddWithValue("@LeadingPeople", "");
+                    cmd1.Parameters.AddWithValue("@ExecutionExcellence", "");
+                    cmd1.Parameters.AddWithValue("@PassionforResult", "");
+                    cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
+                    cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
                     cmd1.CommandTimeout = 6000;
                     cmd1.ExecuteNonQuery();
                 }
@@ -541,14 +559,28 @@ namespace SO_Appraisal
                 decimal collab = string.IsNullOrEmpty(hdnCollab.Value) ? 0 : Convert.ToDecimal(hdnCollab.Value);
                 decimal customer = string.IsNullOrEmpty(hdnCustomer.Value) ? 0 : Convert.ToDecimal(hdnCustomer.Value);
 
-                //decimal rating = 0;
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                using (SqlCommand cmd1 = new SqlCommand("SP_SOApp_TrackByManager", con))
+                {
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@session_Name", Session["name"].ToString());
+                    cmd1.Parameters.AddWithValue("@ActionType", "UpdateObjectives");
+                    cmd1.Parameters.AddWithValue("@RequestId", requestId);
+                    cmd1.Parameters.AddWithValue("@Status", "");
+                    cmd1.Parameters.AddWithValue("@WiproValues", wiproValues);
+                    cmd1.Parameters.AddWithValue("@LeadingPeople", leadingPeople);
+                    cmd1.Parameters.AddWithValue("@ExecutionExcellence", execution);
+                    cmd1.Parameters.AddWithValue("@PassionforResult", passion);
+                    cmd1.Parameters.AddWithValue("@CollaborativeWorking", collab);
+                    cmd1.Parameters.AddWithValue("@CustomerOrientation", customer);
+                    cmd1.CommandTimeout = 6000;
+                    cmd1.ExecuteNonQuery();
+                }
 
-                //if (!string.IsNullOrEmpty(hdnRating.Value))
-                //    rating = Convert.ToDecimal(hdnRating.Value);
-
-                //showToast("Request Id is : " + requestId + " rating is : " + rating, "toast-success");
-
-                // Now you can use these values for DB update
+                con.Close();
 
             }
             catch (Exception ex)
@@ -604,6 +636,12 @@ namespace SO_Appraisal
                     cmd.Parameters.AddWithValue("@ActionType", "MailerDetails");
                     cmd.Parameters.AddWithValue("@RequestId", "");
                     cmd.Parameters.AddWithValue("@Status", "");
+                    cmd.Parameters.AddWithValue("@WiproValues", "");
+                    cmd.Parameters.AddWithValue("@LeadingPeople", "");
+                    cmd.Parameters.AddWithValue("@ExecutionExcellence", "");
+                    cmd.Parameters.AddWithValue("@PassionforResult", "");
+                    cmd.Parameters.AddWithValue("@CollaborativeWorking", "");
+                    cmd.Parameters.AddWithValue("@CustomerOrientation", "");
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -642,6 +680,12 @@ namespace SO_Appraisal
                                     cmd1.Parameters.AddWithValue("@ActionType", "isMailSent");
                                     cmd1.Parameters.AddWithValue("@RequestId", requestId);
                                     cmd1.Parameters.AddWithValue("@Status", "");
+                                    cmd1.Parameters.AddWithValue("@WiproValues", "");
+                                    cmd1.Parameters.AddWithValue("@LeadingPeople", "");
+                                    cmd1.Parameters.AddWithValue("@ExecutionExcellence", "");
+                                    cmd1.Parameters.AddWithValue("@PassionforResult", "");
+                                    cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
+                                    cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
                                     cmd1.ExecuteNonQuery();
                                 }
 
@@ -720,6 +764,12 @@ namespace SO_Appraisal
                     cmd.Parameters.AddWithValue("@ActionType", "GetRequestDetails");
                     cmd.Parameters.AddWithValue("@RequestId", requestId);
                     cmd.Parameters.AddWithValue("@Status", "");
+                    cmd.Parameters.AddWithValue("@WiproValues", "");
+                    cmd.Parameters.AddWithValue("@LeadingPeople", "");
+                    cmd.Parameters.AddWithValue("@ExecutionExcellence", "");
+                    cmd.Parameters.AddWithValue("@PassionforResult", "");
+                    cmd.Parameters.AddWithValue("@CollaborativeWorking", "");
+                    cmd.Parameters.AddWithValue("@CustomerOrientation", "");
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -764,20 +814,27 @@ namespace SO_Appraisal
                                 string collab = row["CollaborativeWorking"].ToString();
                                 string customer = row["CustomerOrientation"].ToString();
 
-                                hdnWiproValues.Value = wiproValues;
-                                hdnLeadingPeople.Value = leadingPeople;
-                                hdnExecution.Value = execution;
-                                hdnPassion.Value = passion;
-                                hdnCollab.Value = collab;
-                                hdnCustomer.Value = customer;
+                                string wiproValues_M = row["WiproValues_M"].ToString();
+                                string leadingPeople_M = row["LeadingPeople_M"].ToString();
+                                string execution_M = row["ExecutionExcellence_M"].ToString();
+                                string passion_M = row["PassionforResult_M"].ToString();
+                                string collab_M = row["CollaborativeWorking_M"].ToString();
+                                string customer_M = row["CustomerOrientation_M"].ToString();
+
+                                hdnWiproValues.Value = wiproValues_M;
+                                hdnLeadingPeople.Value = leadingPeople_M;
+                                hdnExecution.Value = execution_M;
+                                hdnPassion.Value = passion_M;
+                                hdnCollab.Value = collab_M;
+                                hdnCustomer.Value = customer_M;
 
                                 string script = $@"
-                                    setRatingGroup('hdnWiproValues', {wiproValues});
-                                    setRatingGroup('hdnLeadingPeople', {leadingPeople});
-                                    setRatingGroup('hdnExecution', {execution});
-                                    setRatingGroup('hdnPassion', {passion});
-                                    setRatingGroup('hdnCollab', {collab});
-                                    setRatingGroup('hdnCustomer', {customer});
+                                    setRatingGroup('hdnWiproValues', {wiproValues_M});
+                                    setRatingGroup('hdnLeadingPeople', {leadingPeople_M});
+                                    setRatingGroup('hdnExecution', {execution_M});
+                                    setRatingGroup('hdnPassion', {passion_M});
+                                    setRatingGroup('hdnCollab', {collab_M});
+                                    setRatingGroup('hdnCustomer', {customer_M});
                                 ";
 
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "setRatings", script, true);
@@ -1048,8 +1105,6 @@ namespace SO_Appraisal
             }
         }
         #endregion
-
-
 
         #region ToastNotification
         private void showToast(string message, string styleClass)
