@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
         .toast-custom {
@@ -91,18 +92,50 @@
             }
         }
 
-        .person-image-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
+        /* ===== Background Image ===== */
+        /* ===== Clean Page Background ===== */
+        .dashboard-bg {
+            padding-top: 40px;
         }
 
-        .person-image {
-            width: 117%;
-            height: auto;
-            margin-bottom:-230px;
-            margin-top : -15px;
+        /* ===== Cards ===== */
+        .custom-card {
+            border-radius: 8px;
+            height: 150px;
+            display: flex; /* ✅ center content */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            cursor: pointer;
         }
+
+            .custom-card i {
+                font-size: 28px;
+                margin-bottom: 10px;
+                color: #007bff;
+            }
+
+            .custom-card h5 {
+                margin: 0;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            .custom-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .custom-card {
+                margin-bottom: 15px;
+            }
+        }
+
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -140,21 +173,85 @@
 </asp:Content>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <%--   <div class="bubble bubble-top-left"></div>
-    <div class="bubble bubble-bottom-center"></div>--%>
 
     <main aria-labelledby="title">
+
         <div class="container body-content">
 
-            <div class="person-image-wrapper">
-                <img src="Images/DashBoard.png" alt="person" class="person-image" />
+            <h2 style="text-align: center; margin-top: 20px;">Welcome, Ganesh</h2>
+
+
+            <br />
+
+            <%-- Cards Section --%>
+            <div class="row">
+
+                <!-- Card 1 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='HRLanding.aspx'">
+                        <i class="fas fa-home" style="color: #007bff;"></i>
+                        <h5>Home</h5>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='Transfer.aspx'">
+                        <i class="fas fa-exchange-alt" style="color: #28a745;"></i>
+                        <h5>Transfer</h5>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='PendingApprovals.aspx'">
+                        <i class="fas fa-clock" style="color: #fd7e14;"></i>
+                        <h5>Transfer PendingApprovals</h5>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='SO_DBR_Master.aspx'">
+                        <i class="fas fa-database" style="color: #dc3545;"></i>
+                        <h5>SO Dbr Details</h5>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='SODashBoard.aspx'">
+                        <i class="fas fa-chart-line" style="color: #6f42c1;"></i>
+                        <h5>SO Dashboard</h5>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='SO_TrackbyHR.aspx'">
+                        <i class="fas fa-users" style="color: #20c997;"></i>
+                        <h5>SO Achivements clubbed data</h5>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="custom-card" onclick="location.href='L2LevelAppraisals.aspx'">
+                        <i class="fas fa-user-check" style="color: #343a40;"></i>
+                        <h5>L2 Appraisal</h5>
+                    </div>
+                </div>
+
             </div>
 
-            <%-- Notification Label --%>
+            <%-- Toast Container --%>
             <div id="toastContainer" aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;"></div>
+
             <asp:HiddenField ID="hdnBusinessType" runat="server" />
             <asp:HiddenField ID="hdnRole" runat="server" />
+
         </div>
+
     </main>
 </asp:Content>
 

@@ -165,6 +165,7 @@
     <Content Include="HRLanding.aspx" />
     <Content Include="Images\DashBoard.png" />
     <Content Include="Images\logo.png" />
+    <Content Include="L2LevelAppraisals.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="PendingApprovals.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -283,6 +284,13 @@
     </Compile>
     <Compile Include="HRLanding.aspx.designer.cs">
       <DependentUpon>HRLanding.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="L2LevelAppraisals.aspx.cs">
+      <DependentUpon>L2LevelAppraisals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="L2LevelAppraisals.aspx.designer.cs">
+      <DependentUpon>L2LevelAppraisals.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
