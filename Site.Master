@@ -137,7 +137,8 @@
         <aside class="sidebar">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" runat="server" href="~/">Home</a>
+                    <a id="defaultLanding" class="nav-link" runat="server" href="~/">Home</a>
+                    <a id="hrLanding" class="nav-link" runat="server" href="~/HRLanding">Home</a>
                 </li>
                 <li class="nav-item">
                     <a id="transfer" class="nav-link" runat="server" href="~/Transfer">Transfer</a>

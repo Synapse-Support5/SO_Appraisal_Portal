@@ -31,8 +31,10 @@ namespace SO_Appraisal
                 }
 
                 // Hide all first
+                defaultLanding.Visible = false;
+                hrLanding.Visible = false;
                 transfer.Visible = false;
-                transferpendingapprovals.Visible = false;
+                transferpendingapprovals.Visible = false;   
                 sodbrdetails.Visible = false;
                 sodashboard.Visible = false;
                 trachbymanager.Visible = false;
@@ -42,6 +44,7 @@ namespace SO_Appraisal
                 switch (role)
                 {
                     case "ADMIN":
+                        defaultLanding.Visible = true;
                         transfer.Visible = true;
                         transferpendingapprovals.Visible = true;
                         sodbrdetails.Visible = true;
@@ -51,16 +54,18 @@ namespace SO_Appraisal
                         break;
 
                     case "SO":
+                        defaultLanding.Visible = true;
                         sodashboard.Visible = true;
                         break;
 
                     case "HR":
+                        hrLanding.Visible = true;
                         transfer.Visible = true;
                         transferpendingapprovals.Visible = true;
                         sodbrdetails.Visible = true;
                         sodashboard.Visible = true;
-                        trachbymanager.Visible = true;
                         trackbyhr.Visible = true;
+                        btnLogout.Visible = true;
                         break;
 
                 }

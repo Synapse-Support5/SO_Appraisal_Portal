@@ -162,6 +162,7 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="HRLanding.aspx" />
     <Content Include="Images\DashBoard.png" />
     <Content Include="Images\logo.png" />
     <Content Include="Login.aspx" />
@@ -275,6 +276,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HRLanding.aspx.cs">
+      <DependentUpon>HRLanding.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HRLanding.aspx.designer.cs">
+      <DependentUpon>HRLanding.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

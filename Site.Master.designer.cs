@@ -15,6 +15,24 @@ namespace SO_Appraisal
     {
 
         /// <summary>
+        /// defaultLanding control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor defaultLanding;
+
+        /// <summary>
+        /// hrLanding control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor hrLanding;
+
+        /// <summary>
         /// transfer control.
         /// </summary>
         /// <remarks>

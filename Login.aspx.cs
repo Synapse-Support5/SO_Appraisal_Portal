@@ -76,6 +76,10 @@ namespace SO_Appraisal
                                     {
                                         Response.Redirect("SODashBoard.aspx", false);
                                     }
+                                    else if (Session["Role"].ToString() == "HR")
+                                    {
+                                        Response.Redirect("HRLanding.aspx", false);
+                                    }
                                     else
                                     {
                                         Response.Redirect("Default.aspx", false);
