@@ -47,7 +47,6 @@ namespace SO_Appraisal
                         sodbrdetails.Visible = true;
                         sodashboard.Visible = true;
                         trachbymanager.Visible = true;
-                        trackbyhr.Visible = true;
                         btnLogout.Visible = true;
                         break;
 

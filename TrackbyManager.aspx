@@ -525,7 +525,7 @@
                         <div class="grid-wrapper">
                             <asp:Label ID="GridStatusLabel" runat="server"></asp:Label>
                             <asp:GridView ID="PendingApprovalsGrid" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered"
-                                Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId" OnRowDataBound="PendingApprovalsGrid_RowDataBound">
+                                Style="margin-bottom: 0px; text-align: center; font-size: small;" DataKeyNames="RequestId, UpdatedByManager" OnRowDataBound="PendingApprovalsGrid_RowDataBound">
                                 <Columns>
                                     <asp:TemplateField HeaderText="Select All">
                                         <HeaderTemplate>
@@ -579,7 +579,9 @@
                                             <asp:LinkButton ID="btnRowApprove" runat="server"
                                                 CssClass="btn btn-outline-success ml-1"
                                                 CommandArgument='<%# Eval("RequestId")%>'
-                                                OnClientClick='<%# "showApproveAlert(" + Eval("RequestId") + "); return false;" %>'
+                                                OnClientClick='<%# "showApproveAlert(" 
+                                                    + Eval("RequestId") + ",\"" 
+                                                    + Eval("UpdatedByManager") + "\"); return false;" %>'
                                                 ToolTip="Approve">
                                         <i class="bi bi-check2-square"></i>
                                             </asp:LinkButton>
@@ -733,7 +735,7 @@
 
                                                                 <!-- OLD (SO Given) -->
                                                                 <div class="col-5 text-center old-rating">
-                                                                    <small class="text-muted d-block">SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
 
                                                                     <div class="rating-stars old-stars" id="oldWiproStars"></div>
 
@@ -786,7 +788,7 @@
 
                                                             <div class="row align-items-center">
                                                                 <div class="col-5 text-center old-rating">
-                                                                    <small>SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
                                                                     <div class="rating-stars old-stars" id="oldLeadingStars"></div>
                                                                     <asp:Label ID="lblOldLeading" runat="server" CssClass="rating-value old-value"></asp:Label>
                                                                 </div>
@@ -822,7 +824,7 @@
 
                                                             <div class="row align-items-center">
                                                                 <div class="col-5 text-center">
-                                                                    <small>SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
                                                                     <div class="rating-stars old-stars" id="oldExecutionStars"></div>
                                                                     <asp:Label ID="lblOldExecution" runat="server" CssClass="rating-value old-value"></asp:Label>
                                                                 </div>
@@ -859,7 +861,7 @@
                                                             <div class="row align-items-center">
 
                                                                 <div class="col-5 text-center old-rating">
-                                                                    <small>SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
                                                                     <div class="rating-stars old-stars" id="oldPassionStars"></div>
                                                                     <asp:Label ID="lblOldPassion" runat="server" CssClass="rating-value old-value"></asp:Label>
                                                                 </div>
@@ -898,7 +900,7 @@
                                                             <div class="row align-items-center">
 
                                                                 <div class="col-5 text-center">
-                                                                    <small>SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
                                                                     <div class="rating-stars old-stars" id="oldCollabStars"></div>
                                                                     <asp:Label ID="lblOldCollab" runat="server" CssClass="rating-value old-value"></asp:Label>
                                                                 </div>
@@ -936,7 +938,7 @@
                                                             <div class="row align-items-center">
 
                                                                 <div class="col-5 text-center">
-                                                                    <small>SO Given</small>
+                                                                    <small class="text-muted d-block">SO Rating</small>
                                                                     <div class="rating-stars old-stars" id="oldCustomerStars"></div>
                                                                     <asp:Label ID="lblOldCustomer" runat="server" CssClass="rating-value old-value"></asp:Label>
                                                                 </div>
@@ -1065,6 +1067,7 @@
         <asp:HiddenField ID="hdnRole" runat="server" />
         <asp:HiddenField ID="hfSelectedRowData" runat="server" />
         <asp:HiddenField ID="hfApproveRequestId" runat="server" />
+        <asp:HiddenField ID="UpdatedByManager" runat="server" />
         <asp:HiddenField ID="hfRejectRequestId" runat="server" />
         <asp:HiddenField ID="hdnRequestId" runat="server" />
 
@@ -1104,9 +1107,10 @@
             $('#exampleModalCenter').modal('show');
         }
 
-        function showApproveAlert(requestId) {
+        function showApproveAlert(requestId, updatedByManager) {
             // Store RequestId in HiddenField
             document.getElementById('<%= hfApproveRequestId.ClientID %>').value = requestId;
+            document.getElementById('<%= UpdatedByManager.ClientID %>').value = updatedByManager;
 
             // Show alert
             document.getElementById('ApproveAlert').style.display = 'block';

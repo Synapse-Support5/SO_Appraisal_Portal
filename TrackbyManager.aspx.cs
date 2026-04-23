@@ -27,7 +27,7 @@ namespace SO_Appraisal
         DataTable resdt = new DataTable();
         DataSet ds = new DataSet();
         bool anyCheckboxSelected = false;
-
+        bool skippedAny = false;
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -171,6 +171,9 @@ namespace SO_Appraisal
                         }
                         else
                         {
+                            PendingApprovalsGrid.DataSource = null;
+                            PendingApprovalsGrid.DataBind();
+
                             ButtonsDiv.Visible = false;
                             GridStatusLabel.Text = "No pending requests found!";
                         }
@@ -375,12 +378,23 @@ namespace SO_Appraisal
             try
             {
                 int requestId = Convert.ToInt32(hfApproveRequestId.Value);
+                int updatedByManager = Convert.ToInt32(UpdatedByManager.Value);
 
-                ApproveReject(requestId, 2);
+                if (updatedByManager == 0)
+                {
+                    showToast("Please provide your rating", "toast-danger");
+                    return;
+                }
+                else
+                {
+                    ApproveReject(requestId, 2);
 
-                showToast("Request processed successfully.", "toast-success");
+                    showToast("Request processed successfully.", "toast-success");
 
-                PendingsLoad();
+                    PendingsLoad();
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -419,34 +433,43 @@ namespace SO_Appraisal
                 foreach (GridViewRow row in PendingApprovalsGrid.Rows)
                 {
                     var chkBox = row.FindControl("CheckBox1") as HtmlInputCheckBox;
+
                     if (chkBox != null && chkBox.Checked)
                     {
-                        // Prefer DataKeys for RequestId (safer)
-                        int requestId = 0;
-                        if (PendingApprovalsGrid.DataKeys != null && PendingApprovalsGrid.DataKeys.Count > row.RowIndex)
+                        anyCheckboxSelected = true;
+
+                        // ✅ Get DataKeys safely
+                        var dataKey = PendingApprovalsGrid.DataKeys[row.RowIndex];
+
+                        int requestId = Convert.ToInt32(dataKey["RequestId"]);
+                        int updatedByManager = Convert.ToInt32(dataKey["UpdatedByManager"]);
+
+                        // ❌ Skip if UpdatedByManager = 0
+                        if (updatedByManager == 0)
                         {
-                            requestId = Convert.ToInt32(PendingApprovalsGrid.DataKeys[row.RowIndex].Value);
-                            anyCheckboxSelected = true;
-                        }
-                        else
-                        {
-                            // Fallback — adjust cell index if RequestId column location changes
-                            requestId = Convert.ToInt32(row.Cells[1].Text);
-                            anyCheckboxSelected = true;
+                            skippedAny = true;
+                            continue;
                         }
 
+                        // ✅ Execute only valid ones
                         ApproveReject(requestId, 2);
-
                     }
                 }
 
                 if (!anyCheckboxSelected)
                 {
-                    showToast("Please select atleast any one request to approve", "toast-danger");
+                    showToast("Please select at least one request to approve", "toast-danger");
                     return;
                 }
 
-                showToast("Request processed successfully.", "toast-success");
+                if (skippedAny)
+                {
+                    showToast("Some requests were skipped because they are not updated by manager.", "toast-danger");
+                }
+                else
+                {
+                    showToast("All selected requests processed successfully.", "toast-success");
+                }
 
                 PendingsLoad();
             }
@@ -560,6 +583,14 @@ namespace SO_Appraisal
                 decimal collab = string.IsNullOrEmpty(hdnCollab.Value) ? 0 : Convert.ToDecimal(hdnCollab.Value);
                 decimal customer = string.IsNullOrEmpty(hdnCustomer.Value) ? 0 : Convert.ToDecimal(hdnCustomer.Value);
 
+                if (wiproValues == 0 && leadingPeople == 0 && execution == 0 &&
+                        passion == 0 && collab == 0 && customer == 0)
+                {
+                    showToast("please provide rating before updating", "toast-danger");
+                    return;
+                }
+
+
                 if (con.State == ConnectionState.Closed)
                 {
                     con.Open();
@@ -583,6 +614,7 @@ namespace SO_Appraisal
 
                 con.Close();
 
+                showToast("Updated Successfully!", "toast-success");
             }
             catch (Exception ex)
             {
