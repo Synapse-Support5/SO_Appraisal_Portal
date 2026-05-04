@@ -714,6 +714,10 @@
                                                     placeholder="Enter Career Development and Ambitions" ReadOnly="true" />
                                             </div>
 
+                                            <!-- Remarks -->
+                                            <div class="col-12 col-md-6 mb-3">
+                                            </div>
+
                                             <!-- KCA Section -->
                                             <div class="col-12 mb-3">
                                                 <label class="font-weight-bold d-block mb-2">KCA</label>
@@ -975,15 +979,14 @@
                             </div>
 
                             <!-- Remarks -->
-                            <div class="form-group mb-0" id="RemarksDiv" runat="server" visible="false">
+                            <div class="form-group mb-0" id="RemarksDiv" runat="server">
+                                <label class="font-weight-semibold">Remarks</label>
                                 <asp:TextBox ID="txtRemarks" runat="server"
                                     CssClass="form-control text-left"
                                     TextMode="MultiLine"
                                     Rows="1"
-                                    placeholder="Write a valid reason/feedback here..."
-                                    ReadOnly="true" />
+                                    placeholder="Write a valid reason/feedback here..." />
                             </div>
-
                         </div>
                     </div>
 

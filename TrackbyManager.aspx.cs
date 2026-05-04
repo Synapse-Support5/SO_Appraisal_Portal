@@ -146,6 +146,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@PassionforResult", "");
                     cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
                     cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
+                    cmd1.Parameters.AddWithValue("@Remarks", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -215,6 +216,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@PassionforResult", "");
                     cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
                     cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
+                    cmd1.Parameters.AddWithValue("@Remarks", "");
                     cmd1.CommandTimeout = 6000;
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd1))
@@ -550,6 +552,7 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@PassionforResult", "");
                     cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
                     cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
+                    cmd1.Parameters.AddWithValue("@Remarks", "");
                     cmd1.CommandTimeout = 6000;
                     cmd1.ExecuteNonQuery();
                 }
@@ -576,6 +579,7 @@ namespace SO_Appraisal
                 string significantAchievement = txtSigAchi.Text;
                 string personalDevelopment = txtPerDev.Text;
                 string txtCareerDevelopmentAmbitions = txtCarDevAmb.Text;
+                string txtRemarksManager = txtRemarks.Text;
                 decimal wiproValues = string.IsNullOrEmpty(hdnWiproValues.Value) ? 0 : Convert.ToDecimal(hdnWiproValues.Value);
                 decimal leadingPeople = string.IsNullOrEmpty(hdnLeadingPeople.Value) ? 0 : Convert.ToDecimal(hdnLeadingPeople.Value);
                 decimal execution = string.IsNullOrEmpty(hdnExecution.Value) ? 0 : Convert.ToDecimal(hdnExecution.Value);
@@ -608,11 +612,14 @@ namespace SO_Appraisal
                     cmd1.Parameters.AddWithValue("@PassionforResult", passion);
                     cmd1.Parameters.AddWithValue("@CollaborativeWorking", collab);
                     cmd1.Parameters.AddWithValue("@CustomerOrientation", customer);
+                    cmd1.Parameters.AddWithValue("@Remarks", txtRemarksManager);
                     cmd1.CommandTimeout = 6000;
                     cmd1.ExecuteNonQuery();
                 }
 
                 con.Close();
+
+                PendingsLoad();
 
                 showToast("Updated Successfully!", "toast-success");
             }
@@ -675,6 +682,7 @@ namespace SO_Appraisal
                     cmd.Parameters.AddWithValue("@PassionforResult", "");
                     cmd.Parameters.AddWithValue("@CollaborativeWorking", "");
                     cmd.Parameters.AddWithValue("@CustomerOrientation", "");
+                    cmd.Parameters.AddWithValue("@Remarks", "");
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -719,6 +727,7 @@ namespace SO_Appraisal
                                     cmd1.Parameters.AddWithValue("@PassionforResult", "");
                                     cmd1.Parameters.AddWithValue("@CollaborativeWorking", "");
                                     cmd1.Parameters.AddWithValue("@CustomerOrientation", "");
+                                    cmd1.Parameters.AddWithValue("@Remarks", "");
                                     cmd1.ExecuteNonQuery();
                                 }
 
@@ -803,6 +812,7 @@ namespace SO_Appraisal
                     cmd.Parameters.AddWithValue("@PassionforResult", "");
                     cmd.Parameters.AddWithValue("@CollaborativeWorking", "");
                     cmd.Parameters.AddWithValue("@CustomerOrientation", "");
+                    cmd.Parameters.AddWithValue("@Remarks", "");
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -830,7 +840,6 @@ namespace SO_Appraisal
                             {
                                 // Show Objectives section
                                 ObjectivesDiv.Visible = true;
-                                RemarksDiv.Visible = false;
                                 UpdateBtn.Visible = true;
                                 ForwardBtn.Visible = false;
 
@@ -839,6 +848,7 @@ namespace SO_Appraisal
                                 txtSigAchi.Text = row["SignificantAchievement"].ToString();
                                 txtPerDev.Text = row["JOB_PersonalDevelopment"].ToString();
                                 txtCarDevAmb.Text = row["CareerDevelopment_Ambitions"].ToString();
+                                txtRemarks.Text = row["Remarks"].ToString();
 
                                 string wiproValues = row["WiproValues"].ToString();
                                 string leadingPeople = row["LeadingPeople"].ToString();

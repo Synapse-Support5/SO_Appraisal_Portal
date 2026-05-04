@@ -909,6 +909,7 @@ namespace SO_Appraisal
             PriSecDiv.Visible = false;
             distDiv.Visible = false;
             btn_Common.Visible = false;
+            btn_Proceed.Visible = false;
 
             SODrp.ClearSelection();
             FYDrp.ClearSelection();
